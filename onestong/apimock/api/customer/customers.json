@@ -1,0 +1,29 @@
+[
+	{
+	
+		"description":"查询客户",
+		"request": {
+			"uri": "/"
+		},
+		"response": {
+			"json": {
+				"id": 100,
+				"name": "hello"
+			}
+		}
+	},
+	{
+	
+		"description":"新增客户",
+		"request": {
+			"method":"post",
+			"uri": "/"
+		},
+		"response": {
+			"json": {
+				"id": 100,
+				"name": "hello"
+			}
+		}
+	}
+]

@@ -1,0 +1,10 @@
+[
+	{
+		"context": "/api/customer",
+		"include": "./customer/customers.json"
+	},
+	{
+		"context": "/api/contacts",
+		"include": "./contacts/contacts.json"
+	}
+]
