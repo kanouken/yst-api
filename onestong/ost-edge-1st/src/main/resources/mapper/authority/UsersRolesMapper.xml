@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.ost.edge.onestong.dao.authority.UsersRolesMapper">
+	
+	<resultMap id="BaseResultMap" type="org.ost.edge.onestong.model.authority.Role" >
+   
+    <id column="role_id" property="roleId" jdbcType="INTEGER" />
+    <result column="role_name" property="roleName" jdbcType="VARCHAR" />
+    <result column="role_desc" property="roleDesc" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="updator" property="updator" jdbcType="VARCHAR" />
+    <result column="valid" property="valid" jdbcType="TINYINT" />
+    <result column="state" property="state" jdbcType="TINYINT" />
+    <result column="level" property="level" jdbcType="TINYINT" />
+    <result column="optional1" property="optional1" jdbcType="VARCHAR" />
+    <result column="optional2" property="optional2" jdbcType="VARCHAR" />
+    <result column="optional3" property="optional3" jdbcType="VARCHAR" />
+    <result column="domain_id" property="domainId" jdbcType="INTEGER" />
+    
+  </resultMap>
+	
+	
+	
+	<select id="selectRolesByUser" parameterType="map" resultMap="BaseResultMap">
+		select r.* from users_roles ur ,roles r where ur.role_id = r.role_id
+		and ur.user_id = #{userId,jdbcType=INTEGER}
+
+
+	</select>
+
+
+	<insert id="insertRolesAndUser" parameterType="map">
+		insert into users_roles(user_id,role_id) values(#{userId,jdbcType=INTEGER},#{roleId,jdbcType=INTEGER})
+	
+	</insert>
+
+
+<delete id="deleteRolesAndUser"  parameterType="map" >
+
+		delete from users_roles  where user_id = #{userId,jdbcType=INTEGER}
+</delete>
+
+
+
+
+</mapper>

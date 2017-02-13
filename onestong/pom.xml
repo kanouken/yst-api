@@ -204,7 +204,7 @@
 
 	</dependencyManagement>
 
-	<groupId>com.oz.onestong</groupId>
+	<groupId>org.ost.edge.onestong</groupId>
 
 	<properties>
 		<java.version>1.8</java.version>

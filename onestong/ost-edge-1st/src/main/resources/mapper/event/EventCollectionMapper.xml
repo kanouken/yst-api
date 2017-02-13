@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.ost.edge.onestong.dao.event.EventCollectionMapper" >
+  
+  	
+  	
+  	
+  		<select id="selectCollectionALLTypePaged"  parameterType="map"  resultType="java.util.HashMap"  >
+  	select * from event_collection where 
+  	
+  	
+  	<if test="userScope != null">
+  	 user_id in (
+ 	<foreach collection="userScope" item="item" index="index" separator=",">
+       #{item.userId,jdbcType=INTEGER}
+    </foreach>
+  
+	)  
+	
+	</if>
+	union all
+	
+	
+	SELECT
+				t.user_id AS user_id,
+				t.taskId AS id,
+				t.creator AS creator,
+				t.create_time AS create_time,
+				t.update_time AS update_time,
+				t.title AS title,
+				t.task_desc AS content,
+				NULL AS signed_address,
+				t.publish_address AS signout_address,
+				NULL AS signed_time,
+				NULL AS lated_for_time,
+				NULL AS signout_time,
+				NULL AS le_for_time,
+				t.state AS state,
+				4 AS type,
+				t.like_count AS like_count,
+				t.comment_count AS comment_count,
+				null as pic,
+				t.longitude AS signed_longitude,
+				t.latitude AS signed_latitude,
+				NULL AS signout_longitude,
+				NULL AS signout_latitude
+
+
+
+FROM
+	task t,
+	user_task ut
+WHERE
+	t.taskId = ut.task_id
+AND ut.user_id = #{userId,jdbcType=INTEGER}
+	
+	
+	
+	order by  update_time desc
+  		
+  	
+  	</select>
+  	
+  	
+  	<select id="selectCollectionExcludeTypePaged"  parameterType="map"  resultType="java.util.HashMap"  >
+  	select * from event_collection where type <![CDATA[ <> #{type,jdbcType=INTEGER}]]>    
+  	<if test="userScope != null">
+  	
+  	and user_id in (
+ 	<foreach collection="userScope" item="item" index="index" separator=",">
+       #{item.userId,jdbcType=INTEGER}
+    </foreach>
+  
+	)  
+	</if>
+	
+	order by  update_time desc
+  		
+  	
+  	</select>
+  	
+  	
+  	<select id="selectCollectionByTypePaged"  parameterType="map"  resultType="java.util.HashMap"  >
+  
+  <if test="type != 4">
+  
+  		select * from event_collection where type = #{type,jdbcType=INTEGER}   
+  	
+  	<if test="userScope != null">
+  	and user_id in (
+ 	
+ 	
+ 	<foreach collection="userScope" item="item" index="index" separator=",">
+       #{item.userId,jdbcType=INTEGER}
+    </foreach>
+  
+	)  
+	
+	</if>
+  
+  
+  
+  </if>
+  	
+	
+	
+	<if test="type == 4">
+			SELECT
+				t.user_id AS user_id,
+				t.taskId AS id,
+				t.creator AS creator,
+				t.create_time AS create_time,
+				t.update_time AS update_time,
+				t.title AS title,
+				t.task_desc AS content,
+				NULL AS signed_address,
+				t.publish_address AS signout_address,
+				NULL AS signed_time,
+				NULL AS lated_for_time,
+				NULL AS signout_time,
+				NULL AS le_for_time,
+				t.state AS state,
+				4 AS type,
+				t.like_count AS like_count,
+				t.comment_count AS comment_count,
+				t.longitude AS signed_longitude,
+				t.latitude AS signed_latitude,
+				NULL AS signout_longitude,
+				NULL AS signout_latitude
+
+
+
+FROM
+	task t,
+	user_task ut
+WHERE
+	t.taskId = ut.task_id
+AND ut.user_id = #{userId,jdbcType=INTEGER}
+			
+	
+	
+	
+	</if> 
+
+	
+	
+
+
+
+	order by  update_time desc
+  		
+  	
+  	</select>
+  	
+  	
+  	
+  	
+ <!--  	
+  	<insert id="insertUserAndTag"   parameterType="map"  >
+  	
+  		insert into users_tags(user_id,ct_id) values(
+  		#{user.userId,jdbcType=INTEGER},
+  		#{tag.ctId,jdbcType=INTEGER}
+  		)
+  		    
+  	</insert>
+  	
+  	  	<insert id="insertCustomerAndTag"   parameterType="map"  >
+  		
+  		insert into  customers_tags(ct_id,c_id)
+    values 
+    <foreach collection="customerIds" item="item" index="index" separator=",">
+        (#{tagId,jdbcType=INTEGER},#{item,jdbcType=INTEGER})
+    </foreach>
+  	</insert>
+  	
+  	<delete id="deleteUserAndTag"  parameterType="map">
+  	
+  		delete from  users_tags where  user_id = #{userId,jdbcType=INTEGER} and ct_id in (
+  		 <foreach collection="tagIds" item="item" index="index" separator=",">
+        #{item,jdbcType=INTEGER}
+    	</foreach>
+  		)
+  	
+  	</delete>
+  	<delete id="deleteCustomerAndTag"  parameterType="map" >
+  		delete from  customers_tags where ct_id in  (
+  		<foreach collection="tagIds" item="item" index="index" separator=",">
+        #{item,jdbcType=INTEGER}
+    	</foreach>
+  		)
+  	</delete>
+  	
+  	
+  	
+ 	<delete id="deleteCustomersByTag"  parameterType="map" >
+  		delete from  customers_tags where  ct_id = #{tagId,jdbcType=INTEGER}  and  c_id in  (
+  		<foreach collection="customerIds" item="item" index="index" separator=",">
+        #{item,jdbcType=INTEGER}
+    	</foreach>
+  		)
+  	</delete>
+  	
+	<insert id="insertUserAndCustomer"  parameterType="map" >
+		insert into users_customers(u_id,c_id) values(#{userId,jdbcType=INTEGER},#{customerId,jdbcType=INTEGER})
+	
+	</insert>  	 -->
+  	
+  	
+  	
+</mapper>
