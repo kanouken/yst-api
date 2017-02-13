@@ -1,12 +1,179 @@
 [
 	{
+		"description": "新增外访",
 		"request": {
-			"uri": "/login"
+			"method": "post",
+			"uri": "/visitEvent/visitIn",
+			"json": {
+				"customer": {
+					"id": 100,
+					"name": "测试"
+				},
+				"contactType": "电话",
+				"contactTime": "2014-01-11 23:59",
+				"content": "联系内容",
+				"project": {
+					"id": "1",
+					"name": "测试"
+				},
+				"busChange": "商机类型",
+				"location": {
+					"lng": 1111,
+					"lat": 2222,
+					"offSet": ""
+				}
+			}
+		},
+		"response": {
+			"status": 200,
+			"json": {
+				"description": "success",
+				"innerException": "",
+				"data": "ok"
+			}
+		}
+	},
+	{
+		"description": "外访查询",
+		"request": {
+			"method": "get",
+			"uri": "/visitEvent/detail",
+			"queries": {
+				"eId": "1"
+			}
 		},
 		"response": {
 			"json": {
-				"id": 100,
-				"name": "hello"
+				"description": "success",
+				"innerException": "",
+				"data": {
+					"customer": {
+						"id": 100,
+						"name": "测试"
+					},
+					"contactType": "电话",
+					"contactTime": "2014-01-11 23:59",
+					"content": "联系内容",
+					"project": {
+						"id": "1",
+						"name": "测试"
+					},
+					"busChange": "商机类型",
+					"location": {
+						"lng": 1111,
+						"lat": 2222,
+						"offSet": ""
+					}
+				}
+			}
+		}
+	},
+	{
+		"description": "外访写结果",
+		"request": {
+			"method": "post",
+			"uri": "/visitEvent/result",
+			"json": {
+				"eId": "1",
+				"content": "联系内容",
+				"location": {
+					"lng": 1111,
+					"lat": 2222,
+					"offSet": ""
+				}
+			}
+		},
+		"response": {
+			"status": 200,
+			"json": {
+				"description": "success",
+				"innerException": "",
+				"data": "ok"
+			}
+		}
+	},
+	{
+		"description": "新增申请",
+		"request": {
+			"method": "post",
+			"uri": "/approvalEvent/apply",
+			"json": {
+				"applyType": "出差",
+				"applyStartTime": "2014-01-11 23:59",
+				"applyEndTime": "2014-01-11 23:59",
+				"approvers": [
+					{
+						"id": 1,
+						"name": "测试001"
+					}
+				],
+				"busTripReason": "无",
+				"scheduling": "无",
+				"leaveType": "事假",
+				"leaveReason": "测试"
+			}
+		},
+		"response": {
+			"status": 200,
+			"json": {
+				"description": "success",
+				"innerException": "",
+				"data": "ok"
+			}
+		}
+	},
+	{
+		"description": "申请审批",
+		"request": {
+			"method": "post",
+			"uri": "/approvalEvent/approval",
+			"json": {
+				"eId": "1",
+				"action": "pass"
+			}
+		},
+		"response": {
+			"status": 200,
+			"json": {
+				"description": "success",
+				"innerException": "",
+				"data": "ok"
+			}
+		}
+	},
+	{
+		"description": "申请详情",
+		"request": {
+			"method": "get",
+			"uri": "/approvalEvent/detail",
+			"queries": {
+				"eId": "1"
+			}
+		},
+		"response": {
+			"status": 200,
+			"json": {
+				"description": "success",
+				"innerException": "",
+				"data": {
+					"eId": "1",
+					"applyType": "出差",
+					"createTime": "2014-01-11 23:59",
+					"applyStartTime": "2014-01-11 23:59",
+					"applyEndTime": "2014-01-11 23:59",
+					"approvers": [
+						{
+							"id": 1,
+							"name": "测试001"
+						}
+					],
+					"busTripReason": "无",
+					"scheduling": "无",
+					"leaveType": "事假",
+					"leaveReason": "测试",
+					"approvalTip": "由xx等2人审批",
+					"status": "未审批"
+				}
 			}
 		}
 	}
