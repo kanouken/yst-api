@@ -172,9 +172,9 @@
 			<version>3.9</version>
 		</dependency>
 		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.6</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -212,14 +212,14 @@
 		<org.mapstruct.version>1.1.0.Final</org.mapstruct.version>
 	</properties>
 	<modules>
-	<module>ost-contacts</module>
-	<module>ost-customers</module>
-	<module>ost-projects</module>
-	<module>ost-edge-crm</module>
-	<module>ost-edge-1st</module>
-	<module>ost-admin</module>
-	<module>ost-admin-ui</module>
-	<module>common-tools</module>
+		<module>ost-contacts</module>
+		<module>ost-customers</module>
+		<module>ost-projects</module>
+		<module>ost-edge-crm</module>
+		<module>ost-edge-1st</module>
+		<module>ost-admin</module>
+		<module>ost-admin-ui</module>
+		<module>common-tools</module>
 	</modules>
 	<version>1.0</version>
 </project>
