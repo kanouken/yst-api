@@ -1,28 +1,294 @@
 [
 	{
-	
-		"description":"查询客户",
+		"description": "客户查询条件",
 		"request": {
-			"uri": "/"
+			"uri": "/queryConditions",
+			"method": "get"
 		},
 		"response": {
 			"json": {
-				"id": 100,
-				"name": "hello"
+				"description": "success",
+				"innerException": "",
+				"data": {
+					"type": [
+						"最终用户",
+						"集成商",
+						"两者兼有"
+					],
+					"belongIndustry": [
+						"制造",
+						"零售连锁",
+						"金融",
+						"服务",
+						"其他"
+					],
+					"natrue": [
+						"国企",
+						"外企",
+						"民营"
+					],
+					"isPlc": [
+						"上市",
+						"非上市"
+					],
+					"dealFrequency": [
+						"高频次(4次/月)",
+						"中高频次(3次/月)",
+						"中频次(2次/月)",
+						"低频次(1次/月)"
+					],
+					"turnover": [
+						">1000万",
+						">500万",
+						">300万",
+						">100万"
+					]
+				}
 			}
 		}
 	},
 	{
-	
-		"description":"新增客户",
+		"description": "查询客户列表",
 		"request": {
-			"method":"post",
-			"uri": "/"
+			"uri": "/",
+			"method": "get",
+			"queries": {
+				"type": "最终用户,集成商",
+				"belongIndustry": "制造,零售连锁",
+				"natrue": "国企,外企",
+				"isPlc": "上市,非上市",
+				"dealFrequency": "高频次(4次/月),中高频次(3次/月)",
+				"turnover": ">1000万,>500万"
+			}
 		},
 		"response": {
 			"json": {
+				"description": "success",
+				"innerException": "",
+				"data": {
+					"page": {
+						"curPage": "1",
+						"totalPage": "50",
+						"perPageSize": "10"
+					},
+					"objects": [
+						{
+							"id": "1",
+							"name": "安琪酵母",
+							"nature": "国企",
+							"isPlc": "上市",
+							"belongIndustry": "制造业",
+							"deptOwner": {
+								"deptId": "100",
+								"deptName": "零售一部"
+							},
+							"managerOwner": {
+								"userId": "100",
+								"userName": "余xx"
+							}
+						},
+						{
+							"id": "2",
+							"name": "安正",
+							"nature": "民营",
+							"isPlc": "非上市",
+							"belongIndustry": "零售",
+							"deptOwner": {
+								"deptId": "100",
+								"deptName": "零售一部"
+							},
+							"managerOwner": {
+								"userId": "100",
+								"userName": "余xx"
+							}
+						}
+					]
+				}
+			}
+		}
+	},
+	{
+		"description": "查询客户",
+		"request": {
+			"uri": "/detail",
+			"method": "get",
+			"queries": {
+				"id":"100"
+			}
+		},
+		"response": {
+			"json": {
+				"description": "success",
+				"innerException": "",
+				"data": {
+					"parent": {
+						"id": 100,
+						"name": "上级客户"
+					},
+					"type": "最终用户",
+					"name": "测试",
+					"tel": "021-12341234",
+					"locations": [
+						{
+							"province": "上海市",
+							"city": "上海市",
+							"district": "徐汇区",
+							"lng": "111",
+							"lat": "222",
+							"detailAddress": "漕河泾开发区400号"
+						}
+					],
+					"nature": "国企",
+					"isPlc": "非上市",
+					"belongIndustry": "零售连锁",
+					"source": "自己开发",
+					"deptOwner": {
+						"deptId": "100",
+						"deptName": "零售一部"
+					},
+					"managerOwner": {
+						"userId": "100",
+						"userName": "余xx"
+					},
+					"dealFrequency": "高频次（4次/月）",
+					"turnover": "1000万",
+					"contacts": [
+						{
+							"id": 100,
+							"name": "张xx",
+							"phone":"13800138000",
+							"email":"13800138000@qq.com",
+							"position":"经理"
+						}
+					],
+					"projects": [
+						{
+							"id": "100",
+							"name": "项目测试"
+						}
+					]
+				}
+			}
+		}
+	},
+	{
+		"description": "新增客户",
+		"request": {
+			"method": "post",
+			"uri": "/",
+			"json": {
+				"parent": {
+					"id": 100,
+					"name": "上级客户"
+				},
+				"type": "最终用户",
+				"name": "测试",
+				"tel": "021-12341234",
+				"locations": [
+					{
+						"province": "上海市",
+						"city": "上海市",
+						"district": "徐汇区",
+						"lng": 111,
+						"lat": 222,
+						"detailAddress": "漕河泾开发区400号"
+					}
+				],
+				"nature": "国企",
+				"isPlc": "非上市",
+				"belongIndustry": "零售连锁",
+				"source": "自己开发",
+				"deptOwner": {
+					"deptId": 100,
+					"deptName": "零售一部"
+				},
+				"managerOwner": {
+					"userId": 100,
+					"userName": "余xx"
+				},
+				"dealFrequency": "高频次（4次/月）",
+				"turnover": "1000万",
+				"contacts": [
+					{
+						"id": 100,
+						"name": "张xx"
+					}
+				],
+				"projects": [
+					{
+						"id": 100,
+						"name": "项目测试"
+					}
+				]
+			}
+		},
+		"response": {
+			"status": 200,
+			"json": {
+				"description": "success",
+				"innerException": "",
+				"data": "ok"
+			}
+		}
+	},
+	{
+		"description": "修改客户",
+		"request": {
+			"method": "post",
+			"uri": "/update",
+			"json": {
 				"id": 100,
-				"name": "hello"
+				"parent": {
+					"id": 100,
+					"name": "上级客户"
+				},
+				"type": "最终用户",
+				"name": "测试",
+				"tel": "021-12341234",
+				"locations": [
+					{
+						"province": "上海市",
+						"city": "上海市",
+						"district": "徐汇区",
+						"lng": 111,
+						"lat": 222,
+						"detailAddress": "漕河泾开发区400号"
+					}
+				],
+				"nature": "国企",
+				"isPlc": "非上市",
+				"belongIndustry": "零售连锁",
+				"source": "自己开发",
+				"deptOwner": {
+					"deptId": 100,
+					"deptName": "零售一部"
+				},
+				"managerOwner": {
+					"userId": 100,
+					"userName": "余xx"
+				},
+				"dealFrequency": "高频次（4次/月）",
+				"turnover": "1000万",
+				"contacts": [
+					{
+						"id": 100,
+						"name": "张xx"
+					}
+				],
+				"projects": [
+					{
+						"id": 100,
+						"name": "项目测试"
+					}
+				]
+			}
+		},
+		"response": {
+			"status": 200,
+			"json": {
+				"description": "update success",
+				"innerException": "",
+				"data": "ok"
 			}
 		}
 	}

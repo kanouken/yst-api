@@ -18,9 +18,12 @@
 				},
 				"busChange": "商机类型",
 				"location": {
-					"lng": 1111,
-					"lat": 2222,
-					"offSet": ""
+					"province": "上海市",
+					"city": "上海市",
+					"district": "徐汇区",
+					"lng": 111,
+					"lat": 222,
+					"detailAddress": "漕河泾开发区400号"
 				}
 			}
 		},
@@ -48,7 +51,7 @@
 				"innerException": "",
 				"data": {
 					"customer": {
-						"id": 100,
+						"id": "100",
 						"name": "测试"
 					},
 					"contactType": "电话",
@@ -60,9 +63,12 @@
 					},
 					"busChange": "商机类型",
 					"location": {
-						"lng": 1111,
-						"lat": 2222,
-						"offSet": ""
+						"province": "上海市",
+						"city": "上海市",
+						"district": "徐汇区",
+						"lng": "111",
+						"lat": "222",
+						"detailAddress": "漕河泾开发区400号"
 					}
 				}
 			}
