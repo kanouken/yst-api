@@ -1,4 +1,4 @@
-package org.ost.edge.onestong;
+package org.ost.entity;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

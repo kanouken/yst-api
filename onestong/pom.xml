@@ -177,6 +177,11 @@
 			<version>3.1</version>
 		</dependency>
 		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+		</dependency>
+		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>2.6.5</version>
@@ -220,6 +225,7 @@
 		<module>ost-admin</module>
 		<module>ost-admin-ui</module>
 		<module>common-tools</module>
+		<module>ost-entity</module>
 	</modules>
 	<version>1.0</version>
 </project>

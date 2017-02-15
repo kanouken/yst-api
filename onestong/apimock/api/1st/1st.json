@@ -3,7 +3,7 @@
 		"description": "新增外访",
 		"request": {
 			"method": "post",
-			"uri": "/visitEvent/visitIn",
+			"uri": "/visitEvent",
 			"json": {
 				"customer": {
 					"id": 100,
@@ -86,6 +86,33 @@
 					"lng": 1111,
 					"lat": 2222,
 					"offSet": ""
+				}
+			}
+		},
+		"response": {
+			"status": 200,
+			"json": {
+				"description": "success",
+				"innerException": "",
+				"data": "ok"
+			}
+		}
+	},
+	{
+		"description": "外访签到",
+		"request": {
+			"method": "post",
+			"uri": "/visitEvent/visitIn",
+			"json": {
+				"eId": "1",
+				"location": {
+					"province": "上海市",
+					"city": "上海市",
+					"district": "徐汇区",
+					"lng": 111,
+					"lat": 222,
+					"detailAddress": "漕河泾开发区400号",
+					"offset":100
 				}
 			}
 		},

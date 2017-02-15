@@ -25,7 +25,8 @@ import org.ost.edge.onestong.services.api.event.VisitEventService;
 import org.ost.edge.onestong.services.scoreSystem.LikeService;
 import org.ost.edge.onestong.services.web.user.UsersService;
 import org.ost.edge.onestong.tools.Constants;
-import org.ost.edge.onestong.vo.event.VisitEventVo;
+import org.ost.entity.event.vo.VisitEventUpdateVo;
+import org.ost.entity.event.vo.VisitEventVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -61,16 +62,37 @@ public class VisitEventDataApi extends Action {
 
 	@Autowired
 	private LikeService likeService;
+
 	/**
-	 * 外访签到
+	 * 新增外访
+	 * 
 	 * @return
 	 */
-	@RequestMapping(value="visitIn",method=RequestMethod.POST)
-	public Object vistIn(HttpServletRequest request,@RequestBody VisitEventVo vo
-			 ) {
-//		return this.visitEventService.createVisitEvent();
-		return null;
+	@RequestMapping(value = "", method = RequestMethod.POST)
+	public Object createVisit(HttpServletRequest request, @RequestBody VisitEventVo vo) {
+		return this.visitEventService.createVisitEvent(currentUser(), vo);
 	}
+
+	/**
+	 * 外访签到
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "visitIn", method = RequestMethod.POST)
+	public Object visitIn(HttpServletRequest request, @RequestBody VisitEventUpdateVo vo) {
+		return this.visitEventService.visitIn(currentUser(),vo);
+	}
+	
+	/**
+	 * 外访写结果
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "result", method = RequestMethod.POST)
+	public Object writeResult(HttpServletRequest request, @RequestBody VisitEventUpdateVo vo) {
+		return this.visitEventService.writeResult(currentUser(),vo);
+	}
+
 
 	/**
 	 * 添加 项目标签与客户标签 时 设置 它的 domainId

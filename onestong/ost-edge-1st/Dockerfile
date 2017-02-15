@@ -1,14 +1,10 @@
 FROM maven:3.3.3
-
-ADD pom.xml /tmp/build/
-RUN cd /tmp/build && mvn -q dependency:resolve
-
-
-ADD src /tmp/build/src
+COPY onestong /tmp/build/
+RUN ls
         #构建应用
-RUN cd /tmp/build && mvn -q -DskipTests=true package \
+RUN cd  /tmp/build/ && mvn -q -DskipTests=true  package -pl ost-edge-1st/ -am \
         #拷贝编译结果到指定目录
-        && mv target/*.jar /app.jar \
+        && mv ost-edge-1st/target/*.jar /app.jar \
         #清理编译痕迹
         && cd / && rm -rf /tmp/build
 		

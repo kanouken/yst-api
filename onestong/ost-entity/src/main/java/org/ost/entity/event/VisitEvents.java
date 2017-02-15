@@ -1,4 +1,4 @@
-package org.ost.edge.onestong.model.event.visit;
+package org.ost.entity.event;
 
 import java.util.Date;
 
@@ -9,6 +9,10 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "visit_events")
 public class VisitEvents {
+	
+	public VisitEvents(){
+		super();
+	}
 
 	public VisitEvents(String veId, Integer userId, Integer customerId, String content, Date visitedTime,
 			String vistedLongitude, String visitedLatitude, Byte state, String creator, String updator, Byte valid,

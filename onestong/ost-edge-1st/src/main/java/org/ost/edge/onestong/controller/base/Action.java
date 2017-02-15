@@ -11,7 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.common.tools.db.Page;
 import org.ost.edge.onestong.tools.Constants;
-
+import org.ost.entity.user.User;
 
 /**
  * 控制器基类
@@ -19,37 +19,33 @@ import org.ost.edge.onestong.tools.Constants;
  * @author 夏苗苗
  * 
  */
-public class Action  {
-	
-	
+public class Action {
+
 	/**
 	 * 个信属性
 	 */
-	
-	
-//	@Value("#{application['applicationPath']}")
-//	public String applicationPath;
-//	@Value("#{application['app_version']}")
-//	public String appVersion;
+
+	// @Value("#{application['applicationPath']}")
+	// public String applicationPath;
+	// @Value("#{application['app_version']}")
+	// public String appVersion;
 	public static final String OPARATION_FAILED = "0";
 	public static final String OPARATION_SUCCESS = "1";
-	
-	protected static final String PAGE ="page";
-	
+
+	protected static final String PAGE = "page";
+
 	public static final String HTTP_200 = Constants.HTTP_200;
 	public static final String HTTP_500 = Constants.SERVER_ERROR;
 	public static final String SERVER_ERROR_TIP = Constants.SERVER_ERROR_TIP;
-	
-	public static final String SUCCESS_MSG ="操作成功";
-	public static final String FAIL_MSG ="操作失败";
+
+	public static final String SUCCESS_MSG = "操作成功";
+	public static final String FAIL_MSG = "操作失败";
 	public final static String INDEX = "admin/index";
 
 	protected Log logger = LogFactory.getLog(this.getClass());
 
-	
 	@SuppressWarnings("rawtypes")
-	protected class BSIHttpServletRequestWrapper extends
-			HttpServletRequestWrapper {
+	protected class BSIHttpServletRequestWrapper extends HttpServletRequestWrapper {
 		HttpServletRequest req;
 
 		public BSIHttpServletRequestWrapper(HttpServletRequest request) {
@@ -59,7 +55,7 @@ public class Action  {
 
 		@SuppressWarnings("unchecked")
 		public Map getParameterMap() {
-			
+
 			Map map = new HashMap();
 			Map m = req.getParameterMap();
 			for (Object k : m.keySet()) {
@@ -70,11 +66,10 @@ public class Action  {
 		}
 	}
 
-	protected Object sessionStroe(HttpSession session ,String key) {
+	protected Object sessionStroe(HttpSession session, String key) {
 		return session.getAttribute(key);
 	}
-	
-	
+
 	/**
 	 * 渲染数据。主要功能如下： 1. 非缓存数据 2. 写入内容 3. 强制刷新输出缓存
 	 * 
@@ -82,52 +77,43 @@ public class Action  {
 	 * @param s
 	 * @param contextType
 	 */
-	
-	
-	
-	
-	
-	protected int  getPageCount(Page g) {
 
-		return   g.getTotalRecords() % g.getPerPageSum() == 0 ? g
-				.getTotalRecords() / g.getPerPageSum() : g.getTotalRecords()
-				/ g.getPerPageSum() + 1;
+	protected int getPageCount(Page g) {
+
+		return g.getTotalRecords() % g.getPerPageSum() == 0 ? g.getTotalRecords() / g.getPerPageSum()
+				: g.getTotalRecords() / g.getPerPageSum() + 1;
 
 	}
-	
-	
-	public enum OST_MOUDLES{
-		ost_moudle_users, //用户管理
-		ost_moudle_depts,//部门管理
-		ost_moulde_roles,//角色管理
-		ost_moudle_chart,
-		ost_moudle_p_tags,//项目标签
-		ost_moudle_c_tags,//客户标签
-		
-		ost_moudle_worktime,//工作时间设置
+
+	public enum OST_MOUDLES {
+		ost_moudle_users, // 用户管理
+		ost_moudle_depts, // 部门管理
+		ost_moulde_roles, // 角色管理
+		ost_moudle_chart, ost_moudle_p_tags, // 项目标签
+		ost_moudle_c_tags, // 客户标签
+
+		ost_moudle_worktime, // 工作时间设置
 		ost_moudle_attence_report,
 		/**
 		 * 客户端模块
 		 */
-		ost_app_moudle_events, //事件
-		ost_app_moudle_my,//我
-		ost_app_moudle_find, //发现
-		
-		
+		ost_app_moudle_events, // 事件
+		ost_app_moudle_my, // 我
+		ost_app_moudle_find, // 发现
+
 	}
-	
-	//客户端权限 标识
-	public enum OST_APP_PERM{
-		self_below_events, //自己以及下属的事件 ，例如部门管理员 或其他
-		all_events,  //所有事件 ，例如总经理 等等
-		create_attence, //创建 签到 签退 事件
-		create_visit, //创建 外访事件
-		self_below_reports,  //自己以及自己下属的 报表（快捷报表 与 轨迹地图）
+
+	// 客户端权限 标识
+	public enum OST_APP_PERM {
+		self_below_events, // 自己以及下属的事件 ，例如部门管理员 或其他
+		all_events, // 所有事件 ，例如总经理 等等
+		create_attence, // 创建 签到 签退 事件
+		create_visit, // 创建 外访事件
+		self_below_reports, // 自己以及自己下属的 报表（快捷报表 与 轨迹地图）
 		all_reports
-		
-		
+
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -158,11 +144,16 @@ public class Action  {
 	 * role=com.oz.onestong.model.authority.Role@70cb5d53,
 	 * user=com.oz.onestong.model.user.User@375c2dff}
 	 */
-	
-	public enum OST_OST_PERM{
-		addUser,deleteUser,unBindUser,userListOwn,userListAll,listChartOwn,listChartAll
-		
-		
+
+	public enum OST_OST_PERM {
+		addUser, deleteUser, unBindUser, userListOwn, userListAll, listChartOwn, listChartAll
+
 	}
-	
+
+	protected User currentUser() {
+		User u = new User();
+		u.settId(1);
+		u.setName("test");
+		return u;
+	}
 }

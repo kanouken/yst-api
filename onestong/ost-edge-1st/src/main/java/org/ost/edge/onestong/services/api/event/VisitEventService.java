@@ -1,6 +1,5 @@
 package org.ost.edge.onestong.services.api.event;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -8,12 +7,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.common.tools.OperateResult;
 import org.common.tools.db.ReflectUtil;
+import org.common.tools.exception.ApiException;
 import org.common.tools.image.ImageUtils;
 import org.ost.edge.onestong.dao.event.VisitEventMapper;
 import org.ost.edge.onestong.dao.event.visit.VisitMapper;
@@ -24,7 +23,6 @@ import org.ost.edge.onestong.dao.tag.PTagMapper;
 import org.ost.edge.onestong.dao.tag.TagEventMapper;
 import org.ost.edge.onestong.model.event.VisitEvent;
 import org.ost.edge.onestong.model.event.VisitEventExample;
-import org.ost.edge.onestong.model.event.visit.VisitEvents;
 import org.ost.edge.onestong.model.resources.Resource;
 import org.ost.edge.onestong.model.tag.CTag;
 import org.ost.edge.onestong.model.tag.PTag;
@@ -33,7 +31,10 @@ import org.ost.edge.onestong.model.user.User;
 import org.ost.edge.onestong.services.api.event.base.EventBaseService;
 import org.ost.edge.onestong.tools.Constants;
 import org.ost.edge.onestong.tools.ResourceHelper;
-import org.ost.edge.onestong.vo.event.VisitEventVo;
+import org.ost.entity.event.VisitEvents;
+import org.ost.entity.event.mapper.VisitEventEntityMapper;
+import org.ost.entity.event.vo.VisitEventUpdateVo;
+import org.ost.entity.event.vo.VisitEventVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -81,7 +82,7 @@ public class VisitEventService extends EventBaseService {
 	 *            项目标签
 	 * @param cTag
 	 *            客户标签
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
 	public Map<String, Object> addEvent(VisitEvent event, MultipartFile[] files, User user, List<CTag> cTags, PTag pTag)
@@ -192,7 +193,7 @@ public class VisitEventService extends EventBaseService {
 	 * @param event
 	 * @param files
 	 * @param user
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
 	public Map<String, Object> updateEvent(VisitEvent event, MultipartFile[] files, User user) throws Exception {
@@ -471,15 +472,64 @@ public class VisitEventService extends EventBaseService {
 	@Autowired
 	VisitMapper visitMapper;
 
+	/**
+	 * 创建外访
+	 * 
+	 * @param currentUser
+	 * @param vo
+	 * @return
+	 */
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public Object createVisitEvent(User currentUser, VisitEventVo vo) {
-//		VisitEvents ves = new VisitEvents(UUID.randomUUID().toString(), currentUser.getUserId(),
-//				vo.getCustomer().getId(), vo.getContent(), new Date(), String.valueOf(vo.getLocation().getLng()),
-//				String.valueOf(vo.getLocation().getLat()), Byte.valueOf("0"), currentUser.getCreator(),
-//				currentUser.getUpdator(), Byte.valueOf("1"), new Date(), new Date(), vo.getCustomer().getName());
-//		this.visitMapper.insert(ves);
-//		return OperateResult.renderSuccess(vo);
-		return null;
+	public Object createVisitEvent(org.ost.entity.user.User currentUser, VisitEventVo vo) {
+		VisitEvents ves = VisitEventEntityMapper.INSTANCE.visitEventVoToVisitEvents(vo, currentUser);
+		if (vo.getContactType().equals("电话")) {
+			ves.setState(Byte.valueOf("2"));
+		}
+		this.visitMapper.insert(ves);
+		return ves;
+	}
+
+	/**
+	 * 外访签到
+	 * 
+	 * @param currentUser
+	 * @param vo
+	 * @return
+	 */
+	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
+	public Object visitIn(org.ost.entity.user.User currentUser, VisitEventUpdateVo vo) {
+		String eId = vo.geteId();
+		VisitEvents ves = new VisitEvents();
+		ves.setUpdateTime(new Date());
+		ves.setVisitedTime(new Date());
+		ves.setState(Byte.valueOf("1"));
+		ves.setUpdateTime(new Date());
+		ves.setUpdator(currentUser.getName());
+		ves.setVistedLongitude(vo.getLocation().getLng());
+		ves.setVisitedLatitude(vo.getLocation().getLat());
+		ves.setVeId(eId);
+		if (0 < this.visitMapper.updateByPrimaryKeySelective(ves)) {
+			return OperateResult.renderSuccess(vo);
+		} else {
+			throw new ApiException("外访签到失败");
+		}
+	}
+
+	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
+	public Object writeResult(org.ost.entity.user.User currentUser, VisitEventUpdateVo vo) {
+		String eId = vo.geteId();
+		VisitEvents ves = new VisitEvents();
+		ves.setUpdateTime(new Date());
+		ves.setState(Byte.valueOf("2"));
+		ves.setUpdateTime(new Date());
+		ves.setUpdator(currentUser.getName());
+		ves.setVeId(eId);
+		ves.setContent(vo.getContent());
+		if (0 < this.visitMapper.updateByPrimaryKeySelective(ves)) {
+			return OperateResult.renderSuccess(vo);
+		} else {
+			throw new ApiException("外访写结果失败");
+		}
 	}
 
 }
