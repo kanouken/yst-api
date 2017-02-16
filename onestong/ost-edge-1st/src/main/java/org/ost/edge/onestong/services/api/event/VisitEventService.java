@@ -34,7 +34,7 @@ import org.ost.edge.onestong.tools.ResourceHelper;
 import org.ost.entity.event.VisitEvents;
 import org.ost.entity.event.mapper.VisitEventEntityMapper;
 import org.ost.entity.event.vo.VisitEventUpdateVo;
-import org.ost.entity.event.vo.VisitEventVo;
+import org.ost.entity.event.vo.VisitEventCreateVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -480,8 +480,8 @@ public class VisitEventService extends EventBaseService {
 	 * @return
 	 */
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public Object createVisitEvent(org.ost.entity.user.User currentUser, VisitEventVo vo) {
-		VisitEvents ves = VisitEventEntityMapper.INSTANCE.visitEventVoToVisitEvents(vo, currentUser);
+	public Object createVisitEvent(org.ost.entity.user.User currentUser, VisitEventCreateVo vo) {
+		VisitEvents ves = VisitEventEntityMapper.INSTANCE.visitEventCreateVoToVisitEvents(vo, currentUser);
 		if (vo.getContactType().equals("电话")) {
 			ves.setState(Byte.valueOf("2"));
 		}
@@ -530,6 +530,12 @@ public class VisitEventService extends EventBaseService {
 		} else {
 			throw new ApiException("外访写结果失败");
 		}
+	}
+
+	@Transactional(readOnly = true)
+	public Object getDetail(String eId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -1,4 +1,4 @@
-package org.ost.customers.model;
+package org.ost.entity.base;
 
 import java.util.Date;
 
@@ -15,7 +15,6 @@ public class BaseEntity {
 	private Integer id;
 	@Column(nullable = false)
 	private Integer tenantId;
-
 	private Date createTime;
 	private Date updateTime;
 	private short isDelete;

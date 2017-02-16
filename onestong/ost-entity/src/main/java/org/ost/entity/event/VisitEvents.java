@@ -9,8 +9,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "visit_events")
 public class VisitEvents {
-	
-	public VisitEvents(){
+
+	public VisitEvents() {
 		super();
 	}
 
@@ -37,6 +37,12 @@ public class VisitEvents {
 	@Id
 	private String veId;
 
+	private Date contactTime;
+	private String contactType;
+	private String projectName;
+	private Integer projectId;
+	private String busChange;
+	private String customerName;
 	private Integer userId;
 	private Integer customerId;
 	private String content;
@@ -49,10 +55,55 @@ public class VisitEvents {
 	private Byte valid;
 	private Date createTime;
 	private Date updateTime;
-	/**
-	 * 客户名称
-	 */
 	private String optional1;
+
+	public Date getContactTime() {
+		return contactTime;
+	}
+
+	public void setContactTime(Date contactTime) {
+		this.contactTime = contactTime;
+	}
+
+	public String getContactType() {
+		return contactType;
+	}
+
+	public void setContactType(String contactType) {
+		this.contactType = contactType;
+	}
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+
+	public Integer getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Integer projectId) {
+		this.projectId = projectId;
+	}
+
+	public String getBusChange() {
+		return busChange;
+	}
+
+	public void setBusChange(String busChange) {
+		this.busChange = busChange;
+	}
+
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
 
 	public String getVeId() {
 		return veId;

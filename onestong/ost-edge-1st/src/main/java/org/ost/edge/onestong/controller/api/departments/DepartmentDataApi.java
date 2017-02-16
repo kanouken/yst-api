@@ -3,10 +3,11 @@ package org.ost.edge.onestong.controller.api.departments;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.common.tools.OperateResult;
 import org.ost.edge.onestong.controller.base.Action;
-import org.ost.edge.onestong.controller.base.Action.OST_APP_PERM;
 import org.ost.edge.onestong.model.authority.Role;
 import org.ost.edge.onestong.model.department.Department;
 import org.ost.edge.onestong.model.user.User;
@@ -15,13 +16,15 @@ import org.ost.edge.onestong.services.web.department.DepartmentService;
 import org.ost.edge.onestong.services.web.user.UsersService;
 import org.ost.edge.onestong.tools.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequestMapping("/api/department")
 public class DepartmentDataApi extends Action {
 	@Autowired
@@ -32,6 +35,21 @@ public class DepartmentDataApi extends Action {
 	@Autowired
 	private AuthorityService authorityService;
 
+	@RequestMapping(value = "", method = RequestMethod.GET)
+	public Object queryAllDepts(
+			// @RequestHeader(value = PAGE_CURRENT, defaultValue =
+			// PAGE_CURRENT_DEFAULT) Integer curPage,
+			// @RequestHeader(value = PAGE_PER_SIZE, defaultValue =
+			// PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
+			// @RequestParam(value = "keyword", required = false) String
+			// keyword,
+			HttpServletRequest request
+			) {
+		
+		return this.departmentService.queryAllDepts(currentUser());
+
+	}
+
 	/**
 	 * 获取最根上部门列表 需要传递 用户 id
 	 * 
@@ -41,15 +59,13 @@ public class DepartmentDataApi extends Action {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "{userId}/top/{token}", method = RequestMethod.GET)
-	public Object getTop(@PathVariable("token") String token,
-			@PathVariable("userId") Integer userid) {
+	public Object getTop(@PathVariable("token") String token, @PathVariable("userId") Integer userid) {
 		// return this.departmentService.findAllLeve1Departments();
 
 		OperateResult op = new OperateResult();
 		User user = this.userService.findOneById(userid);
 		try {
-			List<Department> depts = this.departmentService
-					.findAllLeve1Departments(user.getDomainId());
+			List<Department> depts = this.departmentService.findAllLeve1Departments(user.getDomainId());
 
 			if (CollectionUtils.isNotEmpty(depts)) {
 				op.setStatusCode(Constants.HTTP_200);
@@ -85,8 +101,7 @@ public class DepartmentDataApi extends Action {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "childrenOrMembers/{parentId}/{token}", method = RequestMethod.GET)
-	public Object lookForChild(@PathVariable("parentId") Integer parentId,
-			@PathVariable("token") String token) {
+	public Object lookForChild(@PathVariable("parentId") Integer parentId, @PathVariable("token") String token) {
 
 		// return
 		// this.departmentService.findAllChildorMembersByParentId(parentId);
@@ -97,8 +112,7 @@ public class DepartmentDataApi extends Action {
 
 			op.setStatusCode(Constants.HTTP_200);
 			op.setDescription("get all childrenOrMembers success");
-			op.setData(this.departmentService
-					.findAllChildorMembersByParentId(parentId));
+			op.setData(this.departmentService.findAllChildorMembersByParentId(parentId));
 
 		} catch (Exception e) {
 			if (logger.isErrorEnabled()) {
@@ -122,8 +136,7 @@ public class DepartmentDataApi extends Action {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "all/{userId}/{token}", method = RequestMethod.GET)
-	public Object allDepartment(@PathVariable("userId") Integer userId,
-			@PathVariable("token") String token) {
+	public Object allDepartment(@PathVariable("userId") Integer userId, @PathVariable("token") String token) {
 
 		OperateResult op = new OperateResult();
 		User user = null;
@@ -143,17 +156,17 @@ public class DepartmentDataApi extends Action {
 
 			Department d = new Department();
 			d.setDomainId(user.getDomainId());
-			List<Map<String, Object>> depts = this.departmentService.findAllDepartmentsAndParentNameFilterByDomain(user.getDomainId());
-			
+			List<Map<String, Object>> depts = this.departmentService
+					.findAllDepartmentsAndParentNameFilterByDomain(user.getDomainId());
+
 			op.setStatusCode(HTTP_200);
 			op.setDescription("get all departments success!");
 			op.setData(depts);
-			
+
 		} catch (Exception e) {
 
 			if (logger.isErrorEnabled()) {
-				logger.error(
-						"获取所有 domain 部门失败 domain name=" + user.companyName, e);
+				logger.error("获取所有 domain 部门失败 domain name=" + user.companyName, e);
 			}
 			op.setStatusCode(Constants.SERVER_ERROR);
 			op.setDescription("服务器异常！稍后再试");
@@ -173,8 +186,7 @@ public class DepartmentDataApi extends Action {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "discory/report/{userId}/{token}", method = RequestMethod.GET)
-	public Object method(@PathVariable("userId") Integer userId,
-			@PathVariable("token") String token) {
+	public Object method(@PathVariable("userId") Integer userId, @PathVariable("token") String token) {
 
 		OperateResult op = new OperateResult();
 		User user = null;
@@ -189,8 +201,7 @@ public class DepartmentDataApi extends Action {
 				return op;
 			}
 			Role role = this.authorityService.findRoleByUser(user);
-			List<Map<String, Object>> perms = this.authorityService
-					.findPermsByRoleAndType(role, Constants.MOUDLE_APP);
+			List<Map<String, Object>> perms = this.authorityService.findPermsByRoleAndType(role, Constants.MOUDLE_APP);
 			// 总 boss
 			if (AuthorityService.isPermExits(OST_APP_PERM.all_reports, perms)) {
 
@@ -199,8 +210,7 @@ public class DepartmentDataApi extends Action {
 				d.setDomainId(user.getDomainId());
 				// List<Department> depts = this.departmentService
 				// .findAllLeve1Departments(user.getDomainId());
-				List<Department> allDepts = this.departmentService
-						.findAllDepartments(d);
+				List<Department> allDepts = this.departmentService.findAllDepartments(d);
 
 				op.setStatusCode(HTTP_200);
 				op.setDescription("get root departments success!");
@@ -208,11 +218,9 @@ public class DepartmentDataApi extends Action {
 				return op;
 
 				// 区域经理 或其他
-			} else if (AuthorityService.isPermExits(
-					OST_APP_PERM.self_below_reports, perms)) {
+			} else if (AuthorityService.isPermExits(OST_APP_PERM.self_below_reports, perms)) {
 				// TODO 这里可以让 客户端取判断权限
-				Department myDept = this.departmentService.findOne(user
-						.getDeptId());
+				Department myDept = this.departmentService.findOne(user.getDeptId());
 				op.setStatusCode(HTTP_200);
 				op.setDescription("get own's blow departments success!");
 				op.setData(myDept);

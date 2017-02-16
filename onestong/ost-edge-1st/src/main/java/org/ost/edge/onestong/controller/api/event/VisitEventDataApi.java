@@ -26,7 +26,7 @@ import org.ost.edge.onestong.services.scoreSystem.LikeService;
 import org.ost.edge.onestong.services.web.user.UsersService;
 import org.ost.edge.onestong.tools.Constants;
 import org.ost.entity.event.vo.VisitEventUpdateVo;
-import org.ost.entity.event.vo.VisitEventVo;
+import org.ost.entity.event.vo.VisitEventCreateVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -69,7 +69,7 @@ public class VisitEventDataApi extends Action {
 	 * @return
 	 */
 	@RequestMapping(value = "", method = RequestMethod.POST)
-	public Object createVisit(HttpServletRequest request, @RequestBody VisitEventVo vo) {
+	public Object createVisit(HttpServletRequest request, @RequestBody VisitEventCreateVo vo) {
 		return this.visitEventService.createVisitEvent(currentUser(), vo);
 	}
 
@@ -380,7 +380,13 @@ public class VisitEventDataApi extends Action {
 
 		return op;
 	}
-
+	
+	@RequestMapping(value="detail")
+	public Object queryDetail(@RequestParam("eId") String eId){
+		return this.visitEventService.getDetail(eId);
+	}
+	
+	
 	/**
 	 * 
 	 * @param token

@@ -4,7 +4,7 @@ import org.ost.entity.customer.vo.CustomerVo;
 import org.ost.entity.location.vo.LocationVo;
 import org.ost.entity.project.vo.ProjectVo;
 
-public class VisitEventVo {
+public class VisitEventCreateVo {
 	private String contactType;
 	private String contactTime;
 	private String content;
