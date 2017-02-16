@@ -182,11 +182,11 @@ public class DepartmentService {
 	}
 
 	@Transactional(readOnly = true)
-	public Object queryAllDepts(org.ost.entity.user.User currentUser) {
+	public Object queryAllDepts(org.ost.entity.user.Users currentUser) {
 		Departments dept = new Departments();
 		dept.setDomainId(currentUser.gettId());
 		List<Departments> depts = this.deptDao.select(dept).stream().sorted((d1, d2) -> {
-			return d1.getId().compareTo(d2.getId());
+			return d1.getDeptId().compareTo(d2.getDeptId());
 		}).collect(Collectors.toList());
 		return DepartmentEntityMapper.INSTANCE.departmentsToDepartmentListDtos(depts);
 	}

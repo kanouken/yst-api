@@ -14,7 +14,6 @@ import java.util.TreeMap;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.ibatis.session.RowBounds;
-import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
 import org.apache.poi.hssf.usermodel.HSSFComment;
@@ -39,6 +38,8 @@ import org.ost.edge.onestong.model.system.ibeacon.IbeaconInfo;
 import org.ost.edge.onestong.model.system.ibeacon.IbeaconInfoExample;
 import org.ost.edge.onestong.model.user.User;
 import org.ost.edge.onestong.tools.Constants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -50,7 +51,7 @@ import net.sf.json.JSONObject;
 @Service
 public class AttenceEventService extends BaseService {
 
-	private static final Logger log = Logger
+	private static final Logger log = LoggerFactory
 			.getLogger(AttenceEventService.class);
 	@Autowired
 	private AttenceEventMapper eventMapper;

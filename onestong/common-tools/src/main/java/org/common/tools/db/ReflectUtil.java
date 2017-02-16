@@ -10,7 +10,9 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 反射工具包
  * @author xx
@@ -19,7 +21,7 @@ import org.apache.log4j.Logger;
 
 @SuppressWarnings("all")
 public class ReflectUtil {
-	  private static Logger log = Logger.getLogger(ReflectUtil.class);
+	  private static Logger log = LoggerFactory.getLogger(ReflectUtil.class);
 
 	  private static Object operate(Object obj, String fieldName, Object fieldVal, String type)
 	  {

@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  */
 public class SmsUtil {
-	private Logger log = Logger.getLogger(SmsUtil.class);
+	private Logger log = LoggerFactory.getLogger(SmsUtil.class);
 
 	private RestTemplate client;
 

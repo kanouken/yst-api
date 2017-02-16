@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.common.tools.OperateResult;
@@ -16,12 +18,12 @@ import org.ost.edge.onestong.services.web.account.AccountService;
 import org.ost.edge.onestong.services.web.user.UsersService;
 import org.ost.edge.onestong.tools.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -30,7 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @author mac
  * 
  */
-@Controller
+@RestController
 @RequestMapping("/api/users")
 public class UsersDataApi extends Action {
 
@@ -278,7 +280,13 @@ public class UsersDataApi extends Action {
 
 		return op;
 	}
-
+	
+	@RequestMapping(value="/contacts",method = RequestMethod.GET)
+	public Object  queryAllContacts(HttpServletRequest request){
+		return this.usersService.queryAllContacts(currentUser());
+	}
+	
+	
 	/**
 	 * 返回所有用户  domain用户
 	 */

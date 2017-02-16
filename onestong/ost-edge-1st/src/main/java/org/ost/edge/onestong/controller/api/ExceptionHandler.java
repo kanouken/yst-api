@@ -5,9 +5,10 @@ import java.io.StringWriter;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
 import org.common.tools.OperateResult;
 import org.common.tools.exception.ApiException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public class ExceptionHandler extends ResponseEntityExceptionHandler {
-	private Logger logger = Logger.getLogger(ExceptionHandler.class);
+	private Logger logger = LoggerFactory.getLogger(ExceptionHandler.class);
 
 	/**
 	 * 
@@ -31,7 +32,7 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		return new ResponseEntity<>(new OperateResult("", ex.getParameterName() + "不能为null", null), HttpStatus.OK);
+		return new ResponseEntity<>( ex.getParameterName() + "不能为null", HttpStatus.BAD_REQUEST);
 	}
 
 	@Override
@@ -51,7 +52,7 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
 	@ResponseBody
 	ResponseEntity<?> handleControllerException(HttpServletRequest request, Throwable ex) {
 		ApiException ae = (ApiException) ex;
-		return new ResponseEntity<>(new OperateResult("", ae.getMessage(), null), HttpStatus.OK);
+		return new ResponseEntity<>(ex.getMessage(), HttpStatus.valueOf(409));
 	}
 
 	/**
@@ -72,7 +73,7 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
 		ex.printStackTrace(pWriter);
 		ex.printStackTrace();
 		logger.error(writer.getBuffer().toString());
-		return new ResponseEntity<>(new OperateResult(writer.getBuffer().toString(), "服务器异常", null), HttpStatus.OK);
+		return new ResponseEntity<>(writer.getBuffer(), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 }

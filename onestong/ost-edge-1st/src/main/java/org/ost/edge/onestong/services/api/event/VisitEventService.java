@@ -480,7 +480,7 @@ public class VisitEventService extends EventBaseService {
 	 * @return
 	 */
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public Object createVisitEvent(org.ost.entity.user.User currentUser, VisitEventCreateVo vo) {
+	public Object createVisitEvent(org.ost.entity.user.Users currentUser, VisitEventCreateVo vo) {
 		VisitEvents ves = VisitEventEntityMapper.INSTANCE.visitEventCreateVoToVisitEvents(vo, currentUser);
 		if (vo.getContactType().equals("电话")) {
 			ves.setState(Byte.valueOf("2"));
@@ -497,14 +497,14 @@ public class VisitEventService extends EventBaseService {
 	 * @return
 	 */
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public Object visitIn(org.ost.entity.user.User currentUser, VisitEventUpdateVo vo) {
+	public Object visitIn(org.ost.entity.user.Users currentUser, VisitEventUpdateVo vo) {
 		String eId = vo.geteId();
 		VisitEvents ves = new VisitEvents();
 		ves.setUpdateTime(new Date());
 		ves.setVisitedTime(new Date());
 		ves.setState(Byte.valueOf("1"));
 		ves.setUpdateTime(new Date());
-		ves.setUpdator(currentUser.getName());
+		ves.setUpdator(currentUser.getRealname());
 		ves.setVistedLongitude(vo.getLocation().getLng());
 		ves.setVisitedLatitude(vo.getLocation().getLat());
 		ves.setVeId(eId);
@@ -516,13 +516,13 @@ public class VisitEventService extends EventBaseService {
 	}
 
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public Object writeResult(org.ost.entity.user.User currentUser, VisitEventUpdateVo vo) {
+	public Object writeResult(org.ost.entity.user.Users currentUser, VisitEventUpdateVo vo) {
 		String eId = vo.geteId();
 		VisitEvents ves = new VisitEvents();
 		ves.setUpdateTime(new Date());
 		ves.setState(Byte.valueOf("2"));
 		ves.setUpdateTime(new Date());
-		ves.setUpdator(currentUser.getName());
+		ves.setUpdator(currentUser.getRealname());
 		ves.setVeId(eId);
 		ves.setContent(vo.getContent());
 		if (0 < this.visitMapper.updateByPrimaryKeySelective(ves)) {

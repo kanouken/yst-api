@@ -11,7 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.common.tools.db.Page;
 import org.ost.edge.onestong.tools.Constants;
-import org.ost.entity.user.User;
+import org.ost.entity.user.Users;
 
 /**
  * 控制器基类
@@ -153,10 +153,10 @@ public class Action {
 
 	}
 
-	protected User currentUser() {
-		User u = new User();
+	protected Users currentUser() {
+		Users u = new Users();
 		u.settId(1);
-		u.setName("test");
+		u.setRealname("test");
 		return u;
 	}
 }

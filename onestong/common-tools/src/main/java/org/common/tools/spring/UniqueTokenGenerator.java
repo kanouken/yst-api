@@ -3,7 +3,8 @@ package org.common.tools.spring;
 import java.util.Random;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -12,7 +13,7 @@ import org.apache.log4j.Logger;
  *
  */
 public class UniqueTokenGenerator {
-	private static Logger logger = Logger.getLogger(UniqueTokenGenerator.class);
+	private static Logger logger = LoggerFactory.getLogger(UniqueTokenGenerator.class);
 	/**
 	 * 生成唯一token
 	 * @return
