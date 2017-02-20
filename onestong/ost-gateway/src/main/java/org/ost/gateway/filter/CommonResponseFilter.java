@@ -76,7 +76,7 @@ public class CommonResponseFilter extends ZuulFilter {
 
 	@Override
 	public String filterType() {
-		return "route";
+		return "post";
 	}
 
 }
