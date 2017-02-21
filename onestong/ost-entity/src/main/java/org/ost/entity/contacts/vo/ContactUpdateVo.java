@@ -3,16 +3,12 @@ package org.ost.entity.contacts.vo;
 
 import java.util.List;
 
-import javax.persistence.Entity;
-
-import org.ost.entity.base.BaseEntity;
 import org.ost.entity.customer.vo.CustomerVo;
 import org.ost.entity.location.vo.LocationVo;
 import org.ost.entity.phone.PhoneVo;
 
 
-@Entity
-public class ContactUpdate extends BaseEntity {
+public class ContactUpdateVo{
 	//客户
 	private CustomerVo customerVo;			
 	//部门	
