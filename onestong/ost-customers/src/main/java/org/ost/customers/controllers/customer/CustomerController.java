@@ -1,5 +1,7 @@
 package org.ost.customers.controllers.customer;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.ost.customers.services.CustomerService;
 import org.ost.entity.customer.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +15,11 @@ public class CustomerController {
 	@Autowired
 	private CustomerService customerService;
 
-	@RequestMapping(value = "", method = RequestMethod.POST)
-	public void createCustomer(@RequestBody Customer customer) {
-		this.customerService.createCustomer(customer);
+	@RequestMapping(value = "", method = RequestMethod.GET)
+	public void createCustomer(HttpServletRequest request) {
+		String authToken  =request.getHeader("Authorization");
+		String remoteHost = request.getRemoteHost();
+		String _r = request.getHeader("x-forwarded-for");
+//		this.customerService.createCustomer(customer);
 	}
 }
