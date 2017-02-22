@@ -14,6 +14,7 @@ import org.ost.edge.onestong.dao.department.DepartmentMapper;
 import org.ost.edge.onestong.model.department.Department;
 import org.ost.edge.onestong.model.department.DepartmentExample;
 import org.ost.edge.onestong.model.department.DepartmentExample.Criteria;
+import org.ost.edge.onestong.model.user.User;
 import org.ost.edge.onestong.services.web.user.UsersService;
 import org.ost.edge.onestong.tools.Constants;
 import org.ost.entity.org.department.Departments;
@@ -182,9 +183,9 @@ public class DepartmentService {
 	}
 
 	@Transactional(readOnly = true)
-	public Object queryAllDepts(org.ost.entity.user.Users currentUser) {
+	public Object queryAllDepts(User currentUser) {
 		Departments dept = new Departments();
-		dept.setDomainId(currentUser.gettId());
+		dept.setDomainId(currentUser.getDomainId());
 		List<Departments> depts = this.deptDao.select(dept).stream().sorted((d1, d2) -> {
 			return d1.getDeptId().compareTo(d2.getDeptId());
 		}).collect(Collectors.toList());

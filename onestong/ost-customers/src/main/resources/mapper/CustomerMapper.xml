@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.ost.customers.dao.CustomerDao">
+
+	<select id="selectCustomers" resultType="org.ost.entity.customer.Customer">
+		select
+		id,
+		name,
+		py,
+		szm,
+		parent_id parentId,
+		property ,
+		create_time
+		createTime,
+		create_by createBy,
+		update_time updateTime,
+		update_by
+		updateBy,
+		is_delete isDelete,
+		schema_id schemaId
+		from tbl_customer where
+		<foreach item="key" collection="paramsMap.keys" open="("
+			separator="or" close=")">
+			instr(property ->
+			'$.${key}',#{paramsMap[${key}],jdbcType=VARCHAR}) > 0
+		</foreach>
+		and schema_id = #{tenantId,jdbcType=VARCHAR}
+		and is_delete = 0
+	</select>
+
+	<update id="updateCustomerSelective">
+		update tbl_customer
+		<set>
+			<if test="customer.name != null and customer.name != ''">
+				name = #{customer.name},
+			</if>
+			<if test="customer.property != null">
+				property = JSON_SET(property,
+				<foreach collection="customer.property.keys" item="key"
+					separator=",">
+					'$.${key}',#{customer.property[key]}
+				</foreach>
+				)
+			</if>
+		</set>
+		where id = #{customer.id}
+		and schema_id = #{customer.tenantId}
+	</update>
+
+
+</mapper>

@@ -150,7 +150,7 @@ public class Action {
 
 	protected Users currentUser() {
 		Users u = new Users();
-		u.settId(1);
+		u.setTenatId("sss");
 		u.setRealname("test");
 		return u;
 	}

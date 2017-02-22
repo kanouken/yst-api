@@ -744,9 +744,9 @@ public class UsersService {
 	private UserDao userDao;
 
 	@Transactional(readOnly = true)
-	public Object queryAllContacts(Users currentUser) {
+	public Object queryAllContacts(User currentUser) {
 		Users u = new Users();
-		u.settId(currentUser.gettId());
+		u.settId(currentUser.getDomainId());
 		List<Users> users = this.userDao.select(u);
 		if (CollectionUtils.isNotEmpty(users)) {
 			return UserEntityMapper.INSTANCE.usersToUserListDtos(users);

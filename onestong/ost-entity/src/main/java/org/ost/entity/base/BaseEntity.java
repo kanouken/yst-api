@@ -7,19 +7,21 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 
 @MappedSuperclass
 public class BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	@Column(nullable = false)
-	private Integer tenantId;
+	@Column(nullable = false, name = "schema_id")
+	private String tenantId;
 	private Date createTime;
 	private Date updateTime;
 	private short isDelete;
-
+	@Transient
 	private Integer createId;
+	@Transient
 	private Integer updateId;
 
 	private String createBy;
@@ -89,11 +91,11 @@ public class BaseEntity {
 		this.id = id;
 	}
 
-	public Integer getTenantId() {
+	public String getTenantId() {
 		return tenantId;
 	}
 
-	public void setTenantId(Integer tenantId) {
+	public void setTenantId(String tenantId) {
 		this.tenantId = tenantId;
 	}
 

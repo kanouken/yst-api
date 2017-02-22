@@ -7,20 +7,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
+
 @Entity
 public class Users {
 
-	@Column(name = "domain_id")
-	private Integer tId;
+	
+	@Column(name="schema_id")
+	private String tenatId;
 
-	public Integer gettId() {
-		return tId;
-	}
-
-	public void settId(Integer tId) {
-		this.tId = tId;
-	}
+	
 
 	/**
 	 * client id 个推 关联用户
@@ -46,6 +41,14 @@ public class Users {
 
 	public void setAliasName(String aliasName) {
 		this.aliasName = aliasName;
+	}
+
+	public String getTenatId() {
+		return tenatId;
+	}
+
+	public void setTenatId(String tenatId) {
+		this.tenatId = tenatId;
 	}
 
 	/**
@@ -645,17 +648,7 @@ public class Users {
 		this.optional3 = optional3 == null ? null : optional3.trim();
 	}
 
-	/**
-	 * 
-	 */
-	private Integer domainId;
-
-	public Integer getDomainId() {
-		return domainId;
-	}
-
-	public void setDomainId(Integer domainId) {
-		this.domainId = domainId;
-	}
+	
+	
 
 }

@@ -154,9 +154,9 @@ public class Action {
 	}
 
 	protected Users currentUser() {
-		Users u = new Users();
-		u.settId(1);
-		u.setRealname("test");
-		return u;
+//		Users u = new Users();
+//		u.settId(1);
+//		u.setRealname("test");
+		return null;
 	}
 }

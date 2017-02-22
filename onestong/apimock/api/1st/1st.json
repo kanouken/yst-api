@@ -112,7 +112,7 @@
 					"lng": 111,
 					"lat": 222,
 					"detailAddress": "漕河泾开发区400号",
-					"offset":100
+					"offset": 100
 				}
 			}
 		},
@@ -206,6 +206,68 @@
 					"leaveReason": "测试",
 					"approvalTip": "由xx等2人审批",
 					"status": "未审批"
+				}
+			}
+		}
+	},
+	{
+		"description": "我的审批",
+		"request": {
+			"method": "get",
+			"uri": "/approvalEvent/myapprovals",
+			"queries": {
+				"type": "0"
+			}
+		},
+		"response": {
+			"status": 200,
+			"json": {
+				"description": "success",
+				"innerException": "",
+				"data": {
+					"page": {
+						"curPage": "1",
+						"perPageSize": "20",
+						"totalRecords": "100"
+					},
+					"objects": [
+						{
+							"eId": "11-223-44-5",
+							"createTime": "2010-02-02 10:00:00",
+							"statusName": "未审批",
+							"status": "0",
+							"approvalTip": "由xx等2人审批",
+							"applyType": "出差申请"
+						},
+						{
+							"eId": "11-223-44-5",
+							"createTime": "2010-02-02 10:00:00",
+							"statusName": "未审批",
+							"status": "0",
+							"approvalTip": "由xx等2人审批",
+							"applyType": "出差申请"
+						},
+						{
+							"eId": "11-223-44-5",
+							"createTime": "2010-02-02 10:00:00",
+							"statusName": "未审批",
+							"status": "0",
+							"approvalTip": "由xx等2人审批",
+							"applyType": "出差申请"
+						},
+						{
+							"eId": "11-223-44-5",
+							"createTime": "2010-02-02 10:00:00",
+							"statusName": "未审批",
+							"status": "0",
+							"approvalTip": "由xx等2人审批",
+							"applyType": "出差申请"
+						}
+					],
+					"summaries": {
+						"waitApproved": "10",
+						"alreayApplied": "50"
+					}
 				}
 			}
 		}
