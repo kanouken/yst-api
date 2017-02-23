@@ -12,7 +12,7 @@ import javax.persistence.Id;
 public class Users {
 
 	
-	@Column(name="schema_id")
+	@Column(name="schemaId")
 	private String tenatId;
 
 	

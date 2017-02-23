@@ -4,16 +4,16 @@ public class LocationVo {
 	private String province;
 	private String city;
 	private String district;
+	private String detailAddress;
 	private String lng;
 	private String lat;
-	private String offset;
 
-	public String getOffset() {
-		return offset;
+	public String getDetailAddress() {
+		return detailAddress;
 	}
 
-	public void setOffset(String offset) {
-		this.offset = offset;
+	public void setDetailAddress(String detailAddress) {
+		this.detailAddress = detailAddress;
 	}
 
 	public String getProvince() {

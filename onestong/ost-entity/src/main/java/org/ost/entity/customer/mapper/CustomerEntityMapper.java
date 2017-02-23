@@ -27,4 +27,5 @@ public interface CustomerEntityMapper {
 			@Mapping(source = "createTime", target = "createTimeStr", dateFormat = "yyyy-MM-dd HH:mm"),
 			@Mapping(expression = "java( org.ost.entity.tools.JsonType.convertToMap(customer.getProperty()))", target = "properties") })
 	CustomerDetailDto customerToCustomerDetailDto(Customer customer);
+
 }

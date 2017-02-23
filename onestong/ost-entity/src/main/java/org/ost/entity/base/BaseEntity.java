@@ -14,7 +14,7 @@ public class BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	@Column(nullable = false, name = "schema_id")
+	@Column(nullable = false, name = "schemaId")
 	private String tenantId;
 	private Date createTime;
 	private Date updateTime;

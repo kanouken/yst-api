@@ -1,25 +1,31 @@
 package org.ost.customers.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.MapUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.common.tools.db.Page;
 import org.ost.customers.dao.CustomerDao;
+import org.ost.entity.base.PageEntity;
 import org.ost.entity.customer.Customer;
+import org.ost.entity.customer.dto.CustomerListDto;
 import org.ost.entity.customer.mapper.CustomerEntityMapper;
-import org.ost.entity.user.Users;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+@SuppressWarnings("unchecked")
 @Service
 public class CustomerService {
+	@Autowired
+	ObjectMapper mapper;
 
 	public static final String USER_NAME = "ost_user_name";
 	public static final String TENANTID = "ost_tenatid";
@@ -38,28 +44,30 @@ public class CustomerService {
 	 * 
 	 * @param params
 	 * @return
+	 * @throws JsonProcessingException
 	 */
 	@Transactional(readOnly = true)
-	public Object queryCustomers(Map<String, String> params, Integer curPage, Integer perPageSum) {
-		Assert.notEmpty(params, "params can not null");
-		Users currentUser = getCurrentUser(params);
+	public PageEntity<CustomerListDto> queryCustomers(Customer customer, Integer curPage, Integer perPageSum) {
 		Page page = new Page();
 		page.setCurPage(curPage.intValue());
 		page.setPerPageSum(perPageSum.intValue());
 		RowBounds rb = new RowBounds(page.getNextPage(), page.getPerPageSum());
-		List<Customer> customers = this.customerDao.selectCustomers(params, currentUser.getTenatId(), rb);
-		return CustomerEntityMapper.INSTANCE.customersToCustomerListDtos(customers);
-	}
+		List<CustomerListDto> records = new ArrayList<CustomerListDto>();
+		Map<String, String> params = null;
+		if (customer.getProperty() != null) {
+			params = (Map<String, String>) customer.getProperty();
+		}
+		Integer totalRecord = this.customerDao.selectCustomerCount(params, customer);
+		if (totalRecord > 0) {
+			List<Customer> customers = this.customerDao.selectCustomers(params, customer, rb);
+			records = CustomerEntityMapper.INSTANCE.customersToCustomerListDtos(customers);
 
-	private Users getCurrentUser(Map<String, String> params) {
-		String username = MapUtils.getString(params, USER_NAME);
-		String tenantId = MapUtils.getString(params, TENANTID);
-		Users u = new Users();
-		u.setRealname(username);
-		u.setTenatId(tenantId);
-		params.remove(USER_NAME);
-		params.remove(TENANTID);
-		return u;
+		}
+		PageEntity<CustomerListDto> p = new PageEntity<CustomerListDto>();
+		p.setCurPage(curPage);
+		p.setTotalRecord(totalRecord);
+		p.setObjects(records);
+		return p;
 	}
 
 	@Transactional(readOnly = true)

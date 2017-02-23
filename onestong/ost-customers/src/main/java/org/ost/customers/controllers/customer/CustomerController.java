@@ -1,11 +1,9 @@
 package org.ost.customers.controllers.customer;
 
-import java.util.Map;
-
-import javax.ws.rs.Path;
-
 import org.ost.customers.services.CustomerService;
+import org.ost.entity.base.PageEntity;
 import org.ost.entity.customer.Customer;
+import org.ost.entity.customer.dto.CustomerListDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,9 +34,11 @@ public class CustomerController extends Action {
 	}
 
 	@RequestMapping(value = "", method = RequestMethod.POST)
-	public Object queryMember(@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
+	public PageEntity<CustomerListDto> queryMember(
+			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
 			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
-			@RequestBody Map<String, String> params) {
-		return this.customerService.queryCustomers(params, curPage, perPageSum);
+			@RequestBody Customer customer) {
+		return this.customerService.queryCustomers(customer, curPage, perPageSum);
 	}
+
 }
