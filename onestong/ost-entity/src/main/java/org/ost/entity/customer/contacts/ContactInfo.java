@@ -7,7 +7,7 @@ import org.ost.entity.base.BaseEntity;
 
 @Entity
 @Table(name = "tbl_contact_info")
-public class Contacts extends BaseEntity {
+public class ContactInfo extends BaseEntity {
 	private Integer customerId;
 	private String type;
 	private String custName;

@@ -31,15 +31,12 @@ public class CustomerController extends Action {
 	private CustomerService customerService;
 
 	@RequestMapping(value = "", method = RequestMethod.POST)
-	public Object createCustomer(Users current,@RequestBody Map<String, Object> params) throws JsonProcessingException {
+	public Object createCustomer( @RequestBody Map<String, Object> params,HttpServletRequest request)
+			throws JsonProcessingException {
 		return this.customerService.createCustomer(currentUser(), params);
 
 	}
 
-	
-	
-	
-	
 	@RequestMapping(value = "list", method = RequestMethod.GET)
 	public Object queryCustomers(
 			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
@@ -64,7 +61,7 @@ public class CustomerController extends Action {
 			params.put("turnover", turnover);
 		if (StringUtils.isNotEmpty(type))
 			params.put("type", type);
-		Page page  = new Page();
+		Page page = new Page();
 		page.setCurPage(curPage);
 		page.setPerPageSum(perPageSum);
 		return this.customerService.queryCustomers(current, params, page);

@@ -1,16 +1,24 @@
 package org.ost.customers.services;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.RowBounds;
 import org.common.tools.db.Page;
 import org.ost.customers.dao.CustomerDao;
+import org.ost.customers.dao.address.AddressDao;
+import org.ost.customers.dao.contacinfo.ContactInfoDao;
 import org.ost.entity.base.PageEntity;
 import org.ost.entity.customer.Customer;
+import org.ost.entity.customer.address.Address;
+import org.ost.entity.customer.address.mapper.AddressEntityMapper;
+import org.ost.entity.customer.contacts.ContactInfo;
+import org.ost.entity.customer.contacts.mapper.ContactInfoEntityMapper;
 import org.ost.entity.customer.dto.CustomerListDto;
 import org.ost.entity.customer.mapper.CustomerEntityMapper;
+import org.ost.entity.customer.vo.CustomerCreateVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import net.sourceforge.pinyin4j.PinyinHelper;
 
 @SuppressWarnings("unchecked")
 @Service
@@ -33,10 +43,47 @@ public class CustomerService {
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private CustomerDao customerDao;
+	@Autowired
+	private AddressDao addressDao;
+
+	@Autowired
+	private ContactInfoDao cInfoDao;
 
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public void createCustomer(Customer customer) {
-		this.customerDao.insert(customer);
+	public void createCustomer(CustomerCreateVo createVo) throws JsonProcessingException {
+
+		Customer customer = new Customer();
+		customer.setName(createVo.getName());
+		customer.setCreateBy(createVo.getUserName());
+		customer.setUpdateBy(customer.getCreateBy());
+		customer.setCreateTime(new Date());
+		customer.setUpdateTime(new Date());
+		customer.setIsDelete(Short.valueOf("0"));
+		customer.setParentId(createVo.getParentId());
+		customer.setProperty(mapper.writeValueAsString(createVo.getProperty()));
+//		customer.setPy(PinyinHelper.);
+		customer.setSzm("sfsf");
+		customer.setTenantId(createVo.getTenantId());
+		Integer customerId = this.customerDao.insert(customer);
+		// contactInfo
+		List<ContactInfo> cInfos = ContactInfoEntityMapper.INSTANCE
+				.contactInfosVoToContactInfos(createVo.getContactInfos());
+		cInfos.forEach(cinfo -> {
+			cinfo.setTenantId(customer.getTenantId());
+			cinfo.setCreateBy(customer.getCreateBy());
+			cinfo.setUpdateBy(customer.getUpdateBy());
+			cinfo.setCustomerId(customerId);
+			this.cInfoDao.insert(cinfo);
+		});
+		// addressInfo
+		List<Address> addresses = AddressEntityMapper.INSTANCE.addressesInfoToAddresses(createVo.getAddress());
+		addresses.forEach(address -> {
+			address.setTenantId(customer.getTenantId());
+			address.setCreateBy(customer.getCreateBy());
+			address.setUpdateBy(customer.getUpdateBy());
+			address.setCustomerId(customerId);
+			this.addressDao.insert(address);
+		});
 		log.info("an new customer created");
 	}
 
