@@ -38,8 +38,8 @@ public class ContactService {
 		contact.setCreateTime(new Date());
 		contact.setCreateBy("1");
 		contact.setDept(contactUpdateVo.getDept());
-		contact.setFirstName("");
-		contact.setLastName("");
+		contact.setFirstName(contactUpdateVo.getName().substring(0,1));
+		contact.setLastName(contactUpdateVo.getName().substring(1,contactUpdateVo.getName().length()));
 		contact.setPosition(contactUpdateVo.getPosition());
 		contact.setPy("");
 		contact.setSex(contactUpdateVo.getSex());
@@ -66,8 +66,8 @@ public class ContactService {
 		contact.setCreateTime(new Date());
 		contact.setCreateBy("1");
 		contact.setDept(contactUpdateVo.getDept());
-		contact.setFirstName("");
-		contact.setLastName("");
+		contact.setFirstName(contactUpdateVo.getName().substring(0,1));
+		contact.setLastName(contactUpdateVo.getName().substring(1,contactUpdateVo.getName().length()));
 		contact.setPosition(contactUpdateVo.getPosition());
 		contact.setPy("");
 		contact.setSex(contactUpdateVo.getSex());
