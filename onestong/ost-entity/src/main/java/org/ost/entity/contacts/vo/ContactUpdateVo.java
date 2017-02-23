@@ -3,12 +3,16 @@ package org.ost.entity.contacts.vo;
 
 import java.util.List;
 
+import org.ost.entity.contacts.Address;
+import org.ost.entity.contacts.ContactInfo;
 import org.ost.entity.customer.vo.CustomerVo;
 import org.ost.entity.location.vo.LocationVo;
 import org.ost.entity.phone.PhoneVo;
 
 
 public class ContactUpdateVo{
+	
+	private Integer id;
 	//客户
 	private CustomerVo customerVo;			
 	//部门	
@@ -20,11 +24,18 @@ public class ContactUpdateVo{
 	//职位
 	private String position;
 	//地址
-	private LocationVo locationVo;
+	private List<Address> locationVo;
 	//
-    private PhoneVo phoneVo;
+    private List<ContactInfo> phoneVo;
     //性别	
     private String sex	;
+    
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
 	public CustomerVo getCustomerVo() {
 		return customerVo;
 	}
@@ -55,16 +66,16 @@ public class ContactUpdateVo{
 	public void setPosition(String position) {
 		this.position = position;
 	}
-	public LocationVo getLocationVo() {
+	public List<Address> getLocationVo() {
 		return locationVo;
 	}
-	public void setLocationVo(LocationVo locationVo) {
+	public void setLocationVo(List<Address> locationVo) {
 		this.locationVo = locationVo;
 	}
-	public PhoneVo getPhoneVo() {
+	public List<ContactInfo> getPhoneVo() {
 		return phoneVo;
 	}
-	public void setPhoneVo(PhoneVo phoneVo) {
+	public void setPhoneVo(List<ContactInfo> phoneVo) {
 		this.phoneVo = phoneVo;
 	}
 	public String getSex() {
