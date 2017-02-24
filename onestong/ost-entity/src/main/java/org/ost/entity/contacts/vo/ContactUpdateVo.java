@@ -30,6 +30,9 @@ public class ContactUpdateVo{
     //性别	
     private String sex	;
     
+    //名片	
+    private String headPic	;
+    
 	public Integer getId() {
 		return id;
 	}
@@ -83,6 +86,12 @@ public class ContactUpdateVo{
 	}
 	public void setSex(String sex) {
 		this.sex = sex;
+	}
+	public String getHeadPic() {
+		return headPic;
+	}
+	public void setHeadPic(String headPic) {
+		this.headPic = headPic;
 	}
 	
 	

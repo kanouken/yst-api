@@ -41,7 +41,7 @@ public class MyBatisMapperScannerConfig {
 	public MapperScannerConfigurer mapperScannerConfigurer() {
 		MapperScannerConfigurer mapperScannerConfigurer = new MapperScannerConfigurer();
 		mapperScannerConfigurer.setSqlSessionFactoryBeanName("sqlSessionFactory");
-		mapperScannerConfigurer.setBasePackage("org.ost.customers.dao");
+		mapperScannerConfigurer.setBasePackage("org.ost.contacts.dao");
 		Properties properties = new Properties();
 		// properties.setProperty("mappers",
 		// "tk.mybatis.springboot.util.MyMapper");

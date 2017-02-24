@@ -17,6 +17,7 @@ public class Contact extends BaseEntity {
 	private String position;
 	private String dept;
 	private String schemaId;
+	private String headPic;
 	public Integer getId() {
 		return id;
 	}
@@ -70,6 +71,12 @@ public class Contact extends BaseEntity {
 	}
 	public void setSchemaId(String schemaId) {
 		this.schemaId = schemaId;
+	}
+	public String getHeadPic() {
+		return headPic;
+	}
+	public void setHeadPic(String headPic) {
+		this.headPic = headPic;
 	}
 	
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -24,9 +25,10 @@ public class ContactController {
 	
 	@RequestMapping(value = "contacts/list", method = RequestMethod.GET)
 	public Object contactList(
+			@RequestParam(value = "contactId") Integer contactId, 
 			@RequestHeader(value = "curPage") Integer curPage,
 			@RequestHeader(value = "perPageSum") Integer perPageSum) {
-		return this.contactService.getCustomerList(curPage,perPageSum);
+		return this.contactService.getCustomerList(contactId,curPage,perPageSum);
 	}
 	
 	@RequestMapping(value = "contacts/{id}", method = RequestMethod.GET)

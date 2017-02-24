@@ -42,6 +42,7 @@ public class ContactService {
 		contact.setLastName(contactUpdateVo.getName().substring(1,contactUpdateVo.getName().length()));
 		contact.setPosition(contactUpdateVo.getPosition());
 		contact.setPy("");
+		contact.setHeadPic(contactUpdateVo.getHeadPic());
 		contact.setSex(contactUpdateVo.getSex());
 		contact.setSchemaId("1");
 		contactDao.insert(contact);		
@@ -71,6 +72,7 @@ public class ContactService {
 		contact.setPosition(contactUpdateVo.getPosition());
 		contact.setPy("");
 		contact.setSex(contactUpdateVo.getSex());
+		contact.setHeadPic(contactUpdateVo.getHeadPic());
 		contactDao.updateByExample(contact,contactUpdateVo.getId());
 		
 		
@@ -88,16 +90,18 @@ public class ContactService {
 	}
 
 	@Transactional(readOnly = true)
-	public Object getCustomerList(Integer curPage,Integer perPageSum) {
+	public Object getCustomerList(Integer contactId,Integer curPage,Integer perPageSum) {
+		Contact contact=new Contact();
+		contact.setId(contactId);
 		Page page = new Page();
 		page.setCurPage(curPage.intValue());
 		page.setPerPageSum(perPageSum.intValue());
 		RowBounds rb = new RowBounds(page.getNextPage(), page.getPerPageSum()); 
-		Integer total = null;
+		Integer total = contactDao.selectCount(contact);
 		Map resultMap=new HashMap();
 		page.setTotalRecords(total);
 		resultMap.put("page", page);
-		resultMap.put("objects", contactDao.selectByRowBounds(null,rb));
+		resultMap.put("objects", contactDao.selectByRowBounds(contact, rb));
 		return resultMap;
 	}
 	
@@ -112,4 +116,6 @@ public class ContactService {
 		contactInfoDto.setDept(contact.getDept());
 		return contactInfoDto;     
 	}
+	
+
 }
