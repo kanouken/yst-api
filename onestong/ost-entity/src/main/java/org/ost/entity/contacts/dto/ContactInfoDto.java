@@ -2,8 +2,8 @@ package org.ost.entity.contacts.dto;
 
 import java.util.List;
 
-import org.ost.entity.contacts.Address;
-import org.ost.entity.contacts.ContactInfo;
+import org.ost.entity.contacts.address.ContactsAddress;
+import org.ost.entity.contacts.contactsinfo.ContactsInfo;
 import org.ost.entity.customer.vo.CustomerVo;
 import org.ost.entity.location.vo.LocationVo;
 import org.ost.entity.phone.PhoneVo;
@@ -25,9 +25,9 @@ public class ContactInfoDto {
 		//拼音首字母
 		private String szm;
 		//电话
-		private List<ContactInfo> contactInfo;	
+		private List<ContactsInfo> contactInfo;	
 		//电话
-		private List<Address> address;
+		private List<ContactsAddress> address;
 		
 		public CustomerVo getCustomerVo() {
 			return customerVo;
@@ -77,16 +77,16 @@ public class ContactInfoDto {
 		public void setSzm(String szm) {
 			this.szm = szm;
 		}
-		public List<ContactInfo> getContactInfo() {
+		public List<ContactsInfo> getContactInfo() {
 			return contactInfo;
 		}
-		public void setContactInfo(List<ContactInfo> contactInfo) {
+		public void setContactInfo(List<ContactsInfo> contactInfo) {
 			this.contactInfo = contactInfo;
 		}
-		public List<Address> getAddress() {
+		public List<ContactsAddress> getAddress() {
 			return address;
 		}
-		public void setAddress(List<Address> address) {
+		public void setAddress(List<ContactsAddress> address) {
 			this.address = address;
 		}
 		

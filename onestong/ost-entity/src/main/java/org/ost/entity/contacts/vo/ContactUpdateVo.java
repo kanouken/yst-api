@@ -3,8 +3,8 @@ package org.ost.entity.contacts.vo;
 
 import java.util.List;
 
-import org.ost.entity.contacts.Address;
-import org.ost.entity.contacts.ContactInfo;
+import org.ost.entity.contacts.address.ContactsAddress;
+import org.ost.entity.contacts.contactsinfo.ContactsInfo;
 import org.ost.entity.customer.vo.CustomerVo;
 import org.ost.entity.location.vo.LocationVo;
 import org.ost.entity.phone.PhoneVo;
@@ -24,9 +24,9 @@ public class ContactUpdateVo{
 	//职位
 	private String position;
 	//地址
-	private List<Address> locationVo;
+	private List<ContactsAddress> locationVo;
 	//
-    private List<ContactInfo> phoneVo;
+    private List<ContactsInfo> phoneVo;
     //性别	
     private String sex	;
     
@@ -69,16 +69,16 @@ public class ContactUpdateVo{
 	public void setPosition(String position) {
 		this.position = position;
 	}
-	public List<Address> getLocationVo() {
+	public List<ContactsAddress> getLocationVo() {
 		return locationVo;
 	}
-	public void setLocationVo(List<Address> locationVo) {
+	public void setLocationVo(List<ContactsAddress> locationVo) {
 		this.locationVo = locationVo;
 	}
-	public List<ContactInfo> getPhoneVo() {
+	public List<ContactsInfo> getPhoneVo() {
 		return phoneVo;
 	}
-	public void setPhoneVo(List<ContactInfo> phoneVo) {
+	public void setPhoneVo(List<ContactsInfo> phoneVo) {
 		this.phoneVo = phoneVo;
 	}
 	public String getSex() {

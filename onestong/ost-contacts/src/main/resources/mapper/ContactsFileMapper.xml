@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.ost.customers.dao.CustomerDao">
+
+	<select id="selectCustomerCount" resultType="java.lang.Integer">
+		select
+		count(1)
+		from tbl_customer
+		<where>
+			<trim suffixOverrides="or">
+				<if test="customer.name != null and customer.name != ''">
+					instr(name,#{customer.name}) > 0 or
+				</if>
+				<if test="customer.py != null and customer.py != ''">
+					instr(py,#{customer.py}) > 0 or
+				</if>
+				<if test="customer.szm != null and customer.szm != ''">
+					instr(szm,#{customer.szm}) > 0 or
+				</if>
+			</trim>
+			<if test="params != null">
+
+				<foreach item="key" collection="params.keys" open="("
+					separator="or" close=")">
+					instr(property ->
+					'$.${key}',#{params[${key}],jdbcType=VARCHAR}) > 0
+				</foreach>
+
+			</if>
+			and schemaId = #{customer.tenantId,jdbcType=VARCHAR}
+			and isDelete =
+			0
+		</where>
+	</select>
+
+
+
+
+	<select id="selectCustomers" resultType="org.ost.entity.customer.Customer">
+		select
+		id,
+		name,
+		py,
+		szm,
+		parentId,
+		property ,
+		createTime,
+		createBy,
+		updateTime,
+		isDelete,
+		schemaId
+		from tbl_customer
+		<where>
+			<trim suffixOverrides="or">
+				<if test="customer.name != null and customer.name != ''">
+					instr(name,#{customer.name}) > 0 or
+				</if>
+				<if test="customer.py != null and customer.py != ''">
+					instr(py,#{customer.py}) > 0 or
+				</if>
+				<if test="customer.szm != null and customer.szm != ''">
+					instr(szm,#{customer.szm}) > 0 or
+				</if>
+			</trim>
+			<if test="paramsMap != null">
+				<foreach item="key" collection="paramsMap.keys" open="("
+					separator="or" close=")">
+					instr(property ->
+					'$.${key}',#{paramsMap[${key}],jdbcType=VARCHAR}) > 0
+				</foreach>
+			</if>
+			and schemaId = #{customer.tenantId,jdbcType=VARCHAR}
+			and isDelete =
+			0
+		</where>
+	</select>
+
+	<update id="updateCustomerSelective">
+		update tbl_customer
+		<set>
+			<if test="customer.name != null and customer.name != ''">
+				name = #{customer.name},
+			</if>
+			<if test="customer.property != null">
+				property = JSON_SET(property,
+				<foreach collection="customer.property.keys" item="key"
+					separator=",">
+					'$.${key}',#{customer.property[key]}
+				</foreach>
+				)
+			</if>
+		</set>
+		where id = #{customer.id}
+		and schemaId = #{customer.tenantId}
+	</update>
+
+
+</mapper>

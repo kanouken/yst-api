@@ -3,6 +3,7 @@ package org.ost.crm.services.customer;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import org.ost.entity.base.PageEntity;
 import org.ost.entity.customer.Customer;
 import org.ost.entity.customer.address.vo.AddressVo;
 import org.ost.entity.customer.contacts.vo.ContactInfoVo;
+import org.ost.entity.customer.dto.CustomerDetailDto;
 import org.ost.entity.customer.dto.CustomerListDto;
 import org.ost.entity.customer.mapper.CustomerEntityMapper;
 import org.ost.entity.customer.vo.CustomerCreateVo;
@@ -51,8 +53,6 @@ public class CustomerService {
 		vo.setUserName(user.getRealname());
 		vo.setTenantId(user.getTenatId());
 		vo.setName(MapUtils.getString(params, "name"));
-		vo.setPy("test");
-		vo.setSzm("xx");
 		vo.setParentId(MapUtils.getInteger(parentCustomer, "id"));
 		List<AddressVo> addresses = new ArrayList<>();
 		List<ContactInfoVo> contactInfos = new ArrayList<>();
@@ -82,6 +82,10 @@ public class CustomerService {
 	public Object queryCustomers(Users current, Map<String, String> params, Page page) {
 		Customer customer = new Customer();
 		customer.setTenantId(current.getTenatId());
+		String name = null;
+		if ((name = MapUtils.getString(params, "name")) != null) {
+			customer.setName(name);
+		}
 		customer.setProperty(params);
 		PageEntity<CustomerListDto> result = this.customerServiceClient.queryMember(page.getCurPage(),
 				page.getPerPageSum(), customer);
@@ -147,5 +151,14 @@ public class CustomerService {
 
 		return;
 
+	}
+
+	public Object queryConditions() {
+		return null;
+	}
+
+	public Object queryDetail(Integer customerId, Users user) {
+		CustomerDetailDto customerDetail = this.customerServiceClient.queryDetail(customerId, user.getTenatId());
+		return customerDetail;
 	}
 }

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.ibatis.session.RowBounds;
 import org.common.tools.db.Page;
+import org.common.tools.pinyin.Chinese2PY;
 import org.ost.customers.dao.CustomerDao;
 import org.ost.customers.dao.address.AddressDao;
 import org.ost.customers.dao.contacinfo.ContactInfoDao;
@@ -14,7 +15,7 @@ import org.ost.entity.base.PageEntity;
 import org.ost.entity.customer.Customer;
 import org.ost.entity.customer.address.Address;
 import org.ost.entity.customer.address.mapper.AddressEntityMapper;
-import org.ost.entity.customer.contacts.ContactInfo;
+import org.ost.entity.customer.contacts.ContactsInfo;
 import org.ost.entity.customer.contacts.mapper.ContactInfoEntityMapper;
 import org.ost.entity.customer.dto.CustomerListDto;
 import org.ost.entity.customer.mapper.CustomerEntityMapper;
@@ -30,6 +31,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.sourceforge.pinyin4j.PinyinHelper;
+import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
+import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 
 @SuppressWarnings("unchecked")
 @Service
@@ -61,18 +64,18 @@ public class CustomerService {
 		customer.setIsDelete(Short.valueOf("0"));
 		customer.setParentId(createVo.getParentId());
 		customer.setProperty(mapper.writeValueAsString(createVo.getProperty()));
-//		customer.setPy(PinyinHelper.);
-		customer.setSzm("sfsf");
+		customer.setPy(Chinese2PY.getPinYin(customer.getName()));
+		customer.setSzm(Chinese2PY.getSzm(customer.getName()));
 		customer.setTenantId(createVo.getTenantId());
-		Integer customerId = this.customerDao.insert(customer);
+		this.customerDao.insert(customer);
 		// contactInfo
-		List<ContactInfo> cInfos = ContactInfoEntityMapper.INSTANCE
+		List<ContactsInfo> cInfos = ContactInfoEntityMapper.INSTANCE
 				.contactInfosVoToContactInfos(createVo.getContactInfos());
 		cInfos.forEach(cinfo -> {
 			cinfo.setTenantId(customer.getTenantId());
 			cinfo.setCreateBy(customer.getCreateBy());
 			cinfo.setUpdateBy(customer.getUpdateBy());
-			cinfo.setCustomerId(customerId);
+			cinfo.setCustomerId(customer.getId());
 			this.cInfoDao.insert(cinfo);
 		});
 		// addressInfo
@@ -81,7 +84,7 @@ public class CustomerService {
 			address.setTenantId(customer.getTenantId());
 			address.setCreateBy(customer.getCreateBy());
 			address.setUpdateBy(customer.getUpdateBy());
-			address.setCustomerId(customerId);
+			address.setCustomerId(customer.getId());
 			this.addressDao.insert(address);
 		});
 		log.info("an new customer created");
@@ -135,4 +138,5 @@ public class CustomerService {
 	public void updateCustomer(Customer customer) {
 		this.customerDao.updateCustomerSelective(customer);
 	}
+
 }

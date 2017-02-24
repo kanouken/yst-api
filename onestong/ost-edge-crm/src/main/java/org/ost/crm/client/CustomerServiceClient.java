@@ -2,11 +2,12 @@ package org.ost.crm.client;
 
 import org.ost.entity.base.PageEntity;
 import org.ost.entity.customer.Customer;
+import org.ost.entity.customer.dto.CustomerDetailDto;
 import org.ost.entity.customer.dto.CustomerListDto;
 import org.ost.entity.customer.vo.CustomerCreateVo;
-import org.ost.entity.user.Users;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,4 +25,7 @@ public interface CustomerServiceClient {
 			@RequestHeader(value = "perPageSum", defaultValue = "20") Integer perPageSum,
 			@RequestBody Customer customer);
 
+	@RequestMapping("customer/{id}/")
+	public CustomerDetailDto queryDetail(@PathVariable(value = "id") Integer id,
+			@RequestHeader(value = "tenantId", required = false) String tenantId);
 }

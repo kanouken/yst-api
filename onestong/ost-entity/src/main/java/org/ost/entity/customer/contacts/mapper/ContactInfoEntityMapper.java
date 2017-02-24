@@ -7,7 +7,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import org.ost.entity.customer.Customer;
-import org.ost.entity.customer.contacts.ContactInfo;
+import org.ost.entity.customer.contacts.ContactsInfo;
 import org.ost.entity.customer.contacts.vo.ContactInfoVo;
 import org.ost.entity.customer.dto.CustomerDetailDto;
 import org.ost.entity.customer.dto.CustomerListDto;
@@ -22,7 +22,7 @@ public interface ContactInfoEntityMapper {
 			@Mapping(target = "updateTime", expression = "java(new java.util.Date())")
 	
 	})
-	ContactInfo contactInfoVoToContactInfo(ContactInfoVo vo);
+	ContactsInfo contactInfoVoToContactInfo(ContactInfoVo vo);
 
-	List<ContactInfo> contactInfosVoToContactInfos(List<ContactInfoVo> vo);
+	List<ContactsInfo> contactInfosVoToContactInfos(List<ContactInfoVo> vo);
 }

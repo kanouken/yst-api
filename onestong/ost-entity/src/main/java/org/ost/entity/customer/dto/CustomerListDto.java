@@ -5,6 +5,24 @@ import java.util.Map;
 public class CustomerListDto {
 	private Integer id;
 	private String name;
+	private String py;
+	private String szm;
+
+	public String getPy() {
+		return py;
+	}
+
+	public void setPy(String py) {
+		this.py = py;
+	}
+
+	public String getSzm() {
+		return szm;
+	}
+
+	public void setSzm(String szm) {
+		this.szm = szm;
+	}
 
 	private Map<String, Object> properties;
 

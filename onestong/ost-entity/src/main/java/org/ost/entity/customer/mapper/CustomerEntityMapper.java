@@ -15,14 +15,13 @@ public interface CustomerEntityMapper {
 	CustomerEntityMapper INSTANCE = Mappers.getMapper(CustomerEntityMapper.class);
 
 	@Mappings({ @Mapping(source = "id", target = "id"), @Mapping(source = "name", target = "name"),
-			@Mapping(expression = "java( org.ost.entity.tools.JsonType.convertToMap(customer.getProperty()))", target = "properties") })
+			@Mapping(expression = "java( org.ost.entity.tools.JsonType.convertToMap(customer.getProperty()))", target = "properties"),
+			@Mapping(source = "py", target = "py"), @Mapping(source = "szm", target = "szm") })
 	CustomerListDto customerToCustomerListDto(Customer customer);
 
 	List<CustomerListDto> customersToCustomerListDtos(List<Customer> customers);
 
-	@Mappings({
-
-			@Mapping(source = "id", target = "id"), @Mapping(source = "name", target = "name"),
+	@Mappings({ @Mapping(source = "id", target = "id"), @Mapping(source = "name", target = "name"),
 			@Mapping(source = "py", target = "py"), @Mapping(source = "szm", target = "szm"),
 			@Mapping(source = "createTime", target = "createTimeStr", dateFormat = "yyyy-MM-dd HH:mm"),
 			@Mapping(expression = "java( org.ost.entity.tools.JsonType.convertToMap(customer.getProperty()))", target = "properties") })

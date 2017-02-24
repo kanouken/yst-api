@@ -12,8 +12,6 @@ public class CustomerCreateVo {
 	private String userName;
 
 	private String name;
-	private String py;
-	private String szm;
 	private Integer parentId;
 	private Map<String, Object> property;
 
@@ -43,22 +41,6 @@ public class CustomerCreateVo {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getPy() {
-		return py;
-	}
-
-	public void setPy(String py) {
-		this.py = py;
-	}
-
-	public String getSzm() {
-		return szm;
-	}
-
-	public void setSzm(String szm) {
-		this.szm = szm;
 	}
 
 	public Integer getParentId() {

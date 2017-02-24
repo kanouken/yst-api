@@ -1,25 +1,9 @@
-package org.ost.entity.customer.contacts;
+package org.ost.entity.contacts.contactsinfo.dto;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
-import org.ost.entity.base.BaseEntity;
-
-@Entity
-@Table(name = "tbl_contact_info")
-public class ContactInfo extends BaseEntity {
-	private Integer customerId;
+public class ContactsInfoDto {
 	private String type;
 	private String custName;
 	private String val;
-
-	public Integer getCustomerId() {
-		return customerId;
-	}
-
-	public void setCustomerId(Integer customerId) {
-		this.customerId = customerId;
-	}
 
 	public String getType() {
 		return type;

@@ -1,6 +1,9 @@
 package org.ost.entity.customer.dto;
 
+import java.util.List;
 import java.util.Map;
+
+import org.ost.entity.contacts.dto.ContactsDetailDto;
 
 public class CustomerDetailDto {
 	private Integer id;
@@ -8,8 +11,19 @@ public class CustomerDetailDto {
 	private String py;
 	private String szm;
 	private CustomerDetailDto parentCustomer;
+
+	private List<ContactsDetailDto> contacts;
+
 	private Map<String, Object> properties;
 	private String createTimeStr;
+
+	public List<ContactsDetailDto> getContacts() {
+		return contacts;
+	}
+
+	public void setContacts(List<ContactsDetailDto> contacts) {
+		this.contacts = contacts;
+	}
 
 	public Integer getId() {
 		return id;
