@@ -11,11 +11,7 @@ import javax.persistence.Id;
 @Entity
 public class Users {
 
-	
-	@Column(name="schemaId")
-	private String tenatId;
-
-	
+	private String schemaId;
 
 	/**
 	 * client id 个推 关联用户
@@ -43,12 +39,12 @@ public class Users {
 		this.aliasName = aliasName;
 	}
 
-	public String getTenatId() {
-		return tenatId;
+	public String getSchemaId() {
+		return schemaId;
 	}
 
-	public void setTenatId(String tenatId) {
-		this.tenatId = tenatId;
+	public void setSchemaId(String schemaId) {
+		this.schemaId = schemaId;
 	}
 
 	/**
@@ -647,8 +643,5 @@ public class Users {
 	public void setOptional3(String optional3) {
 		this.optional3 = optional3 == null ? null : optional3.trim();
 	}
-
-	
-	
 
 }

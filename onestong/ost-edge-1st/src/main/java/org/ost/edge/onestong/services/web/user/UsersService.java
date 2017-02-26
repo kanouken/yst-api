@@ -745,11 +745,11 @@ public class UsersService {
 
 	@Transactional(readOnly = true)
 	public Object queryAllContacts(User currentUser) {
-		Users u = new Users();
-		u.settId(currentUser.getDomainId());
-		List<Users> users = this.userDao.select(u);
+		User u = new User();
+		u.setDomainId(currentUser.getDomainId());
+		List<User> users = this.userDao.select(u);
 		if (CollectionUtils.isNotEmpty(users)) {
-			return UserEntityMapper.INSTANCE.usersToUserListDtos(users);
+//			return UserEntityMapper.INSTANCE.usersToUserListDtos(users);
 		}
 		return users;
 	}

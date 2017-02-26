@@ -17,7 +17,7 @@ public class ContactsDto {
 	private List<ContactsFileDto> photo;
 	private String position;
 	private String sex;
-	private String tenantId;
+	private String schemaId;
 	private String currentUserName;
 	private String py;
 	private String sexName;
@@ -127,12 +127,12 @@ public class ContactsDto {
 		this.sex = sex;
 	}
 
-	public String getTenantId() {
-		return tenantId;
+	public String getSchemaId() {
+		return schemaId;
 	}
 
-	public void setTenantId(String tenantId) {
-		this.tenantId = tenantId;
+	public void setSchemaId(String schemaId) {
+		this.schemaId = schemaId;
 	}
 
 }

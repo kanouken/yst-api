@@ -20,6 +20,7 @@ import org.ost.entity.customer.contacts.mapper.ContactInfoEntityMapper;
 import org.ost.entity.customer.dto.CustomerListDto;
 import org.ost.entity.customer.mapper.CustomerEntityMapper;
 import org.ost.entity.customer.vo.CustomerCreateVo;
+import org.ost.entity.user.Users;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,13 +67,13 @@ public class CustomerService {
 		customer.setProperty(mapper.writeValueAsString(createVo.getProperty()));
 		customer.setPy(Chinese2PY.getPinYin(customer.getName()));
 		customer.setSzm(Chinese2PY.getSzm(customer.getName()));
-		customer.setTenantId(createVo.getTenantId());
+		customer.setSchemaId(createVo.getSchemaId());
 		this.customerDao.insert(customer);
 		// contactInfo
 		List<ContactsInfo> cInfos = ContactInfoEntityMapper.INSTANCE
 				.contactInfosVoToContactInfos(createVo.getContactInfos());
 		cInfos.forEach(cinfo -> {
-			cinfo.setTenantId(customer.getTenantId());
+			cinfo.setSchemaId(customer.getSchemaId());
 			cinfo.setCreateBy(customer.getCreateBy());
 			cinfo.setUpdateBy(customer.getUpdateBy());
 			cinfo.setCustomerId(customer.getId());
@@ -81,7 +82,7 @@ public class CustomerService {
 		// addressInfo
 		List<Address> addresses = AddressEntityMapper.INSTANCE.addressesInfoToAddresses(createVo.getAddress());
 		addresses.forEach(address -> {
-			address.setTenantId(customer.getTenantId());
+			address.setSchemaId(customer.getSchemaId());
 			address.setCreateBy(customer.getCreateBy());
 			address.setUpdateBy(customer.getUpdateBy());
 			address.setCustomerId(customer.getId());
@@ -121,11 +122,11 @@ public class CustomerService {
 	}
 
 	@Transactional(readOnly = true)
-	public Object queryDetail(Integer id, String tenantId) {
+	public Object queryDetail(Integer id, String schemaId) {
 		Customer customer = new Customer();
 		customer.setId(id);
 		customer.setIsDelete(Short.valueOf("0"));
-		customer.setTenantId(tenantId);
+		customer.setSchemaId(schemaId);
 		Customer result = this.customerDao.selectOne(customer);
 		if (result != null) {
 			return CustomerEntityMapper.INSTANCE.customerToCustomerDetailDto(result);
@@ -137,6 +138,16 @@ public class CustomerService {
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
 	public void updateCustomer(Customer customer) {
 		this.customerDao.updateCustomerSelective(customer);
+	}
+	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
+	public void deleteCustomer(Integer id, String schemaId, Users users) {
+		Customer customer  =  new Customer();
+		customer.setUpdateBy(users.getRealname());
+		customer.setUpdateTime(new Date());
+		customer.setIsDelete(Short.parseShort("1"));
+		customer.setId(id);
+		customer.setSchemaId(schemaId);
+		this.customerDao.updateByPrimaryKeySelective(customer);
 	}
 
 }

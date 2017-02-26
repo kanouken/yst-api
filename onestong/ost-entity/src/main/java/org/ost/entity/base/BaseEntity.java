@@ -15,7 +15,7 @@ public class BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	@Column(nullable = false, name = "schemaId")
-	private String tenantId;
+	private String schemaId;
 	private Date createTime;
 	private Date updateTime;
 	private short isDelete;
@@ -91,12 +91,12 @@ public class BaseEntity {
 		this.id = id;
 	}
 
-	public String getTenantId() {
-		return tenantId;
+	public String getSchemaId() {
+		return schemaId;
 	}
 
-	public void setTenantId(String tenantId) {
-		this.tenantId = tenantId;
+	public void setSchemaId(String schemaId) {
+		this.schemaId = schemaId;
 	}
 
 }

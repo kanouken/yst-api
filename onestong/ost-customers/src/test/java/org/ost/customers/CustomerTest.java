@@ -31,7 +31,7 @@ public class CustomerTest {
 		customer.setCreateBy("admin");
 		customer.setUpdateBy("admin");
 		customer.setName("test1");
-		customer.setTenantId("xxxx");
+		customer.setSchemaId("xxxx");
 		customer.setCreateTime(new Date());
 		customer.setUpdateTime(new Date());
 		customer.setPy("xxx");

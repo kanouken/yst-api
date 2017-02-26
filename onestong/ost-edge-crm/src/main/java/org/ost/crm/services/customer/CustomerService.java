@@ -51,7 +51,7 @@ public class CustomerService {
 		CustomerCreateVo vo = new CustomerCreateVo();
 		// common arribute
 		vo.setUserName(user.getRealname());
-		vo.setTenantId(user.getTenatId());
+		vo.setSchemaId(user.getSchemaId());
 		vo.setName(MapUtils.getString(params, "name"));
 		vo.setParentId(MapUtils.getInteger(parentCustomer, "id"));
 		List<AddressVo> addresses = new ArrayList<>();
@@ -75,19 +75,19 @@ public class CustomerService {
 		params.remove("name");
 		vo.setProperty(params);
 		// invoke
-		this.customerServiceClient.createCustomer(vo);
+		this.customerServiceClient.createCustomer(user.getSchemaId(),vo);
 		return params;
 	}
 
 	public Object queryCustomers(Users current, Map<String, String> params, Page page) {
 		Customer customer = new Customer();
-		customer.setTenantId(current.getTenatId());
+		customer.setSchemaId(current.getSchemaId());
 		String name = null;
 		if ((name = MapUtils.getString(params, "name")) != null) {
 			customer.setName(name);
 		}
 		customer.setProperty(params);
-		PageEntity<CustomerListDto> result = this.customerServiceClient.queryMember(page.getCurPage(),
+		PageEntity<CustomerListDto> result = this.customerServiceClient.queryMember(current.getSchemaId(),page.getCurPage(),
 				page.getPerPageSum(), customer);
 		List<CustomerListDto> customers = result.getObjects();
 		final List<Map<String, Object>> tmps = new ArrayList<Map<String, Object>>();
@@ -158,7 +158,7 @@ public class CustomerService {
 	}
 
 	public Object queryDetail(Integer customerId, Users user) {
-		CustomerDetailDto customerDetail = this.customerServiceClient.queryDetail(customerId, user.getTenatId());
+		CustomerDetailDto customerDetail = this.customerServiceClient.queryDetail(customerId, user.getSchemaId());
 		return customerDetail;
 	}
 }

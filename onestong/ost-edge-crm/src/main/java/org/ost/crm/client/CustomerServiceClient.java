@@ -16,16 +16,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FeignClient(name = "customerService")
 public interface CustomerServiceClient {
 
-	@RequestMapping(method = RequestMethod.PUT, value = "customer/", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	void createCustomer(@RequestBody CustomerCreateVo customer);
+	@RequestMapping(method = RequestMethod.POST, value = "customer/", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	void createCustomer(@RequestHeader(value = "schemaID", required = true) String schemaId,
+			@RequestBody CustomerCreateVo customer);
 
-	@RequestMapping(value = "customer/", method = RequestMethod.POST)
-	public PageEntity<CustomerListDto> queryMember(
+	@RequestMapping(value = "customer/list/", method = RequestMethod.POST)
+	public PageEntity<CustomerListDto> queryMember(@RequestHeader(value = "schemaID", required = true) String schemaId,
 			@RequestHeader(value = "curPage", defaultValue = "1") Integer curPage,
 			@RequestHeader(value = "perPageSum", defaultValue = "20") Integer perPageSum,
 			@RequestBody Customer customer);
 
 	@RequestMapping("customer/{id}/")
 	public CustomerDetailDto queryDetail(@PathVariable(value = "id") Integer id,
-			@RequestHeader(value = "tenantId", required = false) String tenantId);
+			@RequestHeader(value = "schemaID", required = false) String schemaId);
 }

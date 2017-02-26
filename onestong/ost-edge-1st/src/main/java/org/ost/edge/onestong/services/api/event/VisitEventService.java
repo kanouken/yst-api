@@ -480,7 +480,7 @@ public class VisitEventService extends EventBaseService {
 	 * @return
 	 */
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public Object createVisitEvent(org.ost.entity.user.Users currentUser, VisitEventCreateVo vo) {
+	public Object createVisitEvent(User currentUser, VisitEventCreateVo vo) {
 		VisitEvents ves = VisitEventEntityMapper.INSTANCE.visitEventCreateVoToVisitEvents(vo, currentUser);
 		if (vo.getContactType().equals("电话")) {
 			ves.setState(Byte.valueOf("2"));

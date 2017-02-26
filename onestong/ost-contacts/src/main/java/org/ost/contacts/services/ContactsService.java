@@ -2,15 +2,12 @@ package org.ost.contacts.services;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
-import org.common.tools.db.Page;
 import org.common.tools.pinyin.Chinese2PY;
 import org.ost.contacts.dao.ContactDao;
 import org.ost.contacts.dao.address.ContactsAddressDao;
@@ -69,7 +66,7 @@ public class ContactsService {
 		}
 		contact.setHeadPic(contactsDto.getHeadPic());
 		contact.setSex(contactsDto.getSex());
-		contact.setTenantId(contactsDto.getTenantId());
+		contact.setSchemaId(contactsDto.getSchemaId());
 		contactDao.insert(contact);
 
 		contactsDto.getLocations().forEach(address -> {
@@ -123,11 +120,11 @@ public class ContactsService {
 		}
 		contact.setHeadPic(contactsDto.getHeadPic());
 		contact.setSex(contactsDto.getSex());
-		contact.setTenantId(contactsDto.getTenantId());
+		contact.setSchemaId(contactsDto.getSchemaId());
 		contactDao.updateByPrimaryKeySelective(contact);
 		// clean address
 		ContactsAddressExample addressExample = new ContactsAddressExample();
-		addressExample.createCriteria().andTenantIdEqualTo(contactsDto.getTenantId()).andContactidEqualTo(id);
+		addressExample.createCriteria().andTenantIdEqualTo(contactsDto.getSchemaId()).andContactidEqualTo(id);
 		ContactsAddress ca = new ContactsAddress();
 		ca.setUpdateTime(new Date());
 		ca.setIsDelete(Short.valueOf("1"));
@@ -142,7 +139,7 @@ public class ContactsService {
 		});
 		// clean phone
 		ContactsInfoExample contactsInfoExample = new ContactsInfoExample();
-		contactsInfoExample.createCriteria().andTenantIdEqualTo(contactsDto.getTenantId()).andContactidEqualTo(id);
+		contactsInfoExample.createCriteria().andTenantIdEqualTo(contactsDto.getSchemaId()).andContactidEqualTo(id);
 		ContactsInfo cinfo = new ContactsInfo();
 		cinfo.setIsDelete(Short.valueOf("1"));
 		cinfo.setUpdateTime(new Date());
@@ -161,7 +158,7 @@ public class ContactsService {
 		});
 		// clean file
 		ContactsFileExample contactsFileExample = new ContactsFileExample();
-		contactsFileExample.createCriteria().andTenantIdEqualTo(contactsDto.getTenantId()).andContactidEqualTo(id);
+		contactsFileExample.createCriteria().andTenantIdEqualTo(contactsDto.getSchemaId()).andContactidEqualTo(id);
 		ContactsFile cFile = new ContactsFile();
 		cFile.setIsDelete(Short.valueOf("1"));
 		cFile.setUpdateTime(new Date());
@@ -231,7 +228,7 @@ public class ContactsService {
 		contacts.setUpdateTime(new Date());
 		contacts.setIsDelete(Short.parseShort("1"));
 		ContactsExample ce = new ContactsExample();
-		ce.createCriteria().andIdEqualTo(id).andTenantIdEqualTo(users.getTenatId());
+		ce.createCriteria().andIdEqualTo(id).andTenantIdEqualTo(users.getSchemaId());
 		this.contactDao.updateByExampleSelective(contacts, ce);
 		// update address and info
 		ContactsAddress ca = new ContactsAddress();
@@ -239,21 +236,21 @@ public class ContactsService {
 		ca.setUpdateBy(users.getRealname());
 		ca.setUpdateTime(new Date());
 		ContactsAddressExample cae = new ContactsAddressExample();
-		cae.createCriteria().andContactidEqualTo(id).andTenantIdEqualTo(users.getTenatId());
+		cae.createCriteria().andContactidEqualTo(id).andTenantIdEqualTo(users.getSchemaId());
 		this.addressDao.updateByExample(ca, cae);
 		ContactsInfo ci = new ContactsInfo();
 		ci.setIsDelete(Short.parseShort("1"));
 		ci.setUpdateBy(users.getRealname());
 		ci.setUpdateTime(new Date());
 		ContactsInfoExample cie = new ContactsInfoExample();
-		cie.createCriteria().andContactidEqualTo(id).andTenantIdEqualTo(users.getTenatId());
+		cie.createCriteria().andContactidEqualTo(id).andTenantIdEqualTo(users.getSchemaId());
 		this.infoDao.updateByExample(ci, cie);
 		ContactsFile cf = new ContactsFile();
 		cf.setIsDelete(Short.parseShort("1"));
 		cf.setUpdateBy(users.getRealname());
 		cf.setUpdateTime(new Date());
 		ContactsFileExample cfe = new ContactsFileExample();
-		cfe.createCriteria().andTenantIdEqualTo(users.getTenatId()).andContactidEqualTo(id);
+		cfe.createCriteria().andTenantIdEqualTo(users.getSchemaId()).andContactidEqualTo(id);
 		this.fileDao.updateByExample(cf, cfe);
 	}
 

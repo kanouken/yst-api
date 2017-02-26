@@ -8,7 +8,7 @@ import org.ost.entity.customer.contacts.vo.ContactInfoVo;
 
 public class CustomerCreateVo {
 
-	private String tenantId;
+	private String schemaId;
 	private String userName;
 
 	private String name;
@@ -19,12 +19,12 @@ public class CustomerCreateVo {
 
 	private List<ContactInfoVo> contactInfos;
 
-	public String getTenantId() {
-		return tenantId;
+	public String getSchemaId() {
+		return schemaId;
 	}
 
-	public void setTenantId(String tenantId) {
-		this.tenantId = tenantId;
+	public void setSchemaId(String schemaId) {
+		this.schemaId = schemaId;
 	}
 
 	public String getUserName() {

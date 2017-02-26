@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.common.tools.db.Page;
+import org.ost.edge.onestong.model.user.User;
 import org.ost.edge.onestong.tools.Constants;
 import org.ost.entity.user.Users;
 
@@ -153,7 +154,7 @@ public class Action {
 
 	}
 
-	protected Users currentUser() {
+	protected User currentUser() {
 //		Users u = new Users();
 //		u.settId(1);
 //		u.setRealname("test");

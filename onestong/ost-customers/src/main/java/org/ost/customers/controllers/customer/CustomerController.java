@@ -23,25 +23,33 @@ public class CustomerController extends Action {
 
 	@RequestMapping("{id}")
 	public Object detail(@PathVariable(value = "id") Integer id,
-			@RequestHeader(value = "tenantId", required = false) String tenantId) {
-		return customerService.queryDetail(id, tenantId);
+			@RequestHeader(value = "schemaID", required = false) String schemaId) {
+		return customerService.queryDetail(id, schemaId);
 	}
 
-	@RequestMapping(value = "", method = RequestMethod.PUT)
-	public void createCustomer(@RequestBody CustomerCreateVo customer ) throws JsonProcessingException {
+	@RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+	public void delete(@PathVariable(value = "id") Integer id,
+			@RequestHeader(value = "schemaID", required = false) String schemaId, Users users) {
+		customerService.deleteCustomer(id, schemaId, users);
+	}
+
+	@RequestMapping(value = "", method = RequestMethod.POST)
+	public void createCustomer(@RequestHeader(value = "schemaID", required = true) String schemaId,
+			@RequestBody CustomerCreateVo customer) throws JsonProcessingException {
 		customerService.createCustomer(customer);
 	}
 
-	@RequestMapping(value = "update", method = RequestMethod.POST)
+	@RequestMapping(value = "{id}", method = RequestMethod.PUT)
 	public void updateCustomer(@RequestBody Customer customer) {
 		customerService.updateCustomer(customer);
 	}
 
-	@RequestMapping(value = "", method = RequestMethod.POST)
-	public PageEntity<CustomerListDto> queryMember(
+	@RequestMapping(value = "list", method = RequestMethod.POST)
+	public PageEntity<CustomerListDto> queryMember(@RequestHeader(value = "schemaID", required = true) String schemaID,
 			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
 			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
 			@RequestBody Customer customer) {
+		customer.setSchemaId(schemaID);
 		return this.customerService.queryCustomers(customer, curPage, perPageSum);
 	}
 
