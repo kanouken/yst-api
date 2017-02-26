@@ -8,6 +8,7 @@ import org.ost.entity.contacts.file.dto.ContactsFileDto;
 
 public class ContactsDto {
 	private String dept;
+	// 邮箱
 	private List<String> email;
 	private String headPic;
 	private List<ContactsAddressDto> locations;
@@ -18,6 +19,33 @@ public class ContactsDto {
 	private String sex;
 	private String tenantId;
 	private String currentUserName;
+	private String py;
+	private String sexName;
+	private String szm;
+
+	public String getPy() {
+		return py;
+	}
+
+	public void setPy(String py) {
+		this.py = py;
+	}
+
+	public String getSexName() {
+		return sexName;
+	}
+
+	public void setSexName(String sexName) {
+		this.sexName = sexName;
+	}
+
+	public String getSzm() {
+		return szm;
+	}
+
+	public void setSzm(String szm) {
+		this.szm = szm;
+	}
 
 	public String getCurrentUserName() {
 		return currentUserName;

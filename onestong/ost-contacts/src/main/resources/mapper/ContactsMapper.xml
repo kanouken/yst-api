@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.ost.contacts.dao.ContactDao">
+
+	<resultMap type="org.ost.entity.contacts.dto.ContactsListDto"
+		id="contactsListMapper">
+		<result property="dept" column="dept" />
+		<result property="email" column="contactInfoVals" javaType="[Ljava.lang.String;" />
+		<result property="headPic" column="headPic" />
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="position" column="position" />
+		<result property="py" column="py" />
+		<result property="tenantId" column="schemaID" />
+		<result property="sex" column="sex" />
+		<result property="sexName" column="sexName" />
+		<result property="szm" column="szm" />
+	</resultMap>
+
+
+	<select id="selectContacts" resultMap="contactsListMapper">
+
+		select t1.*
+		,GROUP_CONCAT(t1.type) contactInfoTypes,GROUP_CONCAT(t1.val)
+		contactInfoVals from (
+		select t.* from (
+		select tc.id,
+		tc.schemaID,tc.py,tc.sex,tc.headPic,tc.szm,tc.dept,tc.position,
+		tc.firstName,tc.lastName,tci.type,tci.val from tbl_contact tc left
+		join tbl_contact_info tci
+		on (tc.id,tc.schemaID) = (tci.contactID
+		,tci.schemaID) and tci.type
+		='email' ) t where
+		INSTR(CONCAT(t.firstName,t.lastName),#{name}) >0
+		or
+		INSTR(t.val,#{email}) or instr(t.val,#{phone}) >0
+
+		) t1
+	</select>
+</mapper>

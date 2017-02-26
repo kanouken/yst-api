@@ -19,10 +19,10 @@ import org.ost.entity.contacts.file.dto.ContactsFileDto;
 public interface ContactsEntityMapper {
 	ContactsEntityMapper INSTANCE = Mappers.getMapper(ContactsEntityMapper.class);
 
-	
+	@Mapping(target = "name", expression = "java(contacts.getFirstName() + contacts.getLastName())")
+	@Mapping(target = "sexName", expression = "java(contacts.getSex().equals(\"1\")?\"女\":\"男\")")
 	ContactsDto contactsToContactsDto(Contacts contacts);
-	
-	
+
 	@Mappings({
 
 			@Mapping(source = "dto.province", target = "province"), @Mapping(source = "dto.city", target = "city"),

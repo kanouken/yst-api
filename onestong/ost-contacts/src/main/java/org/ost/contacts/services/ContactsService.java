@@ -1,10 +1,13 @@
 package org.ost.contacts.services;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.common.tools.db.Page;
@@ -14,14 +17,19 @@ import org.ost.contacts.dao.address.ContactsAddressDao;
 import org.ost.contacts.dao.files.ContactsFileDao;
 import org.ost.contacts.dao.info.ContactsInfoDao;
 import org.ost.contacts.model.ContactsAddressExample;
+import org.ost.contacts.model.ContactsExample;
 import org.ost.contacts.model.ContactsFileExample;
 import org.ost.contacts.model.ContactsInfoExample;
+import org.ost.entity.base.PageEntity;
 import org.ost.entity.contacts.Contacts;
 import org.ost.entity.contacts.address.ContactsAddress;
 import org.ost.entity.contacts.contactsinfo.ContactsInfo;
+import org.ost.entity.contacts.contactsinfo.dto.ContactsInfoDto;
 import org.ost.entity.contacts.dto.ContactsDto;
+import org.ost.entity.contacts.dto.ContactsListDto;
 import org.ost.entity.contacts.file.ContactsFile;
 import org.ost.entity.contacts.mapper.ContactsEntityMapper;
+import org.ost.entity.user.Users;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,12 +79,19 @@ public class ContactsService {
 			this.addressDao.insert(_address);
 		});
 
+		if (CollectionUtils.isNotEmpty(contactsDto.getEmail())) {
+			contactsDto.getEmail().forEach(email -> {
+				contactsDto.getPhone().add(new ContactsInfoDto("email", null, email));
+			});
+		}
+
 		contactsDto.getPhone().forEach(contactsInfo -> {
 			ContactsInfo _contactsInfo = ContactsEntityMapper.INSTANCE.contactsInfoDtoToContactsInfo(contactsInfo,
 					contactsDto);
 			_contactsInfo.setContactId(contact.getId());
 			this.infoDao.insert(_contactsInfo);
 		});
+
 		// files
 		contactsDto.getPhoto().forEach(contactsFile -> {
 			ContactsFile _contactsFile = ContactsEntityMapper.INSTANCE.contactsFileDtoToContactsFile(contactsFile,
@@ -132,6 +147,12 @@ public class ContactsService {
 		cinfo.setIsDelete(Short.valueOf("1"));
 		cinfo.setUpdateTime(new Date());
 		this.infoDao.updateByExampleSelective(cinfo, contactsInfoExample);
+
+		if (CollectionUtils.isNotEmpty(contactsDto.getEmail())) {
+			contactsDto.getEmail().forEach(email -> {
+				contactsDto.getPhone().add(new ContactsInfoDto("email", null, email));
+			});
+		}
 		contactsDto.getPhone().forEach(contactsInfo -> {
 			ContactsInfo _contactsInfo = ContactsEntityMapper.INSTANCE.contactsInfoDtoToContactsInfo(contactsInfo,
 					contactsDto);
@@ -156,21 +177,20 @@ public class ContactsService {
 	}
 
 	@Transactional(readOnly = true)
-	public Object queryContacts(Integer contactId, Integer curPage, Integer perPageSum) {
-		// Contacts contact = new Contacts();
-		// contact.setId(contactId);
-		// Page page = new Page();
-		// page.setCurPage(curPage.intValue());
-		// page.setPerPageSum(perPageSum.intValue());
-		// RowBounds rb = new RowBounds(page.getNextPage(),
-		// page.getPerPageSum());
-		// Integer total = contactDao.selectCount(contact);
-		// Map resultMap = new HashMap();
-		// page.setTotalRecords(total);
-		// resultMap.put("page", page);
-		// resultMap.put("objects", contactDao.selectByRowBounds(contact, rb));
-		// return resultMap;
-		return null;
+	public Object queryContacts(String tenantId, Integer curPage, Integer perPageSum, String email, String name,
+			String phone) {
+		PageEntity<ContactsListDto> pages = new PageEntity<ContactsListDto>();
+		List<ContactsListDto> contacts = new ArrayList<ContactsListDto>();
+		Integer totalRecords = this.contactDao.selectCountContacts(name, phone, email);
+		RowBounds rb = new RowBounds();
+		if (totalRecords > 0) {
+			contacts = this.contactDao.selectContacts(name, phone, email, rb);
+		}
+		pages.setCurPage(curPage);
+		pages.setTotalRecord(totalRecords);
+		pages.setObjects(contacts);
+		return pages;
+
 	}
 
 	@Transactional(readOnly = true)
@@ -194,7 +214,47 @@ public class ContactsService {
 		dto.setLocations(ContactsEntityMapper.INSTANCE.contactsAddressToContactsAddressDto(cas));
 		dto.setPhone(ContactsEntityMapper.INSTANCE.contactsInfoToContactsInfoDto(infos));
 		dto.setPhoto(ContactsEntityMapper.INSTANCE.contactsFileToContactsFileDto(cFiles));
+
+		List<String> emails = new ArrayList<String>();
+		if (CollectionUtils.isNotEmpty(dto.getPhone())) {
+			emails = dto.getPhone().stream().filter(ci -> ci.getType().equals("email")).map(ci -> ci.getVal())
+					.collect(Collectors.toList());
+		}
+		dto.setEmail(emails);
 		return dto;
+	}
+
+	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
+	public void deleteContacts(Integer id, Users users) {
+		Contacts contacts = new Contacts();
+		contacts.setUpdateBy(users.getRealname());
+		contacts.setUpdateTime(new Date());
+		contacts.setIsDelete(Short.parseShort("1"));
+		ContactsExample ce = new ContactsExample();
+		ce.createCriteria().andIdEqualTo(id).andTenantIdEqualTo(users.getTenatId());
+		this.contactDao.updateByExampleSelective(contacts, ce);
+		// update address and info
+		ContactsAddress ca = new ContactsAddress();
+		ca.setIsDelete(Short.parseShort("1"));
+		ca.setUpdateBy(users.getRealname());
+		ca.setUpdateTime(new Date());
+		ContactsAddressExample cae = new ContactsAddressExample();
+		cae.createCriteria().andContactidEqualTo(id).andTenantIdEqualTo(users.getTenatId());
+		this.addressDao.updateByExample(ca, cae);
+		ContactsInfo ci = new ContactsInfo();
+		ci.setIsDelete(Short.parseShort("1"));
+		ci.setUpdateBy(users.getRealname());
+		ci.setUpdateTime(new Date());
+		ContactsInfoExample cie = new ContactsInfoExample();
+		cie.createCriteria().andContactidEqualTo(id).andTenantIdEqualTo(users.getTenatId());
+		this.infoDao.updateByExample(ci, cie);
+		ContactsFile cf = new ContactsFile();
+		cf.setIsDelete(Short.parseShort("1"));
+		cf.setUpdateBy(users.getRealname());
+		cf.setUpdateTime(new Date());
+		ContactsFileExample cfe = new ContactsFileExample();
+		cfe.createCriteria().andTenantIdEqualTo(users.getTenatId()).andContactidEqualTo(id);
+		this.fileDao.updateByExample(cf, cfe);
 	}
 
 }

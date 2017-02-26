@@ -5,6 +5,21 @@ public class ContactsInfoDto {
 	private String custName;
 	private String val;
 
+	public ContactsInfoDto(){
+		super();
+	}
+	
+	
+	
+	public ContactsInfoDto(String type, String custName, String val) {
+		super();
+		this.type = type;
+		this.custName = custName;
+		this.val = val;
+	}
+
+
+
 	public String getType() {
 		return type;
 	}
