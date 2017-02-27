@@ -33,11 +33,11 @@ public class ContactController {
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public OperateResult<PageEntity<ContactsListDto>> contactList(@RequestHeader(value = "curPage") Integer curPage,
-			@RequestHeader(value = "tenantId") String tenantId, @RequestHeader(value = "perPageSum") Integer perPageSum,
+			@RequestHeader(value = "schemaID") String schemaID, @RequestHeader(value = "perPageSum") Integer perPageSum,
 			@RequestParam(value = "email") String email, @RequestParam(value = "name") String name,
-			@RequestParam(value = "phone") String phone) {
+			@RequestParam(value = "phone") String phone, @RequestParam(value = "customerID") Integer customerID) {
 		return new OperateResult<PageEntity<ContactsListDto>>(
-				this.contactService.queryContacts(tenantId, curPage, perPageSum, email, name, phone));
+				this.contactService.queryContacts(schemaID, curPage, perPageSum, email, name, phone,customerID));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)

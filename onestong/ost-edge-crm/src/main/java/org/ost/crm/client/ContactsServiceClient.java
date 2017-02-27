@@ -3,6 +3,7 @@ package org.ost.crm.client;
 import java.util.List;
 
 import org.common.tools.OperateResult;
+import org.ost.entity.base.PageEntity;
 import org.ost.entity.contacts.dto.ContactsDto;
 import org.ost.entity.contacts.dto.ContactsListDto;
 import org.springframework.cloud.netflix.feign.FeignClient;
@@ -28,9 +29,9 @@ public interface ContactsServiceClient {
 	public OperateResult<ContactsDto> queryDetail(@PathVariable(value = "id") Integer id, String tenantId);
 
 	@RequestMapping(value = "contacts/list/", method = RequestMethod.GET)
-	public List<ContactsListDto> contactList(@RequestHeader(value = "curPage") Integer curPage,
+	public OperateResult<PageEntity<ContactsListDto>> queryContacts(@RequestHeader(value = "curPage") Integer curPage,
 			@RequestHeader(value = "tenantId") String tenantId, @RequestHeader(value = "perPageSum") Integer perPageSum,
 			@RequestParam(value = "email") String email, @RequestParam(value = "name") String name,
-			@RequestParam(value = "phone") String phone);
+			@RequestParam(value = "phone") String phone, @RequestParam(value = "customerID") Integer customerID);
 
 }

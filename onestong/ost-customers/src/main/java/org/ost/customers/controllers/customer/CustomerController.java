@@ -1,5 +1,7 @@
 package org.ost.customers.controllers.customer;
 
+import java.util.List;
+
 import org.common.tools.OperateResult;
 import org.ost.customers.services.CustomerService;
 import org.ost.entity.base.PageEntity;
@@ -63,9 +65,17 @@ public class CustomerController extends Action {
 				this.customerService.queryCustomers(customer, curPage, perPageSum));
 	}
 
+	@Deprecated
 	@RequestMapping(value = "/queryByContacts", method = RequestMethod.GET)
-	public OperateResult<CustomerListDto> queryDetailByContacts(@RequestHeader(value="schemaID") String schemaID,@RequestParam(value="contactsId") Integer contactsId) {
-		return new OperateResult<CustomerListDto>(customerService.queryByContacts(schemaID,contactsId));
+	public OperateResult<CustomerListDto> queryDetailByContacts(@RequestHeader(value = "schemaID") String schemaID,
+			@RequestParam(value = "contactsId") Integer contactsId) {
+		return new OperateResult<CustomerListDto>(customerService.queryByContacts(schemaID, contactsId));
+	}
+
+	@RequestMapping(value = "/queryByIds", method = RequestMethod.GET)
+	public OperateResult<List<CustomerListDto>> queryByIds(@RequestHeader(value = "schemaID") String schemaID,
+			@RequestParam(value = "ids") Integer[] ids) {
+		return new OperateResult<List<CustomerListDto>>(customerService.queryByIds(schemaID, ids));
 	}
 
 }

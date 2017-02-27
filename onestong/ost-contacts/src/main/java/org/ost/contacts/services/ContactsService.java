@@ -97,7 +97,7 @@ public class ContactsService {
 			_contactsFile.setContactID(contact.getId());
 			this.fileDao.insert(_contactsFile);
 		});
-		
+
 		logger.info("an new contacts created");
 		return contactsDto;
 
@@ -174,12 +174,12 @@ public class ContactsService {
 			this.fileDao.insert(_contactsFile);
 		});
 		logger.info("an  contacts updated");
-		return  contactsDto;
+		return contactsDto;
 	}
 
 	@Transactional(readOnly = true)
-	public PageEntity<ContactsListDto> queryContacts(String tenantId, Integer curPage, Integer perPageSum, String email, String name,
-			String phone) {
+	public PageEntity<ContactsListDto> queryContacts(String tenantId, Integer curPage, Integer perPageSum, String email,
+			String name, String phone, Integer customerID) {
 		PageEntity<ContactsListDto> pages = new PageEntity<ContactsListDto>();
 		List<ContactsListDto> contacts = new ArrayList<ContactsListDto>();
 		Integer totalRecords = this.contactDao.selectCountContacts(name, phone, email);
@@ -256,7 +256,7 @@ public class ContactsService {
 		ContactsFileExample cfe = new ContactsFileExample();
 		cfe.createCriteria().andSchemaidEqualTo(users.getSchemaId()).andContactidEqualTo(id);
 		this.fileDao.updateByExample(cf, cfe);
-		
+
 		return id;
 	}
 

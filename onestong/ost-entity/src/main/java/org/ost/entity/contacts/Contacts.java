@@ -6,7 +6,7 @@ import javax.persistence.Table;
 import org.ost.entity.base.BaseEntity;
 
 @Entity
-@Table(name="tbl_contact")
+@Table(name = "tbl_contact")
 public class Contacts extends BaseEntity {
 	private String lastName;
 	private String firstName;
@@ -16,6 +16,16 @@ public class Contacts extends BaseEntity {
 	private String position;
 	private String dept;
 	private String headPic;
+	
+	private Integer customerID;
+
+	public Integer getCustomerID() {
+		return customerID;
+	}
+
+	public void setCustomerID(Integer customerID) {
+		this.customerID = customerID;
+	}
 
 	public String getLastName() {
 		return lastName;

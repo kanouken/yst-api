@@ -1,5 +1,7 @@
 package org.ost.crm.client;
 
+import java.util.List;
+
 import org.common.tools.OperateResult;
 import org.ost.entity.base.PageEntity;
 import org.ost.entity.customer.Customer;
@@ -40,4 +42,9 @@ public interface CustomerServiceClient {
 	@RequestMapping(value = "/queryByContacts", method = RequestMethod.GET)
 	public OperateResult<CustomerListDto> queryDetailByContacts(@RequestHeader(value = "schemaID") String schemaID,
 			@RequestParam(value = "contactsId") Integer contactsId);
+
+	@RequestMapping(value = "customer/queryByIds", method = RequestMethod.GET)
+	public OperateResult<List<CustomerListDto>> queryByIds(@RequestHeader(value = "schemaID") String schemaID,
+			@RequestParam(value = "ids") int[] ids);
+
 }

@@ -2,7 +2,12 @@ package org.ost.entity.contacts.dto;
 
 import java.util.List;
 
+import org.ost.entity.customer.vo.CustomerVo;
+
 public class ContactsListDto {
+
+	private CustomerVo customer;
+
 	private String dept;
 	// 邮箱
 	private List<String> email;
@@ -16,6 +21,24 @@ public class ContactsListDto {
 	private String sex;
 	private String sexName;
 	private String szm;
+
+	private Integer customerID;
+
+	public Integer getCustomerID() {
+		return customerID;
+	}
+
+	public void setCustomerID(Integer customerID) {
+		this.customerID = customerID;
+	}
+
+	public CustomerVo getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(CustomerVo customer) {
+		this.customer = customer;
+	}
 
 	public String getDept() {
 		return dept;

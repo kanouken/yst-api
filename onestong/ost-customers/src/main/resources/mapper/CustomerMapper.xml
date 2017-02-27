@@ -2,6 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="org.ost.customers.dao.CustomerDao">
 
+
+	<select id="selectByIds" resultType="org.ost.entity.customer.Customer">
+
+		select id,name from tbl_customer tc
+		<where>
+			tc in
+			<foreach item="id" collection="ids" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+			and is_delete = 0
+		</where>
+	</select>
+
 	<select id="selectCustomerCount" resultType="java.lang.Integer">
 		select
 		count(1)
@@ -93,6 +107,9 @@
 		where id = #{customer.id}
 		and schemaId = #{customer.tenantId}
 	</update>
+
+
+
 
 
 </mapper>

@@ -24,6 +24,7 @@ public class ContactsDto {
 	private String py;
 	private String sexName;
 	private String szm;
+	
 
 	public Integer getId() {
 		return id;

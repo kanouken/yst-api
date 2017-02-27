@@ -19,4 +19,6 @@ public interface CustomerDao extends Mapper<Customer> {
 	int updateCustomerSelective(@Param("customer") Customer customer);
 
 	Integer selectCustomerCount(@Param("params") Map<String, String> params, @Param("customer") Customer customer);
+
+	List<Customer> selectByIds(@Param("ids") Integer[] ids);
 }

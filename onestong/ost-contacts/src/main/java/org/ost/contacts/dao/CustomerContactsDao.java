@@ -1,4 +1,4 @@
-package org.ost.customers.dao;
+package org.ost.contacts.dao;
 
 import org.ost.entity.customer.CustomerContacts;
 import org.springframework.stereotype.Repository;

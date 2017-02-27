@@ -5,17 +5,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.common.tools.db.Page;
 import org.common.tools.pinyin.Chinese2PY;
-import org.ost.customers.dao.CustomerContactsDao;
 import org.ost.customers.dao.CustomerDao;
 import org.ost.customers.dao.address.AddressDao;
 import org.ost.customers.dao.contacinfo.ContactInfoDao;
 import org.ost.entity.base.PageEntity;
 import org.ost.entity.customer.Customer;
-import org.ost.entity.customer.CustomerContacts;
 import org.ost.entity.customer.address.Address;
 import org.ost.entity.customer.address.mapper.AddressEntityMapper;
 import org.ost.entity.customer.contacts.ContactsInfo;
@@ -35,10 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import net.sourceforge.pinyin4j.PinyinHelper;
-import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
-import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
+import com.hp.hpl.sparta.xpath.TrueExpr;
 
 @SuppressWarnings("unchecked")
 @Service
@@ -54,8 +48,6 @@ public class CustomerService {
 	private CustomerDao customerDao;
 	@Autowired
 	private AddressDao addressDao;
-	@Autowired
-	private CustomerContactsDao ccDao;
 
 	@Autowired
 	private ContactInfoDao cInfoDao;
@@ -148,17 +140,7 @@ public class CustomerService {
 		Customer customer = CustomerEntityMapper.INSTANCE.customerUpdateDtoToCustomer(updateDto);
 
 		Integer result = this.customerDao.updateCustomerSelective(customer);
-		// 新增客户联系人 关系
-		if (CollectionUtils.isNotEmpty(updateDto.getContacts())) {
-			updateDto.getContacts().forEach(contactsDto -> {
-				CustomerContacts cc = new CustomerContacts();
-				cc.setCustomerID(updateDto.getId());
-				cc.setContactID(contactsDto.getId());
-				cc.setCreateBy(updateDto.getUpdateBy());
-				cc.setUpdateBy(updateDto.getUpdateBy());
-				this.ccDao.insert(cc);
-			});
-		}
+
 		return result;
 
 	}
@@ -176,17 +158,25 @@ public class CustomerService {
 
 	@Transactional(readOnly = true)
 	public CustomerListDto queryByContacts(String schemaID, Integer contactsID) {
-		CustomerContacts cc = new CustomerContacts();
-		cc.setContactID(contactsID);
-		cc.setSchemaId(schemaID);
-		List<CustomerContacts> ccs = this.ccDao.select(cc);
-		if (CollectionUtils.isNotEmpty(ccs)) {
-			Customer customer = this.customerDao.selectByPrimaryKey(ccs.get(0).getCustomerID());
-			return CustomerEntityMapper.INSTANCE.customerToCustomerListDto(customer);
-		} else {
-			return null;
-		}
+		// CustomerContacts cc = new CustomerContacts();
+		// cc.setContactID(contactsID);
+		// cc.setSchemaId(schemaID);
+		// if (CollectionUtils.isNotEmpty(ccs)) {
+		// Customer customer =
+		// this.customerDao.selectByPrimaryKey(ccs.get(0).getCustomerID());
+		// return
+		// CustomerEntityMapper.INSTANCE.customerToCustomerListDto(customer);
+		// } else {
+		// return null;
+		// }
 
+		return null;
+	}
+
+	@Transactional(readOnly = true)
+	public List<CustomerListDto> queryByIds(String schemaID, Integer[] ids) {
+		List<Customer> customers = this.customerDao.selectByIds(ids);
+		return CustomerEntityMapper.INSTANCE.customersToCustomerListDtos(customers);
 	}
 
 }
