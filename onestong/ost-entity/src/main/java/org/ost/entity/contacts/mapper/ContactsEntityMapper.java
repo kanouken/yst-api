@@ -11,9 +11,12 @@ import org.ost.entity.contacts.address.ContactsAddress;
 import org.ost.entity.contacts.address.dto.ContactsAddressDto;
 import org.ost.entity.contacts.contactsinfo.ContactsInfo;
 import org.ost.entity.contacts.contactsinfo.dto.ContactsInfoDto;
+import org.ost.entity.contacts.dto.ContactsCreateDto;
+import org.ost.entity.contacts.dto.ContactsDetailDto;
 import org.ost.entity.contacts.dto.ContactsDto;
 import org.ost.entity.contacts.file.ContactsFile;
 import org.ost.entity.contacts.file.dto.ContactsFileDto;
+import org.ost.entity.user.Users;
 
 @Mapper
 public interface ContactsEntityMapper {
@@ -76,5 +79,9 @@ public interface ContactsEntityMapper {
 	ContactsInfoDto contactsInfoToContactsInfoDto(ContactsInfo cinfos);
 
 	List<ContactsInfoDto> contactsInfoToContactsInfoDto(List<ContactsInfo> cFile);
+
+	ContactsDto contactsCreateDtoToContactsDto(ContactsCreateDto contactsDto);
+
+	ContactsDetailDto contactsDtoToContactsDetailDto(ContactsDto contactsDto);
 
 }

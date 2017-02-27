@@ -9,6 +9,7 @@ import org.mapstruct.factory.Mappers;
 import org.ost.entity.customer.Customer;
 import org.ost.entity.customer.dto.CustomerDetailDto;
 import org.ost.entity.customer.dto.CustomerListDto;
+import org.ost.entity.customer.dto.CustomerUpdateDto;
 
 @Mapper
 public interface CustomerEntityMapper {
@@ -26,5 +27,7 @@ public interface CustomerEntityMapper {
 			@Mapping(source = "createTime", target = "createTimeStr", dateFormat = "yyyy-MM-dd HH:mm"),
 			@Mapping(expression = "java( org.ost.entity.tools.JsonType.convertToMap(customer.getProperty()))", target = "properties") })
 	CustomerDetailDto customerToCustomerDetailDto(Customer customer);
+
+	Customer customerUpdateDtoToCustomer(CustomerUpdateDto updateDto);
 
 }

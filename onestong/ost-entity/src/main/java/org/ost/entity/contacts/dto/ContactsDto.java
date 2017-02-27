@@ -7,6 +7,8 @@ import org.ost.entity.contacts.contactsinfo.dto.ContactsInfoDto;
 import org.ost.entity.contacts.file.dto.ContactsFileDto;
 
 public class ContactsDto {
+	private Integer id;
+
 	private String dept;
 	// 邮箱
 	private List<String> email;
@@ -22,6 +24,14 @@ public class ContactsDto {
 	private String py;
 	private String sexName;
 	private String szm;
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
 	public String getPy() {
 		return py;

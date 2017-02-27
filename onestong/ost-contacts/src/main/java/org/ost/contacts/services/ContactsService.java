@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
+import org.common.tools.OperateResult;
 import org.common.tools.pinyin.Chinese2PY;
 import org.ost.contacts.dao.ContactDao;
 import org.ost.contacts.dao.address.ContactsAddressDao;
@@ -48,7 +49,7 @@ public class ContactsService {
 	private ContactsFileDao fileDao;
 
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public void createContacts(ContactsDto contactsDto) {
+	public ContactsDto createContacts(ContactsDto contactsDto) {
 		Contacts contact = new Contacts();
 		contact.setCreateTime(new Date());
 		contact.setUpdateTime(new Date());
@@ -96,12 +97,14 @@ public class ContactsService {
 			_contactsFile.setContactID(contact.getId());
 			this.fileDao.insert(_contactsFile);
 		});
+		
 		logger.info("an new contacts created");
+		return contactsDto;
 
 	}
 
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public void updateContacts(Integer id, ContactsDto contactsDto) {
+	public ContactsDto updateContacts(Integer id, ContactsDto contactsDto) {
 		Contacts contact = new Contacts();
 		contact.setId(id);
 		contact.setCreateTime(new Date());
@@ -171,10 +174,11 @@ public class ContactsService {
 			this.fileDao.insert(_contactsFile);
 		});
 		logger.info("an  contacts updated");
+		return  contactsDto;
 	}
 
 	@Transactional(readOnly = true)
-	public Object queryContacts(String tenantId, Integer curPage, Integer perPageSum, String email, String name,
+	public PageEntity<ContactsListDto> queryContacts(String tenantId, Integer curPage, Integer perPageSum, String email, String name,
 			String phone) {
 		PageEntity<ContactsListDto> pages = new PageEntity<ContactsListDto>();
 		List<ContactsListDto> contacts = new ArrayList<ContactsListDto>();
@@ -191,7 +195,7 @@ public class ContactsService {
 	}
 
 	@Transactional(readOnly = true)
-	public Object getContactsDetail(Integer id, String tenantId) {
+	public ContactsDto getContactsDetail(Integer id, String tenantId) {
 		Contacts contacts = this.contactDao.selectByPrimaryKey(id);
 		ContactsAddress ca = new ContactsAddress();
 		ca.setIsDelete(Short.valueOf("0"));
@@ -222,7 +226,7 @@ public class ContactsService {
 	}
 
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public void deleteContacts(Integer id, Users users) {
+	public Integer deleteContacts(Integer id, Users users) {
 		Contacts contacts = new Contacts();
 		contacts.setUpdateBy(users.getRealname());
 		contacts.setUpdateTime(new Date());
@@ -252,6 +256,8 @@ public class ContactsService {
 		ContactsFileExample cfe = new ContactsFileExample();
 		cfe.createCriteria().andSchemaidEqualTo(users.getSchemaId()).andContactidEqualTo(id);
 		this.fileDao.updateByExample(cf, cfe);
+		
+		return id;
 	}
 
 }

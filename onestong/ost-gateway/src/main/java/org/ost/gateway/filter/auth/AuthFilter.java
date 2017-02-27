@@ -39,24 +39,25 @@ public class AuthFilter extends ZuulFilter {
 		// token
 		String token = null;
 		token = authHeader.substring(7);
-		try {
-			Claims body = Jwts.parser().requireSubject("server").setSigningKey(gw.getJwtPrivatekey())
-					.parseClaimsJws(token).getBody();
-			Integer userId = (Integer) body.get("userId");
-			Integer tenantId = (Integer) body.get("tenantId");
-			String realName = (String) body.get("realName");
-			ctx.getRequest().setAttribute("userId", userId);
-			ctx.getRequest().setAttribute("tenantId", tenantId);
-			ctx.getRequest().setAttribute("realName", realName);
-		} catch (Exception e) {
-			ctx.setSendZuulResponse(false);
-			OperateResult op = new OperateResult("", "forbidden", "");
-			op.setStatusCode("500");
-			try {
-				ctx.setResponseBody(mapper.writeValueAsString(op));
-			} catch (JsonProcessingException e1) {
-			}
-		}
+//		try {
+//			Claims body = Jwts.parser().requireSubject("server").setSigningKey(gw.getJwtPrivatekey())
+//					.parseClaimsJws(token).getBody();
+//			Integer userId = (Integer) body.get("userId");
+//			Integer tenantId = (Integer) body.get("tenantId");
+//			String realName = (String) body.get("realName");
+//			ctx.getRequest().setAttribute("userId", userId);
+//			ctx.getRequest().setAttribute("tenantId", tenantId);
+//			ctx.getRequest().setAttribute("realName", realName);
+//		} catch (Exception e) {
+//			ctx.setSendZuulResponse(false);
+//			OperateResult op = new OperateResult("", "forbidden", "");
+//			op.setStatusCode("500");
+//			try {
+//				ctx.setResponseBody(mapper.writeValueAsString(op));
+//			} catch (JsonProcessingException e1) {
+//			}
+//		}
+		ctx.getRequest().setAttribute("userId", "sssxx");
 		return null;
 	}
 

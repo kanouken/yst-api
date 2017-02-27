@@ -1,6 +1,6 @@
 package org.common.tools;
 
-public class OperateResult {
+public class OperateResult<T> {
 
 	private String innerException;
 
@@ -8,11 +8,18 @@ public class OperateResult {
 		return innerException;
 	}
 
+	public OperateResult(T data) {
+		this.statusCode = "200";
+		this.innerException = "";
+		this.description = "";
+		this.data = data;
+	}
+
 	public void setInnerException(String innerException) {
 		this.innerException = innerException;
 	}
 
-	public OperateResult(String innerException, String description, Object data) {
+	public OperateResult(String innerException, String description, T data) {
 		super();
 		this.innerException = innerException;
 		this.description = description;
@@ -49,13 +56,13 @@ public class OperateResult {
 		this.description = description;
 	}
 
-	private Object data;
+	private T data;
 
-	public Object getData() {
+	public T getData() {
 		return data;
 	}
 
-	public void setData(Object data) {
+	public void setData(T data) {
 		this.data = data;
 	}
 

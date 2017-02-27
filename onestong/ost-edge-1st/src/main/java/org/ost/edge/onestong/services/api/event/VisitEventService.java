@@ -497,7 +497,7 @@ public class VisitEventService extends EventBaseService {
 	 * @return
 	 */
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public Object visitIn(org.ost.entity.user.Users currentUser, VisitEventUpdateVo vo) {
+	public Object visitIn(User currentUser, VisitEventUpdateVo vo) {
 		String eId = vo.geteId();
 		VisitEvents ves = new VisitEvents();
 		ves.setUpdateTime(new Date());

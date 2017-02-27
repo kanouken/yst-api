@@ -7,11 +7,9 @@ import org.ost.entity.contacts.contactsinfo.dto.ContactsInfoDto;
 import org.ost.entity.contacts.file.dto.ContactsFileDto;
 import org.ost.entity.customer.dto.CustomerListDto;
 
-public class ContactsDetailDto {
+public class ContactsCreateDto {
 
 	private CustomerListDto customer;
-
-	private Integer id;
 
 	private String dept;
 	// 邮箱
@@ -35,14 +33,6 @@ public class ContactsDetailDto {
 
 	public void setCustomer(CustomerListDto customer) {
 		this.customer = customer;
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
 	}
 
 	public String getPy() {
@@ -156,5 +146,4 @@ public class ContactsDetailDto {
 	public void setSchemaId(String schemaId) {
 		this.schemaId = schemaId;
 	}
-
 }

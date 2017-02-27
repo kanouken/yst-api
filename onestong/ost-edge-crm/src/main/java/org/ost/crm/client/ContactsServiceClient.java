@@ -2,6 +2,7 @@ package org.ost.crm.client;
 
 import java.util.List;
 
+import org.common.tools.OperateResult;
 import org.ost.entity.contacts.dto.ContactsDto;
 import org.ost.entity.contacts.dto.ContactsListDto;
 import org.springframework.cloud.netflix.feign.FeignClient;
@@ -16,13 +17,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface ContactsServiceClient {
 
 	@RequestMapping(value = "contacts/", method = RequestMethod.POST)
-	public void createContact(@RequestBody ContactsDto contactDto);
+	public OperateResult<ContactsDto> createContact(
+			@RequestHeader(value = "schemaID", required = false) String schemaID, @RequestBody ContactsDto contactDto);
 
 	@RequestMapping(value = "contacts/{id}/", method = RequestMethod.PUT)
-	public void updateContact(@PathVariable(value = "id") Integer id, @RequestBody ContactsDto contactDto);
+	public OperateResult<ContactsDto> updateContact(@PathVariable(value = "id") Integer id,
+			@RequestBody ContactsDto contactDto);
 
 	@RequestMapping(value = "contacts/{id}/", method = RequestMethod.GET)
-	public ContactsDto queryDetail(@PathVariable(value = "id") Integer id, String tenantId);
+	public OperateResult<ContactsDto> queryDetail(@PathVariable(value = "id") Integer id, String tenantId);
 
 	@RequestMapping(value = "contacts/list/", method = RequestMethod.GET)
 	public List<ContactsListDto> contactList(@RequestHeader(value = "curPage") Integer curPage,
