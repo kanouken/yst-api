@@ -32,16 +32,16 @@
         </javaClientGenerator>
         <!--生成对应表及类名-->
         <table tableName="tbl_address" domainObjectName="ContactsAddress" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
-        	  <columnOverride column="schemaId" property="tenantId" />
-        </table>
+<!--         	  <columnOverride column="schemaId" property="tenantId" />
+ -->        </table>
          <table tableName="tbl_contact" domainObjectName="Contacts" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
-        	  <columnOverride column="schemaId" property="tenantId" />
-        </table>
+<!--         	  <columnOverride column="schemaId" property="tenantId" />
+ -->        </table>
          <table tableName="tbl_contact_info" domainObjectName="ContactsInfo" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
-        	  <columnOverride column="schemaId" property="tenantId" />
-        </table>
+<!--         	  <columnOverride column="schemaId" property="tenantId" />
+ -->        </table>
          <table tableName="tbl_file" domainObjectName="ContactsFile" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
-        	  <columnOverride column="schemaId" property="tenantId" />
-        </table>
+<!--         	  <columnOverride column="schemaId" property="tenantId" />
+ -->        </table>
     </context>
 </generatorConfiguration>

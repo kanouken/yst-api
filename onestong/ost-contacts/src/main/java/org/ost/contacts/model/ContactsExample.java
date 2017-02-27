@@ -965,73 +965,73 @@ public class ContactsExample {
             return (Criteria) this;
         }
 
-        public Criteria andTenantIdIsNull() {
+        public Criteria andSchemaidIsNull() {
             addCriterion("schemaID is null");
             return (Criteria) this;
         }
 
-        public Criteria andTenantIdIsNotNull() {
+        public Criteria andSchemaidIsNotNull() {
             addCriterion("schemaID is not null");
             return (Criteria) this;
         }
 
-        public Criteria andTenantIdEqualTo(String value) {
-            addCriterion("schemaID =", value, "tenantId");
+        public Criteria andSchemaidEqualTo(String value) {
+            addCriterion("schemaID =", value, "schemaid");
             return (Criteria) this;
         }
 
-        public Criteria andTenantIdNotEqualTo(String value) {
-            addCriterion("schemaID <>", value, "tenantId");
+        public Criteria andSchemaidNotEqualTo(String value) {
+            addCriterion("schemaID <>", value, "schemaid");
             return (Criteria) this;
         }
 
-        public Criteria andTenantIdGreaterThan(String value) {
-            addCriterion("schemaID >", value, "tenantId");
+        public Criteria andSchemaidGreaterThan(String value) {
+            addCriterion("schemaID >", value, "schemaid");
             return (Criteria) this;
         }
 
-        public Criteria andTenantIdGreaterThanOrEqualTo(String value) {
-            addCriterion("schemaID >=", value, "tenantId");
+        public Criteria andSchemaidGreaterThanOrEqualTo(String value) {
+            addCriterion("schemaID >=", value, "schemaid");
             return (Criteria) this;
         }
 
-        public Criteria andTenantIdLessThan(String value) {
-            addCriterion("schemaID <", value, "tenantId");
+        public Criteria andSchemaidLessThan(String value) {
+            addCriterion("schemaID <", value, "schemaid");
             return (Criteria) this;
         }
 
-        public Criteria andTenantIdLessThanOrEqualTo(String value) {
-            addCriterion("schemaID <=", value, "tenantId");
+        public Criteria andSchemaidLessThanOrEqualTo(String value) {
+            addCriterion("schemaID <=", value, "schemaid");
             return (Criteria) this;
         }
 
-        public Criteria andTenantIdLike(String value) {
-            addCriterion("schemaID like", value, "tenantId");
+        public Criteria andSchemaidLike(String value) {
+            addCriterion("schemaID like", value, "schemaid");
             return (Criteria) this;
         }
 
-        public Criteria andTenantIdNotLike(String value) {
-            addCriterion("schemaID not like", value, "tenantId");
+        public Criteria andSchemaidNotLike(String value) {
+            addCriterion("schemaID not like", value, "schemaid");
             return (Criteria) this;
         }
 
-        public Criteria andTenantIdIn(List<String> values) {
-            addCriterion("schemaID in", values, "tenantId");
+        public Criteria andSchemaidIn(List<String> values) {
+            addCriterion("schemaID in", values, "schemaid");
             return (Criteria) this;
         }
 
-        public Criteria andTenantIdNotIn(List<String> values) {
-            addCriterion("schemaID not in", values, "tenantId");
+        public Criteria andSchemaidNotIn(List<String> values) {
+            addCriterion("schemaID not in", values, "schemaid");
             return (Criteria) this;
         }
 
-        public Criteria andTenantIdBetween(String value1, String value2) {
-            addCriterion("schemaID between", value1, value2, "tenantId");
+        public Criteria andSchemaidBetween(String value1, String value2) {
+            addCriterion("schemaID between", value1, value2, "schemaid");
             return (Criteria) this;
         }
 
-        public Criteria andTenantIdNotBetween(String value1, String value2) {
-            addCriterion("schemaID not between", value1, value2, "tenantId");
+        public Criteria andSchemaidNotBetween(String value1, String value2) {
+            addCriterion("schemaID not between", value1, value2, "schemaid");
             return (Criteria) this;
         }
 

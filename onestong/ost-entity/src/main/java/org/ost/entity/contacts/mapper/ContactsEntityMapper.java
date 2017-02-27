@@ -31,7 +31,7 @@ public interface ContactsEntityMapper {
 			@Mapping(source = "dto.detailAddress1", target = "detailAddress1"),
 			@Mapping(source = "dto.detailAddress2", target = "detailAddress2"),
 			@Mapping(source = "dto.detailAddress3", target = "detailAddress3"),
-			@Mapping(source = "contacts.tenantId", target = "tenantId"),
+			@Mapping(source = "contacts.schemaId", target = "schemaId"),
 			@Mapping(source = "contacts.currentUserName", target = "createBy"),
 			@Mapping(source = "contacts.currentUserName", target = "updateBy"),
 			@Mapping(target = "createTime", expression = "java(new java.util.Date())"),
@@ -44,7 +44,7 @@ public interface ContactsEntityMapper {
 	@Mappings({
 
 			@Mapping(source = "dto.type", target = "type"), @Mapping(source = "dto.custName", target = "custName"),
-			@Mapping(source = "dto.val", target = "val"), @Mapping(source = "contacts.tenantId", target = "tenantId"),
+			@Mapping(source = "dto.val", target = "val"), @Mapping(source = "contacts.schemaId", target = "schemaId"),
 			@Mapping(source = "contacts.currentUserName", target = "createBy"),
 			@Mapping(source = "contacts.currentUserName", target = "updateBy"),
 			@Mapping(target = "createTime", expression = "java(new java.util.Date())"),
@@ -57,7 +57,7 @@ public interface ContactsEntityMapper {
 	@Mappings({
 
 			@Mapping(source = "dto.type", target = "type"), @Mapping(source = "dto.val", target = "val"),
-			@Mapping(source = "contacts.tenantId", target = "tenantId"),
+			@Mapping(source = "contacts.schemaId", target = "schemaId"),
 			@Mapping(source = "contacts.currentUserName", target = "createBy"),
 			@Mapping(source = "contacts.currentUserName", target = "updateBy"),
 			@Mapping(target = "createTime", expression = "java(new java.util.Date())"),
