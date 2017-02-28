@@ -9,10 +9,12 @@ import org.apache.ibatis.session.RowBounds;
 import org.common.tools.db.Page;
 import org.common.tools.pinyin.Chinese2PY;
 import org.ost.customers.dao.CustomerDao;
+import org.ost.customers.dao.CustomerProjectDao;
 import org.ost.customers.dao.address.AddressDao;
 import org.ost.customers.dao.contacinfo.ContactInfoDao;
 import org.ost.entity.base.PageEntity;
 import org.ost.entity.customer.Customer;
+import org.ost.entity.customer.CustomerProject;
 import org.ost.entity.customer.address.Address;
 import org.ost.entity.customer.address.mapper.AddressEntityMapper;
 import org.ost.entity.customer.contacts.ContactsInfo;
@@ -177,6 +179,22 @@ public class CustomerService {
 	public List<CustomerListDto> queryByIds(String schemaID, Integer[] ids) {
 		List<Customer> customers = this.customerDao.selectByIds(ids);
 		return CustomerEntityMapper.INSTANCE.customersToCustomerListDtos(customers);
+	}
+
+	@Autowired
+	private CustomerProjectDao cpDao;
+
+	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
+	public String createCustomerProject(Users users, Integer customerId, Integer projectId) {
+		CustomerProject cProject = new CustomerProject();
+		cProject.setProjectID(projectId);
+		cProject.setCustomerID(customerId);
+		cProject.setCreateBy(users.getRealname());
+		cProject.setUpdateBy(users.getRealname());
+		cProject.setCreateTime(new Date());
+		cProject.setUpdateTime(new Date());
+		cpDao.insert(cProject);
+		return "ok";
 	}
 
 }

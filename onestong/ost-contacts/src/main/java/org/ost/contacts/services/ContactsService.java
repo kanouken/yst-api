@@ -11,6 +11,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.common.tools.OperateResult;
 import org.common.tools.pinyin.Chinese2PY;
 import org.ost.contacts.dao.ContactDao;
+import org.ost.contacts.dao.ProjectContactsDao;
 import org.ost.contacts.dao.address.ContactsAddressDao;
 import org.ost.contacts.dao.files.ContactsFileDao;
 import org.ost.contacts.dao.info.ContactsInfoDao;
@@ -18,8 +19,10 @@ import org.ost.contacts.model.ContactsAddressExample;
 import org.ost.contacts.model.ContactsExample;
 import org.ost.contacts.model.ContactsFileExample;
 import org.ost.contacts.model.ContactsInfoExample;
+import org.ost.contacts.model.ProjectContactsExample;
 import org.ost.entity.base.PageEntity;
 import org.ost.entity.contacts.Contacts;
+import org.ost.entity.contacts.ProjectContacts;
 import org.ost.entity.contacts.address.ContactsAddress;
 import org.ost.entity.contacts.contactsinfo.ContactsInfo;
 import org.ost.entity.contacts.contactsinfo.dto.ContactsInfoDto;
@@ -27,6 +30,7 @@ import org.ost.entity.contacts.dto.ContactsDto;
 import org.ost.entity.contacts.dto.ContactsListDto;
 import org.ost.entity.contacts.file.ContactsFile;
 import org.ost.entity.contacts.mapper.ContactsEntityMapper;
+import org.ost.entity.project.dto.ProjectCreateOrUpdateDto;
 import org.ost.entity.user.Users;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +51,9 @@ public class ContactsService {
 	private ContactsInfoDao infoDao;
 	@Autowired
 	private ContactsFileDao fileDao;
+
+	@Autowired
+	private ProjectContactsDao pcDao;
 
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
 	public ContactsDto createContacts(ContactsDto contactsDto) {
@@ -105,6 +112,7 @@ public class ContactsService {
 
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
 	public ContactsDto updateContacts(Integer id, ContactsDto contactsDto) {
+		// TODO 更新 客户联系人 关系
 		Contacts contact = new Contacts();
 		contact.setId(id);
 		contact.setCreateTime(new Date());
@@ -258,6 +266,55 @@ public class ContactsService {
 		this.fileDao.updateByExample(cf, cfe);
 
 		return id;
+	}
+
+	/**
+	 * 新增 ／ 更新项目联系人关系
+	 * 
+	 * @param schemaID
+	 * @param dto
+	 */
+	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
+	public String createOrUpdateProjectContacts(String schemaID, ProjectCreateOrUpdateDto dto) {
+
+		dto.getContacts().forEach(contacts -> {
+
+			ProjectContacts pContacts = new ProjectContacts();
+			pContacts.setContactID(contacts.getId());
+			pContacts.setProjectID(Integer.parseInt(dto.getId()));
+			pContacts.setCreateBy(dto.getCreateBy());
+			pContacts.setSchemaId(schemaID);
+			pContacts.setUpdateBy(dto.getCreateBy());
+			pContacts.setCreateTime(new Date());
+			pContacts.setUpdateTime(new Date());
+			pContacts.setIsDelete(Short.parseShort("0"));
+			this.pcDao.insert(pContacts);
+		});
+		return "ok";
+	}
+
+	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
+	public String updateConactsProject(String schemaID, List<ContactsListDto> dtos) {
+		ProjectContactsExample pce = new ProjectContactsExample();
+		pce.createCriteria().andSchemaidEqualTo(schemaID).andProjectidEqualTo(dtos.get(0).getProjectId())
+				.andIsdeleteEqualTo(Byte.parseByte("0"));
+		ProjectContacts pContacts = new ProjectContacts();
+		pContacts.setIsDelete(Short.valueOf("1"));
+		pContacts.setUpdateTime(new Date());
+		pContacts.setUpdateBy(dtos.get(0).getCurrentUserName());
+		this.pcDao.updateByExampleSelective(pContacts, pce);
+
+		dtos.forEach(contacts -> {
+
+			ProjectContacts _pContacts = new ProjectContacts();
+			_pContacts.setContactID(contacts.getId());
+			_pContacts.setProjectID(contacts.getProjectId());
+			_pContacts.setCreateBy(contacts.getCurrentUserName());
+			_pContacts.setSchemaId(schemaID);
+			_pContacts.setUpdateBy(contacts.getCurrentUserName());
+			this.pcDao.insertSelective(_pContacts);
+		});
+		return "ok";
 	}
 
 }

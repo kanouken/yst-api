@@ -6,7 +6,11 @@ import org.ost.entity.customer.vo.CustomerVo;
 
 public class ContactsListDto {
 
+	private Integer projectId;
+
 	private CustomerVo customer;
+
+	private String currentUserName;
 
 	private String dept;
 	// 邮箱
@@ -22,7 +26,23 @@ public class ContactsListDto {
 	private String sexName;
 	private String szm;
 
+	public Integer getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Integer projectId) {
+		this.projectId = projectId;
+	}
+
 	private Integer customerID;
+
+	public String getCurrentUserName() {
+		return currentUserName;
+	}
+
+	public void setCurrentUserName(String currentUserName) {
+		this.currentUserName = currentUserName;
+	}
 
 	public Integer getCustomerID() {
 		return customerID;

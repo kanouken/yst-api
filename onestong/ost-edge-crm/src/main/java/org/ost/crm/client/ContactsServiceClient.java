@@ -6,6 +6,7 @@ import org.common.tools.OperateResult;
 import org.ost.entity.base.PageEntity;
 import org.ost.entity.contacts.dto.ContactsDto;
 import org.ost.entity.contacts.dto.ContactsListDto;
+import org.ost.entity.project.dto.ProjectCreateOrUpdateDto;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,4 +35,11 @@ public interface ContactsServiceClient {
 			@RequestParam(value = "email") String email, @RequestParam(value = "name") String name,
 			@RequestParam(value = "phone") String phone, @RequestParam(value = "customerID") Integer customerID);
 
+	@RequestMapping(value = "contacts/project", method = RequestMethod.POST)
+	public OperateResult<String> updateContactProject(@RequestHeader(value = "schemaID") String schemaID,
+			@RequestBody ProjectCreateOrUpdateDto dto);
+
+	@RequestMapping(value = "contacts/project", method = RequestMethod.PUT)
+	public OperateResult<String> updateProject(@RequestHeader(value = "schemaID") String schemaID,
+			@RequestBody List<ContactsListDto> dtos);
 }

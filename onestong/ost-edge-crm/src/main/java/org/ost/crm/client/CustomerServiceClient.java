@@ -9,6 +9,7 @@ import org.ost.entity.customer.dto.CustomerDetailDto;
 import org.ost.entity.customer.dto.CustomerListDto;
 import org.ost.entity.customer.dto.CustomerUpdateDto;
 import org.ost.entity.customer.vo.CustomerCreateVo;
+import org.ost.entity.user.Users;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,7 +33,7 @@ public interface CustomerServiceClient {
 			@RequestBody Customer customer);
 
 	@RequestMapping("customer/{id}/")
-	public CustomerDetailDto queryDetail(@PathVariable(value = "id") Integer id,
+	public OperateResult<CustomerDetailDto> queryDetail(@PathVariable(value = "id") Integer id,
 			@RequestHeader(value = "schemaID", required = false) String schemaId);
 
 	@RequestMapping(value = "customer/{id}", method = RequestMethod.PUT)
@@ -46,5 +47,10 @@ public interface CustomerServiceClient {
 	@RequestMapping(value = "customer/queryByIds", method = RequestMethod.GET)
 	public OperateResult<List<CustomerListDto>> queryByIds(@RequestHeader(value = "schemaID") String schemaID,
 			@RequestParam(value = "ids") int[] ids);
+
+	@RequestMapping(value = "customer/project/", method = RequestMethod.POST)
+	public OperateResult<String> createCustomerProject(@RequestHeader(value = "schemaID") String schemaID,
+			@RequestParam(value = "customerId") Integer customerId,
+			@RequestParam(value = "projectId") Integer projectId, Users users);
 
 }

@@ -6,10 +6,11 @@ import org.ost.entity.contacts.address.dto.ContactsAddressDto;
 import org.ost.entity.contacts.contactsinfo.dto.ContactsInfoDto;
 import org.ost.entity.contacts.file.dto.ContactsFileDto;
 import org.ost.entity.customer.dto.CustomerListDto;
+import org.ost.entity.customer.vo.CustomerVo;
 
 public class ContactsDetailDto {
 
-	private CustomerListDto customer;
+	private CustomerVo customer;
 
 	private Integer id;
 
@@ -29,11 +30,11 @@ public class ContactsDetailDto {
 	private String sexName;
 	private String szm;
 
-	public CustomerListDto getCustomer() {
+	public CustomerVo getCustomer() {
 		return customer;
 	}
 
-	public void setCustomer(CustomerListDto customer) {
+	public void setCustomer(CustomerVo customer) {
 		this.customer = customer;
 	}
 

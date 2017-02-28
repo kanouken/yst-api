@@ -77,5 +77,15 @@ public class CustomerController extends Action {
 			@RequestParam(value = "ids") Integer[] ids) {
 		return new OperateResult<List<CustomerListDto>>(customerService.queryByIds(schemaID, ids));
 	}
+	
+	@RequestMapping(value = "/project", method = RequestMethod.POST)
+	public OperateResult<String> createCustomerProject(@RequestHeader(value = "schemaID") String schemaID,
+			@RequestParam(value="customerId") Integer customerId,@RequestParam(value="projectId") Integer projectId,
+			Users users
+			) {
+		return new OperateResult<String>(this.customerService.createCustomerProject(users,customerId,projectId));
+	}
+	
+	
 
 }

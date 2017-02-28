@@ -1,5 +1,7 @@
 package org.ost.crm.controller.contacts;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.common.tools.OperateResult;
 import org.ost.crm.controller.base.Action;
 import org.ost.crm.services.contacts.ContactsService;
@@ -11,6 +13,7 @@ import org.ost.entity.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -46,5 +49,9 @@ public class ContactsController extends Action {
 		return new OperateResult<PageEntity<ContactsListDto>>(this.contactsService.queryContacts(schemaID, customerID,
 				keyword, name, phone, users, curPage, perPageSum));
 	}
-
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+	public OperateResult<ContactsCreateDto> updateContacts(@PathVariable(value = "id") Integer contactsId,
+			@RequestAttribute(value = LOGIN_USER) Users users,@RequestBody ContactsCreateDto dto ) {
+		return new OperateResult<ContactsCreateDto>(this.contactsService.updateContacts(contactsId,users,dto));
+	}
 }

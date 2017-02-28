@@ -1,10 +1,13 @@
 package org.ost.contacts.controllers;
 
+import java.util.List;
+
 import org.common.tools.OperateResult;
 import org.ost.contacts.services.ContactsService;
 import org.ost.entity.base.PageEntity;
 import org.ost.entity.contacts.dto.ContactsDto;
 import org.ost.entity.contacts.dto.ContactsListDto;
+import org.ost.entity.project.dto.ProjectCreateOrUpdateDto;
 import org.ost.entity.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,7 +40,7 @@ public class ContactController {
 			@RequestParam(value = "email") String email, @RequestParam(value = "name") String name,
 			@RequestParam(value = "phone") String phone, @RequestParam(value = "customerID") Integer customerID) {
 		return new OperateResult<PageEntity<ContactsListDto>>(
-				this.contactService.queryContacts(schemaID, curPage, perPageSum, email, name, phone,customerID));
+				this.contactService.queryContacts(schemaID, curPage, perPageSum, email, name, phone, customerID));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -49,5 +52,17 @@ public class ContactController {
 	public OperateResult<ContactsDto> updateContact(@PathVariable(value = "id") Integer id,
 			@RequestBody ContactsDto contactDto) {
 		return new OperateResult<ContactsDto>(this.contactService.updateContacts(id, contactDto));
+	}
+
+	@RequestMapping(value = "/project", method = RequestMethod.POST)
+	public OperateResult<String> updateContactProject(@RequestHeader(value = "schemaID") String schemaID,
+			@RequestBody ProjectCreateOrUpdateDto dto) {
+		return new OperateResult<String>(this.contactService.createOrUpdateProjectContacts(schemaID, dto));
+	}
+
+	@RequestMapping(value = "/project", method = RequestMethod.PUT)
+	public OperateResult<String> updateProject(@RequestHeader(value = "schemaID") String schemaID,
+			@RequestBody List<ContactsListDto> dtos) {
+		return new OperateResult<String>(this.contactService.updateConactsProject(schemaID, dtos));
 	}
 }

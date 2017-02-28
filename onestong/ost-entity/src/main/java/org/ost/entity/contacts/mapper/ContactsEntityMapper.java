@@ -14,6 +14,7 @@ import org.ost.entity.contacts.contactsinfo.dto.ContactsInfoDto;
 import org.ost.entity.contacts.dto.ContactsCreateDto;
 import org.ost.entity.contacts.dto.ContactsDetailDto;
 import org.ost.entity.contacts.dto.ContactsDto;
+import org.ost.entity.contacts.dto.ContactsListDto;
 import org.ost.entity.contacts.file.ContactsFile;
 import org.ost.entity.contacts.file.dto.ContactsFileDto;
 import org.ost.entity.user.Users;
@@ -83,5 +84,10 @@ public interface ContactsEntityMapper {
 	ContactsDto contactsCreateDtoToContactsDto(ContactsCreateDto contactsDto);
 
 	ContactsDetailDto contactsDtoToContactsDetailDto(ContactsDto contactsDto);
+
+	ContactsListDto contactsDtoToContactsListDto(ContactsDto contacts);
+	
+	
+	List<ContactsListDto> contactsDtoToContactsListDto(List<ContactsDto> contacts);
 
 }

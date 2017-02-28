@@ -5,9 +5,12 @@ import java.util.List;
 import org.ost.entity.contacts.address.dto.ContactsAddressDto;
 import org.ost.entity.contacts.contactsinfo.dto.ContactsInfoDto;
 import org.ost.entity.contacts.file.dto.ContactsFileDto;
+import org.ost.entity.customer.vo.CustomerVo;
 
 public class ContactsDto {
 	private Integer id;
+
+	private CustomerVo customer;
 
 	private String dept;
 	// 邮箱
@@ -24,7 +27,14 @@ public class ContactsDto {
 	private String py;
 	private String sexName;
 	private String szm;
-	
+
+	public CustomerVo getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(CustomerVo customer) {
+		this.customer = customer;
+	}
 
 	public Integer getId() {
 		return id;

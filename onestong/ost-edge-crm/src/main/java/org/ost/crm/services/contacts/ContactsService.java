@@ -16,6 +16,7 @@ import org.ost.entity.contacts.dto.ContactsDetailDto;
 import org.ost.entity.contacts.dto.ContactsDto;
 import org.ost.entity.contacts.dto.ContactsListDto;
 import org.ost.entity.contacts.mapper.ContactsEntityMapper;
+import org.ost.entity.customer.dto.CustomerDetailDto;
 import org.ost.entity.customer.dto.CustomerListDto;
 import org.ost.entity.customer.dto.CustomerUpdateDto;
 import org.ost.entity.customer.vo.CustomerVo;
@@ -61,8 +62,9 @@ public class ContactsService {
 		OperateResult<ContactsDto> result = this.contactsServiceClient.queryDetail(contactsId, users.getSchemaId());
 		ContactsDto contactsDto = result.getData();
 		ContactsDetailDto detailDto = ContactsEntityMapper.INSTANCE.contactsDtoToContactsDetailDto(contactsDto);
-		detailDto.setCustomer(
-				this.customerServiceClient.queryDetailByContacts(users.getSchemaId(), contactsId).getData());
+		OperateResult<CustomerDetailDto> result2 = this.customerServiceClient
+				.queryDetail(contactsDto.getCustomer().getId(), users.getSchemaId());
+		detailDto.setCustomer(new CustomerVo(result2.getData().getId(), result2.getData().getName()));
 		return detailDto;
 	}
 
@@ -70,18 +72,29 @@ public class ContactsService {
 			String phone, Users users, Integer curPage, Integer perPageSum) {
 		OperateResult<PageEntity<ContactsListDto>> result = contactsServiceClient.queryContacts(curPage, schemaID,
 				perPageSum, null, name, phone, customerID);
-		OperateResult<List<CustomerListDto>> result2 = this.customerServiceClient.queryByIds(schemaID,
-				result.getData().getObjects().stream().mapToInt(d -> d.getCustomerID()).toArray());
-
+		OperateResult<CustomerDetailDto> result2 = this.customerServiceClient.queryDetail(customerID, schemaID);
 		result.getData().getObjects().forEach(contactsListDto -> {
-			Optional<CustomerListDto> _tmp = result2.getData().stream()
-					.filter(customer -> customer.getId().equals(contactsListDto.getCustomerID())).findFirst();
-			if (_tmp.isPresent()) {
-				contactsListDto.setCustomer(new CustomerVo(_tmp.get().getId(), _tmp.get().getName()));
-			}
+			contactsListDto.setCustomer(new CustomerVo(result2.getData().getId(), result2.getData().getName()));
 		});
-
 		return result.getData();
+	}
+
+	/**
+	 * 更新联系人
+	 * 
+	 * @param contactsId
+	 * @param users
+	 * @param dto
+	 * @return
+	 */
+	public ContactsCreateDto updateContacts(Integer contactsId, Users users, ContactsCreateDto dto) {
+		ContactsDto contactsDto = ContactsEntityMapper.INSTANCE.contactsCreateDtoToContactsDto(dto);
+		OperateResult<ContactsDto> result = contactsServiceClient.updateContact(contactsId, contactsDto);
+		if (result.getData() != null) {
+			return dto;
+		} else {
+			throw new ApiException("更新联系人失败", result.getInnerException());
+		}
 	}
 
 }
