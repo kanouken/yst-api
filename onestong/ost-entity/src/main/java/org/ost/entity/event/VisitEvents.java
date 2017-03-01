@@ -10,6 +10,25 @@ import javax.persistence.Table;
 @Table(name = "visit_events")
 public class VisitEvents {
 
+	private Integer contactsId;
+	private String contactsName;
+
+	public Integer getContactsId() {
+		return contactsId;
+	}
+
+	public void setContactsId(Integer contactsId) {
+		this.contactsId = contactsId;
+	}
+
+	public String getContactsName() {
+		return contactsName;
+	}
+
+	public void setContactsName(String contactsName) {
+		this.contactsName = contactsName;
+	}
+
 	public VisitEvents() {
 		super();
 	}

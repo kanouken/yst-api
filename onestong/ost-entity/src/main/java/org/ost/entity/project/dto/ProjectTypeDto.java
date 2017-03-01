@@ -1,18 +1,8 @@
-package org.ost.entity.project.vo;
+package org.ost.entity.project.dto;
 
-public class ProjectVo {
+public class ProjectTypeDto {
 	private Integer id;
 	private String name;
-
-	public ProjectVo() {
-		super();
-	}
-
-	public ProjectVo(Integer id, String name) {
-		super();
-		this.id = id;
-		this.name = name;
-	}
 
 	public Integer getId() {
 		return id;
@@ -29,4 +19,5 @@ public class ProjectVo {
 	public void setName(String name) {
 		this.name = name;
 	}
+
 }

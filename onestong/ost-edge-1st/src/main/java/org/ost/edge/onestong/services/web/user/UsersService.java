@@ -26,7 +26,6 @@ import org.ost.edge.onestong.dao.resources.ResourceMapper;
 import org.ost.edge.onestong.dao.scoreSystem.LikeMapper;
 import org.ost.edge.onestong.dao.system.ibeacon.IbeaconInfoMapper;
 import org.ost.edge.onestong.dao.system.location.AttenceLocationMapper;
-import org.ost.edge.onestong.dao.user.UserDao;
 import org.ost.edge.onestong.dao.user.UserMapper;
 import org.ost.edge.onestong.model.account.Account;
 import org.ost.edge.onestong.model.account.AccountExample;
@@ -45,16 +44,16 @@ import org.ost.edge.onestong.services.admin.domain.DomainOrderService;
 import org.ost.edge.onestong.services.authority.AuthorityService;
 import org.ost.edge.onestong.tools.Constants;
 import org.ost.edge.onestong.tools.ResourceHelper;
-import org.ost.entity.user.Users;
-import org.ost.entity.user.mapper.UserEntityMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 
 /**
  * 此类包含与用户相关的业务逻辑 eg：登录 注销 等等
@@ -608,6 +607,14 @@ public class UsersService {
 					// 初始化我点赞的事件
 					resultMap.put("myLikedEvents", this.likeMapper.selectMyLikedEventIds(user.getUserId()));
 					// resultMap.put(key, value)
+					// token
+
+					resultMap.put("token",
+							Jwts.builder().setSubject("1st").claim("userId", user.getUserId())
+									.claim("realName", user.getRealname()).claim("email", user.getEmail())
+									.claim("schemaId", user.getDomainId()).setIssuedAt(new Date())
+									.signWith(SignatureAlgorithm.HS256, "1stapp").compact());
+
 					op.setData(resultMap);
 					return op;
 
@@ -740,17 +747,13 @@ public class UsersService {
 
 	}
 
-	@Autowired
-	private UserDao userDao;
-
 	@Transactional(readOnly = true)
 	public Object queryAllContacts(User currentUser) {
-		User u = new User();
-		u.setDomainId(currentUser.getDomainId());
-		List<User> users = this.userDao.select(u);
-		if (CollectionUtils.isNotEmpty(users)) {
-//			return UserEntityMapper.INSTANCE.usersToUserListDtos(users);
-		}
-		return users;
+		// User u = new User();
+		// u.setDomainId(currentUser.getDomainId());
+		// List<User> users = this.userDao.select(u);
+		// return users;
+
+		return null;
 	}
 }

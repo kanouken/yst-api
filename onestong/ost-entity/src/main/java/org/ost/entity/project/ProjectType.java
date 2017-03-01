@@ -8,7 +8,6 @@ import org.ost.entity.base.BaseEntity;
 @Entity
 @Table(name = "tbl_project")
 public class ProjectType extends BaseEntity {
-	private Integer id;
 
 	private String name;
 
@@ -19,14 +18,6 @@ public class ProjectType extends BaseEntity {
 	private Integer startTimeWarningDay;
 
 	private String startTimeWarningEnable;
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
 
 	public String getName() {
 		return name;

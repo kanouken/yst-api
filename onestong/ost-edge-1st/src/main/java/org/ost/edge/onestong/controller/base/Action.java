@@ -21,6 +21,8 @@ import org.ost.entity.user.Users;
  * 
  */
 public class Action {
+	public static final String LOGIN_USER = "users";
+
 	public static final String PAGE_CURRENT = "curPage";
 	public static final String PAGE_CURRENT_DEFAULT = "1";
 	public static final String PAGE_PER_SIZE = "perPageSum";
@@ -155,9 +157,9 @@ public class Action {
 	}
 
 	protected User currentUser() {
-//		Users u = new Users();
-//		u.settId(1);
-//		u.setRealname("test");
+		// Users u = new Users();
+		// u.settId(1);
+		// u.setRealname("test");
 		return null;
 	}
 }

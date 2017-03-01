@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.OrderBy;
 import javax.persistence.Transient;
 
 @MappedSuperclass
@@ -16,6 +17,7 @@ public class BaseEntity {
 	private Integer id;
 	@Column(nullable = false, name = "schemaId")
 	private String schemaId;
+	@OrderBy(value="DESC")
 	private Date createTime;
 	private Date updateTime;
 	private short isDelete;

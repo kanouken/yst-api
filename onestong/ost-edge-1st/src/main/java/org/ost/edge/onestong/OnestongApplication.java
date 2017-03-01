@@ -2,9 +2,12 @@ package org.ost.edge.onestong;
 
 import java.io.IOException;
 
+import org.ost.edge.onestong.inteceptor.AuthCheckInterceptor;
+import org.ost.edge.onestong.inteceptor.CrossDomainInterceptor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -37,6 +40,15 @@ public class OnestongApplication extends WebMvcConfigurerAdapter {
 		SpringApplication.run(OnestongApplication.class, args);
 	}
 
+	public void addInterceptors(InterceptorRegistry registry) {
+		CrossDomainInterceptor cd = new CrossDomainInterceptor();
+		registry.addInterceptor(cd).addPathPatterns("/**");
+		AuthCheckInterceptor auth = new AuthCheckInterceptor();
+
+		registry.addInterceptor(auth).addPathPatterns("/**").excludePathPatterns("/swagger**", "/configuration/**",
+				"/v2/api**", "/info", "/api/users/login");
+	}
+
 	@Bean
 	public ObjectMapper objectMapper() {
 		ObjectMapper om = new ObjectMapper();
@@ -56,13 +68,13 @@ public class OnestongApplication extends WebMvcConfigurerAdapter {
 	@Bean
 	public Docket createRestApi() {
 		return new Docket(DocumentationType.SWAGGER_2).apiInfo(testApiInfo()).select()
-				.apis(RequestHandlerSelectors.basePackage("org.ost.edge.onestong.controller.api")).paths(PathSelectors.any())
-				.build();
+				.apis(RequestHandlerSelectors.basePackage("org.ost.edge.onestong.controller.api"))
+				.paths(PathSelectors.any()).build();
 	}
 
 	private ApiInfo testApiInfo() {
 		Contact contact = new Contact("auth", "name", "email");
-		ApiInfo apiInfo = new ApiInfo("", // 大标题
+		ApiInfo apiInfo = new ApiInfo("1st 事件", // 大标题
 				"api接口", // 小标题
 				"0.1", // 版本
 				"", contact, // 作者

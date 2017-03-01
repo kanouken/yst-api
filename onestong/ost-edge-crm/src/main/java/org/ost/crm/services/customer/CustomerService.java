@@ -14,6 +14,7 @@ import java.util.Map;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.common.tools.OperateResult;
 import org.common.tools.db.Page;
 import org.ost.crm.client.CustomerServiceClient;
 import org.ost.entity.base.PageEntity;
@@ -157,8 +158,8 @@ public class CustomerService {
 		return null;
 	}
 
-	public Object queryDetail(Integer customerId, Users user) {
-		CustomerDetailDto customerDetail = this.customerServiceClient.queryDetail(customerId, user.getSchemaId());
-		return customerDetail;
+	public CustomerDetailDto queryDetail(Integer customerId, Users user) {
+		OperateResult<CustomerDetailDto>  result = this.customerServiceClient.queryDetail(customerId, user.getSchemaId());
+		return result.getData();
 	}
 }

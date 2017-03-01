@@ -5,7 +5,9 @@ import org.ost.entity.customer.vo.CustomerVo;
 import org.ost.entity.location.vo.LocationVo;
 import org.ost.entity.project.vo.ProjectVo;
 
-public class VisitEventCreateVo {
+public class VisitEventDetailVo {
+	private String id;
+
 	private String contactType;
 	private String contactTime;
 	private String content;
@@ -19,6 +21,14 @@ public class VisitEventCreateVo {
 	private LocationVo location;
 
 	private ContactsDto contacts;
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public ContactsDto getContacts() {
 		return contacts;
@@ -83,5 +93,4 @@ public class VisitEventCreateVo {
 	public void setLocation(LocationVo location) {
 		this.location = location;
 	}
-
 }

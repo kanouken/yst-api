@@ -5,6 +5,7 @@ import java.io.StringWriter;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.ibatis.javassist.expr.NewArray;
 import org.common.tools.OperateResult;
 import org.common.tools.exception.ApiException;
 import org.slf4j.Logger;
@@ -32,7 +33,7 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		return new ResponseEntity<>( ex.getParameterName() + "不能为null", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(ex.getParameterName() + "不能为null", HttpStatus.BAD_REQUEST);
 	}
 
 	@Override
@@ -52,7 +53,7 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
 	@ResponseBody
 	ResponseEntity<?> handleControllerException(HttpServletRequest request, Throwable ex) {
 		ApiException ae = (ApiException) ex;
-		return new ResponseEntity<>(ex.getMessage(), HttpStatus.valueOf(409));
+		return new ResponseEntity<>(new OperateResult("", ae.getMessage(), null), HttpStatus.OK);
 	}
 
 	/**
@@ -73,7 +74,7 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
 		ex.printStackTrace(pWriter);
 		ex.printStackTrace();
 		logger.error(writer.getBuffer().toString());
-		return new ResponseEntity<>(writer.getBuffer(), HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(new OperateResult(writer.getBuffer().toString(), "服务器异常", null), HttpStatus.OK);
 	}
 
 }

@@ -14,6 +14,7 @@ import org.ost.entity.project.dto.ProjectCreateOrUpdateDto;
 import org.ost.entity.project.dto.ProjectPaymentDto;
 import org.ost.entity.project.dto.ProjectStepsDetailDto;
 import org.ost.entity.project.dto.ProjectStepsDto;
+import org.ost.entity.project.dto.ProjectTypeDto;
 
 @Mapper
 public interface ProjectEntityMapper {
@@ -37,4 +38,9 @@ public interface ProjectEntityMapper {
 	ProjectStepsDto projectTypeStepToProjectStepDto(ProjectTypeStep projectTypeStep);
 
 	List<ProjectStepsDto> projectTypeStepToProjectStepDto(List<ProjectTypeStep> projectTypeSteps);
+
+	ProjectTypeDto projectTypeToProjectTypeDto(ProjectType ptype);
+
+	List<ProjectTypeDto> projectTypesToProjectTypeDtos(List<ProjectType> pTypes);
+
 }

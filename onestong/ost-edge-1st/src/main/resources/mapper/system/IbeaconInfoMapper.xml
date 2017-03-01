@@ -105,7 +105,7 @@
   
   
   <select id="selectAllSetUpIbeacons"  resultMap="BaseResultMap">
-  	select ii.*  from ibeacon_info ii group by ii.ibeacon_uuid,ii.ibeancon_major,ii.ibeancon_minor
+  	select ii.ibeacon_uuid,ii.ibeancon_major,ii.ibeancon_minor  from ibeacon_info ii group by ii.ibeacon_uuid,ii.ibeancon_major,ii.ibeancon_minor
   
   </select>
   

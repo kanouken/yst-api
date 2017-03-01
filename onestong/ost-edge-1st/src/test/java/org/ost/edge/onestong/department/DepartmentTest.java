@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.ost.edge.onestong.model.user.User;
 import org.ost.edge.onestong.services.web.department.DepartmentService;
 import org.ost.entity.org.department.dto.DepartmentListDto;
 import org.ost.entity.user.Users;
@@ -20,8 +21,8 @@ public class DepartmentTest {
 	private DepartmentService deptService;
 	@Test
 	public void testQueryAllDepts(){
-		Users u = new Users();
-		u.settId(1);
+		User u = new User();
+		u.setUserId(1);
 		Object result = this.deptService.queryAllDepts(u);
 		if(result != null){
 			List<DepartmentListDto> ds = (List<DepartmentListDto>) result;

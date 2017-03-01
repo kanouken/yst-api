@@ -2,6 +2,7 @@ package org.ost.edge.onestong.event;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.ost.edge.onestong.model.user.User;
 import org.ost.edge.onestong.services.api.event.VisitEventService;
 import org.ost.entity.customer.vo.CustomerVo;
 import org.ost.entity.event.vo.VisitEventCreateVo;
@@ -21,10 +22,10 @@ public class VisitEventTest {
 	VisitEventService visitEventService;
 	@Test
 	public void createVisitTest(){
-		Users u  = new Users();
+		User u  = new User();
 		u.setUserId(1);
 		u.setRealname("test");
-		u.settId(1);
+		u.setDomainId(1);
 		VisitEventCreateVo   vo = new VisitEventCreateVo();
 		vo.setContent("test");
 		vo.setContactType("test");
@@ -38,10 +39,10 @@ public class VisitEventTest {
 	}
 	@Test
 	public void visitInTest(){
-		Users u  = new Users();
+		User u  = new User();
 		u.setUserId(1);
 		u.setRealname("test");
-		u.settId(1);
+		u.setDomainId(1);
 		LocationVo lvo = new LocationVo();
 		lvo.setLng("11111");
 		lvo.setLat("23");
@@ -54,10 +55,10 @@ public class VisitEventTest {
 	
 	@Test
 	public void writeResult(){
-		Users u  = new Users();
+		User u  = new User();
 		u.setUserId(1);
 		u.setRealname("test");
-		u.settId(1);
+		u.setDomainId(1);
 		LocationVo lvo = new LocationVo();
 		lvo.setLng("11111");
 		lvo.setLat("23");

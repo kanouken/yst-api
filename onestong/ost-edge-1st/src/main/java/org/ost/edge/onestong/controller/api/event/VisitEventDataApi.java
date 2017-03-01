@@ -26,15 +26,20 @@ import org.ost.edge.onestong.services.scoreSystem.LikeService;
 import org.ost.edge.onestong.services.web.user.UsersService;
 import org.ost.edge.onestong.tools.Constants;
 import org.ost.entity.event.vo.VisitEventUpdateVo;
+import org.ost.entity.user.Users;
+import org.ost.entity.event.VisitEvents;
 import org.ost.entity.event.vo.VisitEventCreateVo;
+import org.ost.entity.event.vo.VisitEventDetailVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.swagger.annotations.Api;
@@ -47,7 +52,7 @@ import net.sf.json.JSONObject;
  * @author xnq
  * 
  */
-@Controller
+@RestController
 @Api(tags = "外访")
 @RequestMapping("/api/visitEvent")
 public class VisitEventDataApi extends Action {
@@ -69,8 +74,9 @@ public class VisitEventDataApi extends Action {
 	 * @return
 	 */
 	@RequestMapping(value = "", method = RequestMethod.POST)
-	public Object createVisit(HttpServletRequest request, @RequestBody VisitEventCreateVo vo) {
-		return this.visitEventService.createVisitEvent(currentUser(), vo);
+	public OperateResult<VisitEvents> createVisit(@RequestAttribute(value = LOGIN_USER) User users,
+			@RequestBody VisitEventCreateVo vo) {
+		return new OperateResult<VisitEvents>(this.visitEventService.createVisitEvent(users, vo));
 	}
 
 	/**
@@ -79,20 +85,21 @@ public class VisitEventDataApi extends Action {
 	 * @return
 	 */
 	@RequestMapping(value = "visitIn", method = RequestMethod.POST)
-	public Object visitIn(HttpServletRequest request, @RequestBody VisitEventUpdateVo vo) {
-		return this.visitEventService.visitIn(currentUser(),vo);
+	public OperateResult<VisitEventUpdateVo> visitIn(@RequestAttribute(value = LOGIN_USER) User user,
+			@RequestBody VisitEventUpdateVo vo) {
+		return new OperateResult<VisitEventUpdateVo>(this.visitEventService.visitIn(user, vo));
 	}
-	
+
 	/**
 	 * 外访写结果
 	 * 
 	 * @return
 	 */
 	@RequestMapping(value = "result", method = RequestMethod.POST)
-	public Object writeResult(HttpServletRequest request, @RequestBody VisitEventUpdateVo vo) {
-		return this.visitEventService.writeResult(currentUser(),vo);
+	public OperateResult<VisitEventUpdateVo> writeResult(@RequestAttribute(value = LOGIN_USER) User user,
+			@RequestBody VisitEventUpdateVo vo) {
+		return new OperateResult<VisitEventUpdateVo>(this.visitEventService.writeResult(user, vo));
 	}
-
 
 	/**
 	 * 添加 项目标签与客户标签 时 设置 它的 domainId
@@ -380,13 +387,13 @@ public class VisitEventDataApi extends Action {
 
 		return op;
 	}
-	
-	@RequestMapping(value="detail")
-	public Object queryDetail(@RequestParam("eId") String eId){
-		return this.visitEventService.getDetail(eId);
+
+	@RequestMapping(value = "detail", method = RequestMethod.GET)
+	public OperateResult<VisitEventDetailVo> queryDetail(@RequestParam("eId") String eId,
+			@RequestAttribute(value = LOGIN_USER) User user) {
+		return new OperateResult<VisitEventDetailVo>(this.visitEventService.getDetail(user, eId));
 	}
-	
-	
+
 	/**
 	 * 
 	 * @param token

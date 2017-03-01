@@ -31,10 +31,13 @@ import org.ost.edge.onestong.model.user.User;
 import org.ost.edge.onestong.services.api.event.base.EventBaseService;
 import org.ost.edge.onestong.tools.Constants;
 import org.ost.edge.onestong.tools.ResourceHelper;
+import org.ost.entity.customer.vo.CustomerVo;
 import org.ost.entity.event.VisitEvents;
 import org.ost.entity.event.mapper.VisitEventEntityMapper;
 import org.ost.entity.event.vo.VisitEventUpdateVo;
+import org.ost.entity.project.vo.ProjectVo;
 import org.ost.entity.event.vo.VisitEventCreateVo;
+import org.ost.entity.event.vo.VisitEventDetailVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -480,8 +483,11 @@ public class VisitEventService extends EventBaseService {
 	 * @return
 	 */
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public Object createVisitEvent(User currentUser, VisitEventCreateVo vo) {
-		VisitEvents ves = VisitEventEntityMapper.INSTANCE.visitEventCreateVoToVisitEvents(vo, currentUser);
+	public VisitEvents createVisitEvent(User currentUser, VisitEventCreateVo vo) {
+		VisitEvents ves = VisitEventEntityMapper.INSTANCE.visitEventCreateVoToVisitEvents(vo);
+		ves.setCreator(currentUser.getRealname());
+		ves.setUpdator(currentUser.getRealname());
+		ves.setUserId(currentUser.getUserId());
 		if (vo.getContactType().equals("电话")) {
 			ves.setState(Byte.valueOf("2"));
 		}
@@ -497,7 +503,7 @@ public class VisitEventService extends EventBaseService {
 	 * @return
 	 */
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public Object visitIn(User currentUser, VisitEventUpdateVo vo) {
+	public VisitEventUpdateVo visitIn(User currentUser, VisitEventUpdateVo vo) {
 		String eId = vo.geteId();
 		VisitEvents ves = new VisitEvents();
 		ves.setUpdateTime(new Date());
@@ -509,16 +515,17 @@ public class VisitEventService extends EventBaseService {
 		ves.setVisitedLatitude(vo.getLocation().getLat());
 		ves.setVeId(eId);
 		if (0 < this.visitMapper.updateByPrimaryKeySelective(ves)) {
-			return OperateResult.renderSuccess(vo);
+			return vo;
 		} else {
 			throw new ApiException("外访签到失败");
 		}
 	}
 
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public Object writeResult(org.ost.entity.user.Users currentUser, VisitEventUpdateVo vo) {
+	public VisitEventUpdateVo writeResult(User currentUser, VisitEventUpdateVo vo) {
 		String eId = vo.geteId();
 		VisitEvents ves = new VisitEvents();
+		ves.setContent(vo.getContent());
 		ves.setUpdateTime(new Date());
 		ves.setState(Byte.valueOf("2"));
 		ves.setUpdateTime(new Date());
@@ -526,16 +533,19 @@ public class VisitEventService extends EventBaseService {
 		ves.setVeId(eId);
 		ves.setContent(vo.getContent());
 		if (0 < this.visitMapper.updateByPrimaryKeySelective(ves)) {
-			return OperateResult.renderSuccess(vo);
+			return vo;
 		} else {
 			throw new ApiException("外访写结果失败");
 		}
 	}
 
 	@Transactional(readOnly = true)
-	public Object getDetail(String eId) {
-		// TODO Auto-generated method stub
-		return null;
+	public VisitEventDetailVo getDetail(User user, String eId) {
+		VisitEvents vEvents = visitMapper.selectByPrimaryKey(eId);
+		VisitEventDetailVo detailVo = VisitEventEntityMapper.INSTANCE.visitEventsToVisitEventDetailVo(vEvents);
+		detailVo.setCustomer(new CustomerVo(vEvents.getCustomerId(), vEvents.getCustomerName()));
+		detailVo.setProject(new ProjectVo(vEvents.getProjectId(), vEvents.getProjectName()));
+		return detailVo;
 	}
 
 }

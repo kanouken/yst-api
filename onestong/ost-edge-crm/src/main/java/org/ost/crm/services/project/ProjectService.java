@@ -1,10 +1,12 @@
 package org.ost.crm.services.project;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import org.bouncycastle.jcajce.provider.asymmetric.RSA;
 import org.common.tools.OperateResult;
 import org.common.tools.exception.ApiException;
 import org.ost.crm.client.ContactsServiceClient;
@@ -16,6 +18,8 @@ import org.ost.crm.dao.project.ProjectPaymentExample;
 import org.ost.crm.dao.project.ProjectTypeDao;
 import org.ost.crm.dao.project.ProjectTypeStepDao;
 import org.ost.crm.dao.project.UserProjectDao;
+import org.ost.crm.model.common.CommonParams;
+import org.ost.crm.services.base.BaseService;
 import org.ost.entity.contacts.dto.ContactsListDto;
 import org.ost.entity.contacts.mapper.ContactsEntityMapper;
 import org.ost.entity.project.Project;
@@ -35,10 +39,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.hp.hpl.sparta.xpath.TrueExpr;
-
 @Service
-public class ProjectService {
+public class ProjectService extends BaseService {
 
 	@Autowired
 	private ProjectDao projectDao;
@@ -194,6 +196,49 @@ public class ProjectService {
 		List<ProjectTypeStep> ptss = ptsDao.select(pts);
 		detailDto.setSteps(ProjectEntityMapper.INSTANCE.projectTypeStepToProjectStepDto(ptss));
 		return detailDto;
+	}
+
+	@Transactional(readOnly = true)
+	public Map<String, Object> queryProjectParams(Users users) {
+		Map<String, Object> reqMap = new HashMap<String, Object>();
+		List<CommonParams> states = this.getParams("project_state");
+		List<CommonParams> roles = this.getParams("project_role");
+		ProjectType pType = new ProjectType();
+		pType.setIsDelete(Short.parseShort("0"));
+		pType.setSchemaId(users.getSchemaId());
+
+		List<ProjectType> pTypes = this.ptDao.select(pType);
+
+		// project state
+
+		List<Map<String, Object>> stateList = new ArrayList<Map<String, Object>>();
+
+		states.forEach(state -> {
+			stateList.add(new HashMap<String, Object>() {
+				{
+					put("id", state.getId());
+					put("name", state.getVal());
+				}
+			});
+		});
+
+		reqMap.put("role", roles.stream().map(role -> role.getVal()).collect(Collectors.toList()));
+		reqMap.put("state", stateList);
+		reqMap.put("type", ProjectEntityMapper.INSTANCE.projectTypesToProjectTypeDtos(pTypes));
+		return reqMap;
+	}
+
+	@Transactional(readOnly = true)
+	public Project queryDetail(Integer projectId, Users user) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Transactional(readOnly = true)
+	public Project queryProjects(Users user, Integer customerId, String keyword, String name, String state,
+			String typeId, Integer curPage, Integer perPageSum) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
