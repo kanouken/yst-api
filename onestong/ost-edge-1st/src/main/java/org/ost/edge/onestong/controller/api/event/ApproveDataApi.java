@@ -28,7 +28,9 @@ import org.springframework.web.multipart.MultipartFile;
 import net.sf.ezmorph.object.DateMorpher;
 import net.sf.json.JSONObject;
 import net.sf.json.util.JSONUtils;
-
+import springfox.documentation.annotations.ApiIgnore;
+@Deprecated
+@ApiIgnore
 @Controller
 @RequestMapping("/api/approval")
 public class ApproveDataApi extends Action {
