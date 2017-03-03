@@ -2,21 +2,29 @@ package org.ost.edge.onestong.services.api.event;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.session.RowBounds;
 import org.apache.poi.hssf.record.UseSelFSRecord;
+import org.common.tools.db.Page;
+import org.mapstruct.MapperConfig;
 import org.ost.edge.onestong.dao.event.approval.ApprovalDao;
 import org.ost.edge.onestong.dao.event.approval.ApprovalUsersDao;
 import org.ost.edge.onestong.dao.event.approval.ApprovalUsersExample;
 import org.ost.edge.onestong.dao.user.UserMapper;
 import org.ost.edge.onestong.model.user.User;
+import org.ost.entity.base.PageEntity;
 import org.ost.entity.event.approval.ApprovalEvent;
 import org.ost.entity.event.approval.ApprovalUsers;
 import org.ost.entity.event.approval.dto.ApprovalEventDto;
+import org.ost.entity.event.approval.dto.ApprovalListDto;
 import org.ost.entity.event.mapper.ApprovalEventEntityMapper;
 import org.ost.entity.user.dto.UserListDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.integration.IntegrationAutoConfiguration;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -162,15 +170,15 @@ public class ApprovalService {
 			detailDto.setBusTripReason(aEvent.getContent());
 		}
 		//
-		ApprovalUsers users  = new ApprovalUsers();
+		ApprovalUsers users = new ApprovalUsers();
 		users.setApprovalEventId(eId);
-		
+
 		List<ApprovalUsers> approvers = approvalUsersDao.select(users);
-		
-		List<UserListDto> _approvers = new  ArrayList<UserListDto>();
-		
-		approvers.forEach(approver->{
-			UserListDto  _user =  new  UserListDto();
+
+		List<UserListDto> _approvers = new ArrayList<UserListDto>();
+
+		approvers.forEach(approver -> {
+			UserListDto _user = new UserListDto();
 			_user.setId(approver.getUserId());
 			_user.setName(approver.getUpdateBy());
 			_approvers.add(_user);
@@ -178,6 +186,54 @@ public class ApprovalService {
 		detailDto.setAppprovers(_approvers);
 		detailDto.setUserPic(this.userMapper.selectByPrimaryKey(user.getUserId()).getPic());
 		return detailDto;
+	}
+
+	@Transactional(readOnly = true)
+	public Map<String, Object> queryApprovalsByUser(User user, String type, Integer curPage, Integer perPageSum) {
+		Map<String, Object> reqMap = new HashMap<String, Object>();
+
+		Page page = new Page();
+		page.setCurPage(curPage);
+		page.setPerPageSum(perPageSum);
+		RowBounds rb = new RowBounds(page.getNextPage(), page.getPerPageSum());
+		List<ApprovalListDto> records = new ArrayList<ApprovalListDto>();
+		// 我的申请
+		ApprovalEvent aEvent = new ApprovalEvent();
+		aEvent.setIsDelete(Short.parseShort("0"));
+		aEvent.setUserId(user.getUserId());
+		Integer myApprovalTotalRecord = approvalDao.selectCount(aEvent);
+		// 待审批
+		ApprovalUsers approvalUser = new ApprovalUsers();
+		approvalUser.setIsDelete(Short.parseShort("0"));
+		approvalUser.setUserId(user.getUserId());
+		Integer todoTotalRecord = approvalUsersDao.selectCount(approvalUser);
+
+		if (type.trim().equals("0")) {
+			page.setTotalRecords(myApprovalTotalRecord);
+			if (myApprovalTotalRecord > 0) {
+				// 我的申请
+				aEvent = new ApprovalEvent();
+				aEvent.setIsDelete(Short.parseShort("0"));
+				aEvent.setUserId(user.getUserId());
+				List<ApprovalEvent> aEvents = approvalDao.selectByRowBounds(aEvent, rb);
+				
+				records = ApprovalEventEntityMapper.INSTANCE.approvalEventToApprovalListDto(aEvents);
+			}
+		} else {
+			page.setTotalRecords(todoTotalRecord);
+			if (todoTotalRecord > 0) {
+				// 待审批
+				List<ApprovalEvent> aEvents = approvalDao.selectTodoByUserId(user.getUserId());
+				records = ApprovalEventEntityMapper.INSTANCE.approvalEventToApprovalListDto(aEvents);
+			}
+		}
+		reqMap.put("page", page);
+		reqMap.put("objects", records);
+		Map<String, Integer> summaries = new HashMap<String, Integer>();
+		summaries.put("alreayApplied", myApprovalTotalRecord);
+		summaries.put("waitApproved", todoTotalRecord);
+		reqMap.put("summaries", summaries);
+		return reqMap;
 	}
 
 }

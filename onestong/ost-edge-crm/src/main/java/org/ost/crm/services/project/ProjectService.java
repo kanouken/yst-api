@@ -12,6 +12,7 @@ import org.common.tools.exception.ApiException;
 import org.ost.crm.client.ContactsServiceClient;
 import org.ost.crm.client.CustomerServiceClient;
 import org.ost.crm.dao.project.ProjectDao;
+import org.ost.crm.dao.project.ProjectFileDao;
 import org.ost.crm.dao.project.ProjectOrgDao;
 import org.ost.crm.dao.project.ProjectPaymentDao;
 import org.ost.crm.dao.project.ProjectPaymentExample;
@@ -45,7 +46,7 @@ public class ProjectService extends BaseService {
 	@Autowired
 	private ProjectDao projectDao;
 	@Autowired
-	private ProjectFile projectFileDao;
+	private ProjectFileDao projectFileDao;
 
 	@Autowired
 	private ContactsServiceClient contactsServiceClient;

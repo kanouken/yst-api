@@ -1,11 +1,14 @@
 package org.ost.edge.onestong.controller.api.event;
 
+import java.util.Map;
+
 import org.common.tools.OperateResult;
 import org.ost.edge.onestong.controller.base.Action;
 import org.ost.edge.onestong.model.user.User;
 import org.ost.edge.onestong.services.api.event.ApprovalService;
 import org.ost.edge.onestong.services.api.event.ApprovalService.ApprovalState;
 import org.ost.entity.event.approval.dto.ApprovalEventDto;
+import org.ost.entity.event.approval.dto.ApprovalListDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,6 +37,15 @@ public class ApplyController extends Action {
 		return new OperateResult<ApprovalEventDto>(approvalService.createApprovalEvent(users, dto));
 	}
 
+	@GetMapping(value = "myapprovals")
+	public OperateResult<Map<String, Object>> myApprovals(@RequestAttribute(value = LOGIN_USER) User user,
+			@RequestParam(value = "type", required = true) String type,
+			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
+			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum) {
+		return new OperateResult<Map<String, Object>>(
+				approvalService.queryApprovalsByUser(user, type, curPage, perPageSum));
+	}
+
 	/**
 	 * 申请审批
 	 */
@@ -43,9 +56,10 @@ public class ApplyController extends Action {
 	}
 
 	@GetMapping(value = "detail")
-	public OperateResult<ApprovalEventDto> deleteApply(@RequestAttribute(value = LOGIN_USER) User user, @RequestParam(value = "eId") String eId) {
-		
-		return new OperateResult<ApprovalEventDto>(approvalService.queryDetail(user,eId));
+	public OperateResult<ApprovalEventDto> deleteApply(@RequestAttribute(value = LOGIN_USER) User user,
+			@RequestParam(value = "eId") String eId) {
+
+		return new OperateResult<ApprovalEventDto>(approvalService.queryDetail(user, eId));
 	}
 
 }

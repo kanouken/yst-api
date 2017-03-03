@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 @Entity
@@ -20,6 +21,7 @@ public class ApprovalEvent {
 	private String content;
 	private String schedules;
 	private String approvalTip;
+	@OrderBy("DESC")
 	private Date createTime;
 	private Date updateTime;
 	private String createBy;
