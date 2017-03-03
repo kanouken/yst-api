@@ -17,10 +17,16 @@ import org.ost.edge.onestong.services.scoreSystem.LikeService;
 import org.ost.edge.onestong.services.web.user.UsersService;
 import org.ost.edge.onestong.tools.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * 事件集合的 卡片流 逻辑
@@ -28,7 +34,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author xnq
  * 
  */
-@Controller
+@Api(tags = "首页事件")
+@RestController
 @RequestMapping("/api/eventCards")
 public class EventCollectionsDataApi extends Action {
 	@Autowired
@@ -60,10 +67,8 @@ public class EventCollectionsDataApi extends Action {
 	 */
 	@ResponseBody
 	@RequestMapping("pull/{userId}/{type}/{curPage}/{perPageSum}/{token}")
-	public Object pull(@PathVariable("userId") Integer userId,
-			@PathVariable("type") Byte type,
-			@PathVariable("curPage") Integer curPage,
-			@PathVariable("perPageSum") Integer perPageSum,
+	public Object pull(@PathVariable("userId") Integer userId, @PathVariable("type") Byte type,
+			@PathVariable("curPage") Integer curPage, @PathVariable("perPageSum") Integer perPageSum,
 			@PathVariable("token") String token) {
 
 		OperateResult op = new OperateResult();
@@ -84,8 +89,7 @@ public class EventCollectionsDataApi extends Action {
 			}
 
 			Role role = this.authorityService.findRoleByUser(user);
-			List<Map<String, Object>> perms = this.authorityService
-					.findPermsByRoleAndType(role, Constants.MOUDLE_APP);
+			List<Map<String, Object>> perms = this.authorityService.findPermsByRoleAndType(role, Constants.MOUDLE_APP);
 			// [{authDesc=接收来自部门其他成员的事件推送, authTag=self_below_events},
 			// {authDesc=创建考勤事件, authTag=create_attence}, {authDesc=创建外访事件,
 			// authTag=create_visit}, {authDesc=查看部门内其他成员的事件简报,
@@ -94,36 +98,27 @@ public class EventCollectionsDataApi extends Action {
 			Page page = new Page();
 			page.setCurPage(curPage);
 			page.setPerPageSum(perPageSum);
-			RowBounds rb = new RowBounds(page.getNextPage(),
-					page.getPerPageSum());
+			RowBounds rb = new RowBounds(page.getNextPage(), page.getPerPageSum());
 
-			List<Map<String, Object>> collections = collectionService
-					.pullEventsByTypePaged(user.getUserId(),type,
-							usersService.findUserScopes(user, perms), rb);
+			List<Map<String, Object>> collections = collectionService.pullEventsByTypePaged(user.getUserId(), type,
+					usersService.findUserScopes(user, perms), rb);
 			if (type == Constants.EVENT_VISIT) {
 				for (Map<String, Object> map : collections) {
 
 					// 获取资源 只获取外访签到 的图片
-					map.put("files", this.collectionService
-							.findEventRelatedFiles(map.get("id").toString()
-									.trim(),
-									VisitEventService.VISIT_FLOW_STEP_SIGNIN));
+					map.put("files", this.collectionService.findEventRelatedFiles(map.get("id").toString().trim(),
+							VisitEventService.VISIT_FLOW_STEP_SIGNIN));
 
-					map.put("pTags",
-							this.collectionService.findEventRelatedPtags(map
-									.get("id").toString().trim()));
-					map.put("cTags",
-							this.collectionService.findEventRelatedCtags(map
-									.get("id").toString().trim()));
+					map.put("pTags", this.collectionService.findEventRelatedPtags(map.get("id").toString().trim()));
+					map.put("cTags", this.collectionService.findEventRelatedCtags(map.get("id").toString().trim()));
 				}
 
 			} else if (type == Constants.EVENT_DAILY) {
 				for (Map<String, Object> map : collections) {
 
 					// 日志图片
-					map.put("files", this.collectionService
-							.findEventRelatedFiles(map.get("id").toString()
-									.trim(), DailyEventService.FLOW_DEFAULT));
+					map.put("files", this.collectionService.findEventRelatedFiles(map.get("id").toString().trim(),
+							DailyEventService.FLOW_DEFAULT));
 
 				}
 
@@ -133,8 +128,7 @@ public class EventCollectionsDataApi extends Action {
 				for (Map<String, Object> map : collections) {
 
 					map.put("files",
-							this.collectionService.findEventRelatedFiles(map
-									.get("id").toString().trim(), null));
+							this.collectionService.findEventRelatedFiles(map.get("id").toString().trim(), null));
 
 				}
 
@@ -160,10 +154,8 @@ public class EventCollectionsDataApi extends Action {
 	 */
 	@ResponseBody
 	@RequestMapping("pullall/{userId}/{curPage}/{perPageSum}/{token}")
-	public Object pull(@PathVariable("userId") Integer userId,
-			@PathVariable("curPage") Integer curPage,
-			@PathVariable("perPageSum") Integer perPageSum,
-			@PathVariable("token") String token) {
+	public Object pull(@PathVariable("userId") Integer userId, @PathVariable("curPage") Integer curPage,
+			@PathVariable("perPageSum") Integer perPageSum, @PathVariable("token") String token) {
 		OperateResult op = new OperateResult();
 		User user = null;
 		try {
@@ -181,45 +173,34 @@ public class EventCollectionsDataApi extends Action {
 				return op;
 			}
 			Role role = this.authorityService.findRoleByUser(user);
-			List<Map<String, Object>> perms = this.authorityService
-					.findPermsByRoleAndType(role, Constants.MOUDLE_APP);
+			List<Map<String, Object>> perms = this.authorityService.findPermsByRoleAndType(role, Constants.MOUDLE_APP);
 			Page page = new Page();
 			page.setCurPage(curPage);
 			page.setPerPageSum(perPageSum);
-			RowBounds rb = new RowBounds(page.getNextPage(),
-					page.getPerPageSum());
-			List<Map<String, Object>> collections = collectionService
-					.pullEventsAllTypePaged(user.getUserId(),
-							usersService.findUserScopes(user, perms), rb);
+			RowBounds rb = new RowBounds(page.getNextPage(), page.getPerPageSum());
+			List<Map<String, Object>> collections = collectionService.pullEventsAllTypePaged(user.getUserId(),
+					usersService.findUserScopes(user, perms), rb);
 			for (Map<String, Object> map : collections) {
 
 				if (Byte.valueOf(map.get("type").toString().trim()) == Constants.EVENT_VISIT) {
 
 					// 获取资源
-					map.put("files", this.collectionService
-							.findEventRelatedFiles(map.get("id").toString()
-									.trim(),
-									VisitEventService.VISIT_FLOW_STEP_SIGNIN));
+					map.put("files", this.collectionService.findEventRelatedFiles(map.get("id").toString().trim(),
+							VisitEventService.VISIT_FLOW_STEP_SIGNIN));
 
-					map.put("pTags",
-							this.collectionService.findEventRelatedPtags(map
-									.get("id").toString().trim()));
-					map.put("cTags",
-							this.collectionService.findEventRelatedCtags(map
-									.get("id").toString().trim()));
+					map.put("pTags", this.collectionService.findEventRelatedPtags(map.get("id").toString().trim()));
+					map.put("cTags", this.collectionService.findEventRelatedCtags(map.get("id").toString().trim()));
 				} else if (Byte.valueOf(map.get("type").toString().trim()) == Constants.EVENT_DAILY) {
 
 					// 获取资源
-					map.put("files", this.collectionService
-							.findEventRelatedFiles(map.get("id").toString()
-									.trim(), DailyEventService.FLOW_DEFAULT));
+					map.put("files", this.collectionService.findEventRelatedFiles(map.get("id").toString().trim(),
+							DailyEventService.FLOW_DEFAULT));
 
-				}else if (Byte.valueOf(map.get("type").toString().trim()) == Constants.EVENT_TASK) {
+				} else if (Byte.valueOf(map.get("type").toString().trim()) == Constants.EVENT_TASK) {
 
 					// 获取资源
-					map.put("files", this.collectionService
-							.findEventRelatedFiles(map.get("id").toString()
-									.trim(), null));
+					map.put("files",
+							this.collectionService.findEventRelatedFiles(map.get("id").toString().trim(), null));
 
 				}
 
@@ -240,6 +221,29 @@ public class EventCollectionsDataApi extends Action {
 
 		return op;
 
+	}
+
+	/**
+	 * 所有类型事件
+	 * 
+	 * @param user
+	 * @param curPage
+	 * @param perPageSum
+	 * @return
+	 */
+	@GetMapping(value = "")
+	public List<Map<String, Object>> pull(@RequestAttribute(value = LOGIN_USER) User user,
+			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
+			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum) {
+		Role role = this.authorityService.findRoleByUser(user);
+		List<Map<String, Object>> perms = this.authorityService.findPermsByRoleAndType(role, Constants.MOUDLE_APP);
+		Page page = new Page();
+		page.setCurPage(curPage);
+		page.setPerPageSum(perPageSum);
+		RowBounds rb = new RowBounds(page.getNextPage(), page.getPerPageSum());
+		List<Map<String, Object>> collections = collectionService.pullEventsAllTypePaged(user.getUserId(),
+				usersService.findUserScopes(user, perms), rb);
+		return collections;
 	}
 
 }
