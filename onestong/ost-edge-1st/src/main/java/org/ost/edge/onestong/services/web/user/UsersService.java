@@ -612,6 +612,7 @@ public class UsersService {
 					resultMap.put("token",
 							Jwts.builder().setSubject("1st").claim("userId", user.getUserId())
 									.claim("realName", user.getRealname()).claim("email", user.getEmail())
+									.claim("deptId", user.getDeptId())
 									.claim("schemaId", user.getDomainId()).setIssuedAt(new Date())
 									.signWith(SignatureAlgorithm.HS256, "1stapp").compact());
 

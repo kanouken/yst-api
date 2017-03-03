@@ -46,6 +46,7 @@ public class AuthCheckInterceptor extends HandlerInterceptorAdapter {
 				currentUser.setRealname(body.get("realName").toString());
 				currentUser.setEmail(body.get("email").toString());
 				currentUser.setDomainId(Integer.parseInt(body.get("schemaId").toString()));
+				currentUser.setDeptId(Integer.parseInt(body.get("deptId").toString()));
 				request.setAttribute(Action.LOGIN_USER, currentUser);
 			} else {
 				throw new IllegalAccessException();
