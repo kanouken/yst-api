@@ -46,9 +46,7 @@ public class ProjectsController extends Action {
 	 */
 	@GetMapping(value = "{id}")
 	public OperateResult<Project> queryDetail(@PathVariable(value = "id") Integer projectId,
-			@RequestAttribute(value = LOGIN_USER) Users user
-
-	) {
+			@RequestAttribute(value = LOGIN_USER) Users user) {
 		return new OperateResult<Project>(projectService.queryDetail(projectId, user));
 	}
 
@@ -68,7 +66,8 @@ public class ProjectsController extends Action {
 			@RequestParam(value = "name", required = false) String name,
 			@RequestParam(value = "state", required = false) String state,
 			@RequestParam(value = "typeID", required = false) String typeId) {
-		return new OperateResult<Project>(projectService.queryProjects(user,customerId,keyword,name,state,typeId,curPage,perPageSum));
+		return new OperateResult<Project>(
+				projectService.queryProjects(user, customerId, keyword, name, state, typeId, curPage, perPageSum));
 	}
 
 	/**
