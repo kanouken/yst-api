@@ -8,6 +8,6 @@ import tk.mybatis.mapper.common.Mapper;
 
 public interface CommonParamDao extends Mapper<CommonParams> {
 
-	@Select("select val from tbl_common_json where key =#{type} and schemaID =#{schemaID} ")
+	@Select("select paramVal from tbl_common_json where paramKey =#{type} and schemaID =#{schemaID} ")
 	Object selectCommonParamJson(@Param("type") String type, @Param("schemaID") String schemaID);
 }

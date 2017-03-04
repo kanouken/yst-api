@@ -19,10 +19,10 @@ public class GatewayApplication {
 		return new CommonResponseFilter();
 	}
 
-	@Bean
-	public AuthFilter authFilter() {
-		return new AuthFilter();
-	}
+//	@Bean
+//	public AuthFilter authFilter() {
+//		return new AuthFilter();
+//	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(GatewayApplication.class, args);

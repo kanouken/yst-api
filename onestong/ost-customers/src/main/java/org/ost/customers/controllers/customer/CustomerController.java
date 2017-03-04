@@ -22,8 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import sun.tools.tree.ThisExpression;
-
 @RestController
 public class CustomerController extends Action {
 	@Autowired

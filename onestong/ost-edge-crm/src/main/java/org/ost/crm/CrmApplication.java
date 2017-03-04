@@ -2,12 +2,14 @@ package org.ost.crm;
 
 import java.io.IOException;
 
+import org.ost.crm.interceptor.AuthCheckInterceptor;
+import org.ost.crm.interceptor.CrossDomainInterceptor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -34,16 +36,25 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @EnableSwagger2
-//@EnableEurekaClient
+// @EnableEurekaClient
 @EnableFeignClients
 public class CrmApplication extends WebMvcConfigurerAdapter {
 	@Bean
-	public RestTemplate restTemplate(){
+	public RestTemplate restTemplate() {
 		return new RestTemplate();
 	}
-	
+
 	public static void main(String[] args) {
 		SpringApplication.run(CrmApplication.class, args);
+	}
+
+	public void addInterceptors(InterceptorRegistry registry) {
+		CrossDomainInterceptor cd = new CrossDomainInterceptor();
+		registry.addInterceptor(cd).addPathPatterns("/**");
+		AuthCheckInterceptor auth = new AuthCheckInterceptor();
+
+		registry.addInterceptor(auth).addPathPatterns("/**").excludePathPatterns("/swagger**", "/configuration/**",
+				"/v2/api**", "/info", "/api/users/login");
 	}
 
 	@Bean
@@ -65,8 +76,7 @@ public class CrmApplication extends WebMvcConfigurerAdapter {
 	@Bean
 	public Docket createRestApi() {
 		return new Docket(DocumentationType.SWAGGER_2).apiInfo(testApiInfo()).select()
-				.apis(RequestHandlerSelectors.basePackage("org.ost.crm.controller")).paths(PathSelectors.any())
-				.build();
+				.apis(RequestHandlerSelectors.basePackage("org.ost.crm.controller")).paths(PathSelectors.any()).build();
 	}
 
 	private ApiInfo testApiInfo() {

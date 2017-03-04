@@ -18,6 +18,13 @@ public class CommonDataController extends Action {
 
 	@Autowired
 	private BaseService baseService;
+	
+	@GetMapping(value = "test")
+	public OperateResult<Map<String, Object>> test() {
+		
+		return null;
+	}
+	
 
 	@GetMapping(value = "cities")
 	public OperateResult<Map<String, Object>> cities(@RequestAttribute(value = LOGIN_USER) Users user) {
