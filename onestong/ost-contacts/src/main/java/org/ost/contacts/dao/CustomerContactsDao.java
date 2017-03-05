@@ -1,6 +1,6 @@
 package org.ost.contacts.dao;
 
-import org.ost.entity.customer.CustomerContacts;
+import org.ost.entity.contacts.CustomerContacts;
 import org.springframework.stereotype.Repository;
 
 import tk.mybatis.mapper.common.Mapper;

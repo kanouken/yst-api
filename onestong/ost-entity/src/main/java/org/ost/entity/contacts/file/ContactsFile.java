@@ -1,10 +1,12 @@
 package org.ost.entity.contacts.file;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 import org.ost.entity.base.BaseEntity;
 
 @Entity
+@Table(name="tbl_file")
 public class ContactsFile extends BaseEntity {
 	private Integer contactID;
 	private String type;

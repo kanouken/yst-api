@@ -19,7 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class ContactController {
+@RequestMapping(value = "contacts")
+public class ContactController extends Action {
 	@Autowired
 	private ContactsService contactService;
 
@@ -29,8 +30,8 @@ public class ContactController {
 	}
 
 	@RequestMapping(value = "", method = RequestMethod.POST)
-	public OperateResult<ContactsDto> createContact(
-			@RequestHeader(value = "schemaID", required = false) String schemaID, @RequestBody ContactsDto contactDto) {
+	public OperateResult<ContactsDto> createContact(@RequestHeader(value = TENANT_ID, required = false) String schemaID,
+			@RequestBody ContactsDto contactDto) {
 		return new OperateResult<ContactsDto>(this.contactService.createContacts(contactDto));
 	}
 

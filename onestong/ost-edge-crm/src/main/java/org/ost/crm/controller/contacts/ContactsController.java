@@ -1,7 +1,5 @@
 package org.ost.crm.controller.contacts;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.common.tools.OperateResult;
 import org.ost.crm.controller.base.Action;
 import org.ost.crm.services.contacts.ContactsService;

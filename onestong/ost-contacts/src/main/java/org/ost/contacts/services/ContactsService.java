@@ -11,6 +11,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.common.tools.OperateResult;
 import org.common.tools.pinyin.Chinese2PY;
 import org.ost.contacts.dao.ContactDao;
+import org.ost.contacts.dao.CustomerContactsDao;
 import org.ost.contacts.dao.ProjectContactsDao;
 import org.ost.contacts.dao.address.ContactsAddressDao;
 import org.ost.contacts.dao.files.ContactsFileDao;
@@ -22,6 +23,7 @@ import org.ost.contacts.model.ContactsInfoExample;
 import org.ost.contacts.model.ProjectContactsExample;
 import org.ost.entity.base.PageEntity;
 import org.ost.entity.contacts.Contacts;
+import org.ost.entity.contacts.CustomerContacts;
 import org.ost.entity.contacts.ProjectContacts;
 import org.ost.entity.contacts.address.ContactsAddress;
 import org.ost.entity.contacts.contactsinfo.ContactsInfo;
@@ -55,6 +57,9 @@ public class ContactsService {
 	@Autowired
 	private ProjectContactsDao pcDao;
 
+	@Autowired
+	CustomerContactsDao customerContactsDao;
+
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
 	public ContactsDto createContacts(ContactsDto contactsDto) {
 		Contacts contact = new Contacts();
@@ -72,11 +77,21 @@ public class ContactsService {
 		} else {
 			contact.setPy(contactsDto.getName());
 		}
+		contact.setSzm(Chinese2PY.getSzm(contactsDto.getName()));
 		contact.setHeadPic(contactsDto.getHeadPic());
 		contact.setSex(contactsDto.getSex());
 		contact.setSchemaId(contactsDto.getSchemaId());
-		contactDao.insert(contact);
+		contactDao.insertSelective(contact);
 
+		if (contactsDto.getCustomer() != null) {
+			CustomerContacts cc = new CustomerContacts();
+			cc.setContactID(contact.getId());
+			cc.setCreateBy(contact.getCreateBy());
+			cc.setUpdateBy(contact.getUpdateBy());
+			cc.setCustomerID(contactsDto.getCustomer().getId());
+			customerContactsDao.insertSelective(cc);
+
+		}
 		contactsDto.getLocations().forEach(address -> {
 			ContactsAddress _address = ContactsEntityMapper.INSTANCE.contactsAddressDtoToContactsAddress(address,
 					contactsDto);
