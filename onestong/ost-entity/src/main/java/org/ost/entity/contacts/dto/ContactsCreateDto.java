@@ -5,7 +5,6 @@ import java.util.List;
 import org.ost.entity.contacts.address.dto.ContactsAddressDto;
 import org.ost.entity.contacts.contactsinfo.dto.ContactsInfoDto;
 import org.ost.entity.contacts.file.dto.ContactsFileDto;
-import org.ost.entity.customer.dto.CustomerListDto;
 import org.ost.entity.customer.vo.CustomerVo;
 
 public class ContactsCreateDto {

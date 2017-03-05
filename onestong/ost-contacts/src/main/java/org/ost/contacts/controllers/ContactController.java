@@ -25,8 +25,8 @@ public class ContactController extends Action {
 	private ContactsService contactService;
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-	public OperateResult<Integer> deleteContacts(@PathVariable(value = "id") Integer id, Users users) {
-		return new OperateResult<Integer>(this.contactService.deleteContacts(id, users));
+	public OperateResult<String> deleteContacts(@PathVariable(value = "id") Integer id, Users users) {
+		return new OperateResult<String>(this.contactService.deleteContacts(id, users));
 	}
 
 	@RequestMapping(value = "", method = RequestMethod.POST)
@@ -45,8 +45,9 @@ public class ContactController extends Action {
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public OperateResult<ContactsDto> queryDetail(@PathVariable(value = "id") Integer id, String schemaId) {
-		return new OperateResult<ContactsDto>(this.contactService.getContactsDetail(id, schemaId));
+	public OperateResult<ContactsDto> queryDetail(@PathVariable(value = "id") Integer id,
+			@RequestHeader(value = "schemaID") String schemaID) {
+		return new OperateResult<ContactsDto>(this.contactService.getContactsDetail(id, schemaID));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)

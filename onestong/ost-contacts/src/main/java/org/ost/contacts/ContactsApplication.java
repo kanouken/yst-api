@@ -1,19 +1,13 @@
 package org.ost.contacts;
 
-import java.io.IOException;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonGenerator.Feature;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializerProvider;
 
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -37,13 +31,6 @@ public class ContactsApplication extends WebMvcConfigurerAdapter {
 		ObjectMapper om = new ObjectMapper();
 		om.configure(Feature.WRITE_NUMBERS_AS_STRINGS, true);
 		om.configure(Feature.QUOTE_NON_NUMERIC_NUMBERS, true);
-		om.getSerializerProvider().setNullValueSerializer(new JsonSerializer<Object>() {
-			@Override
-			public void serialize(Object value, JsonGenerator jg, SerializerProvider sp)
-					throws IOException, JsonProcessingException {
-				jg.writeString("");
-			}
-		});
 		return om;
 	}
 

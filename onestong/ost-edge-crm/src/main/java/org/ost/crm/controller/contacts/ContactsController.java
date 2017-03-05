@@ -27,8 +27,14 @@ public class ContactsController extends Action {
 
 	@RequestMapping(value = "", method = RequestMethod.POST)
 	public OperateResult<ContactsCreateDto> createContacts(@RequestAttribute(value = LOGIN_USER) Users users,
-			ContactsCreateDto contactsDto) {
+			@RequestBody ContactsCreateDto contactsDto) {
 		return new OperateResult<ContactsCreateDto>(this.contactsService.createContacts(users, contactsDto));
+	}
+
+	@RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+	public OperateResult<String> createContacts(@PathVariable(value = "id") Integer id,
+			@RequestAttribute(value = LOGIN_USER) Users users) {
+		return new OperateResult<String>(this.contactsService.deleteContacts(id,users) );
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -47,9 +53,10 @@ public class ContactsController extends Action {
 		return new OperateResult<PageEntity<ContactsListDto>>(this.contactsService.queryContacts(schemaID, customerID,
 				keyword, name, phone, users, curPage, perPageSum));
 	}
+
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public OperateResult<ContactsCreateDto> updateContacts(@PathVariable(value = "id") Integer contactsId,
-			@RequestAttribute(value = LOGIN_USER) Users users,@RequestBody ContactsCreateDto dto ) {
-		return new OperateResult<ContactsCreateDto>(this.contactsService.updateContacts(contactsId,users,dto));
+			@RequestAttribute(value = LOGIN_USER) Users users, @RequestBody ContactsCreateDto dto) {
+		return new OperateResult<ContactsCreateDto>(this.contactsService.updateContacts(contactsId, users, dto));
 	}
 }

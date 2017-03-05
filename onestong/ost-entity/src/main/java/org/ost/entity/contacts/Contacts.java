@@ -16,16 +16,6 @@ public class Contacts extends BaseEntity {
 	private String position;
 	private String dept;
 	private String headPic;
-	
-	private Integer customerID;
-
-	public Integer getCustomerID() {
-		return customerID;
-	}
-
-	public void setCustomerID(Integer customerID) {
-		this.customerID = customerID;
-	}
 
 	public String getLastName() {
 		return lastName;

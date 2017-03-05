@@ -14,6 +14,7 @@ import org.ost.entity.customer.dto.CustomerDetailDto;
 import org.ost.entity.customer.vo.CustomerVo;
 import org.ost.entity.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -50,7 +51,9 @@ public class ContactsService {
 		ContactsDetailDto detailDto = ContactsEntityMapper.INSTANCE.contactsDtoToContactsDetailDto(contactsDto);
 		OperateResult<CustomerDetailDto> result2 = this.customerServiceClient
 				.queryDetail(contactsDto.getCustomer().getId(), users.getSchemaId());
-		detailDto.setCustomer(new CustomerVo(result2.getData().getId(), result2.getData().getName()));
+		if (result2.success()) {
+			detailDto.setCustomer(new CustomerVo(result2.getData().getId(), result2.getData().getName()));
+		}
 		return detailDto;
 	}
 
@@ -80,6 +83,23 @@ public class ContactsService {
 			return dto;
 		} else {
 			throw new ApiException("更新联系人失败", result.getInnerException());
+		}
+	}
+
+	/**
+	 * 删除 联系人
+	 * 
+	 * @param contactsId
+	 * @param users
+	 * @return
+	 */
+	public String deleteContacts(Integer contactsId, Users users) {
+		OperateResult<String> result = this.contactsServiceClient.deleteContacts(contactsId, users.getSchemaId(),
+				users.getRealname());
+		if (result.success()) {
+			return HttpStatus.OK.name();
+		} else {
+			throw new ApiException("删除联系人失败", result.getInnerException());
 		}
 	}
 

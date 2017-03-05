@@ -15,19 +15,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "customerService")
-public interface ContactsServiceClient {
+@FeignClient(name = "contactsService")
+public interface ContactsServiceClient extends BaseClient {
+
+	@RequestMapping(value = "contacts/{id}", method = RequestMethod.POST)
+	public OperateResult<String> deleteContacts(@PathVariable(value = "id") Integer id,
+			@RequestParam(value = TENANT_ID) String schemaId, @RequestParam(value = "realName") String realName
+
+	);
 
 	@RequestMapping(value = "contacts/", method = RequestMethod.POST)
-	public OperateResult<ContactsDto> createContact(
-			@RequestHeader(value = "schemaID", required = false) String schemaID, @RequestBody ContactsDto contactDto);
+	public OperateResult<ContactsDto> createContact(@RequestHeader(value = TENANT_ID, required = false) String schemaID,
+			@RequestBody ContactsDto contactDto);
 
 	@RequestMapping(value = "contacts/{id}/", method = RequestMethod.PUT)
 	public OperateResult<ContactsDto> updateContact(@PathVariable(value = "id") Integer id,
 			@RequestBody ContactsDto contactDto);
 
 	@RequestMapping(value = "contacts/{id}/", method = RequestMethod.GET)
-	public OperateResult<ContactsDto> queryDetail(@PathVariable(value = "id") Integer id, String tenantId);
+	public OperateResult<ContactsDto> queryDetail(@PathVariable(value = "id") Integer id,
+			@RequestHeader(value = TENANT_ID, required = false) String schemaID);
 
 	@RequestMapping(value = "contacts/list/", method = RequestMethod.GET)
 	public OperateResult<PageEntity<ContactsListDto>> queryContacts(@RequestHeader(value = "curPage") Integer curPage,

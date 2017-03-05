@@ -32,11 +32,13 @@ import org.ost.entity.contacts.dto.ContactsDto;
 import org.ost.entity.contacts.dto.ContactsListDto;
 import org.ost.entity.contacts.file.ContactsFile;
 import org.ost.entity.contacts.mapper.ContactsEntityMapper;
+import org.ost.entity.customer.vo.CustomerVo;
 import org.ost.entity.project.dto.ProjectCreateOrUpdateDto;
 import org.ost.entity.user.Users;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -89,6 +91,7 @@ public class ContactsService {
 			cc.setCreateBy(contact.getCreateBy());
 			cc.setUpdateBy(contact.getUpdateBy());
 			cc.setCustomerID(contactsDto.getCustomer().getId());
+			cc.setSchemaId(contact.getSchemaId());
 			customerContactsDao.insertSelective(cc);
 
 		}
@@ -245,11 +248,20 @@ public class ContactsService {
 					.collect(Collectors.toList());
 		}
 		dto.setEmail(emails);
+		CustomerContacts cc = new CustomerContacts();
+
+		cc.setContactID(contacts.getId());
+		cc.setIsDelete(contacts.getIsDelete());
+		List<CustomerContacts> ccs = this.customerContactsDao.select(cc);
+		if (CollectionUtils.isNotEmpty(ccs)) {
+			// 查询用户名?
+			dto.setCustomer(new CustomerVo(ccs.get(0).getCustomerID(), ""));
+		}
 		return dto;
 	}
 
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public Integer deleteContacts(Integer id, Users users) {
+	public String deleteContacts(Integer id, Users users) {
 		Contacts contacts = new Contacts();
 		contacts.setUpdateBy(users.getRealname());
 		contacts.setUpdateTime(new Date());
@@ -280,7 +292,7 @@ public class ContactsService {
 		cfe.createCriteria().andSchemaidEqualTo(users.getSchemaId()).andContactidEqualTo(id);
 		this.fileDao.updateByExample(cf, cfe);
 
-		return id;
+		return HttpStatus.OK.name();
 	}
 
 	/**
