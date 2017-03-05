@@ -53,7 +53,7 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
 	@ResponseBody
 	ResponseEntity<?> handleControllerException(HttpServletRequest request, Throwable ex) {
 		ApiException ae = (ApiException) ex;
-		return new ResponseEntity<>(new OperateResult("", ae.getMessage(), null), HttpStatus.OK);
+		return new ResponseEntity<>(new OperateResult(ae.getInnerException(), ae.getMessage(), null), HttpStatus.OK);
 	}
 
 	/**

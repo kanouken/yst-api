@@ -1,15 +1,19 @@
 package org.ost.crm.model.common;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import org.ost.entity.base.BaseEntity;
 
 @Entity
-@Table(name = "tbl_common_params")
+@Table(name = "tbl_common_param")
 public class CommonParams extends BaseEntity {
 	private String type;
+	
+	@Column(name="paramKey")
 	private String key;
+	@Column(name="paramVal")
 	private String val;
 
 	public String getType() {

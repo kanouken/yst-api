@@ -2,16 +2,16 @@ package org.ost.entity.org.department.dto;
 
 public class DepartmentListDto {
 
-	private Integer id;
+	private String id;
 	private String name;
-	private Integer parentId;
-	private Integer isLeaf;
+	private String parentId;
+	private String isLeaf;
 
-	public Integer getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -23,19 +23,19 @@ public class DepartmentListDto {
 		this.name = name;
 	}
 
-	public Integer getParentId() {
+	public String getParentId() {
 		return parentId;
 	}
 
-	public void setParentId(Integer parentId) {
+	public void setParentId(String parentId) {
 		this.parentId = parentId;
 	}
 
-	public Integer getIsLeaf() {
+	public String getIsLeaf() {
 		return isLeaf;
 	}
 
-	public void setIsLeaf(Integer isLeaf) {
+	public void setIsLeaf(String isLeaf) {
 		this.isLeaf = isLeaf;
 	}
 

@@ -8,6 +8,14 @@ public class OperateResult<T> {
 		return innerException;
 	}
 
+	public Boolean success() {
+		boolean flag = true;
+		if (this.getData() == null) {
+			flag = false;
+		}
+		return flag;
+	}
+
 	public OperateResult(T data) {
 		this.statusCode = "200";
 		this.innerException = "";

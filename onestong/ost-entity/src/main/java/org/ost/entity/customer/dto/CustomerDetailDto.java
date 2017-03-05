@@ -3,26 +3,36 @@ package org.ost.entity.customer.dto;
 import java.util.List;
 import java.util.Map;
 
-import org.ost.entity.contacts.dto.ContactsDetailDto;
+import org.ost.entity.customer.address.vo.AddressVo;
+import org.ost.entity.customer.contacts.vo.ContactInfoVo;
+import org.ost.entity.customer.vo.CustomerVo;
+import org.ost.entity.org.department.dto.DepartmentListDto;
+import org.ost.entity.user.dto.UserListDto;
 
 public class CustomerDetailDto {
 	private Integer id;
 	private String name;
 	private String py;
 	private String szm;
-	private CustomerDetailDto parentCustomer;
+	private CustomerVo parent;
 
-	private List<ContactsDetailDto> contacts;
+	private List<ContactInfoVo> phone;
+
+	private List<DepartmentListDto> deptOwner;
+
+	private List<AddressVo> locations;
+
+	private List<UserListDto> managerOwner;
 
 	private Map<String, Object> properties;
-	private String createTimeStr;
+	private String createTime;
 
-	public List<ContactsDetailDto> getContacts() {
-		return contacts;
+	public List<AddressVo> getLocations() {
+		return locations;
 	}
 
-	public void setContacts(List<ContactsDetailDto> contacts) {
-		this.contacts = contacts;
+	public void setLocations(List<AddressVo> locations) {
+		this.locations = locations;
 	}
 
 	public Integer getId() {
@@ -57,12 +67,36 @@ public class CustomerDetailDto {
 		this.szm = szm;
 	}
 
-	public CustomerDetailDto getParentCustomer() {
-		return parentCustomer;
+	public CustomerVo getParent() {
+		return parent;
 	}
 
-	public void setParentCustomer(CustomerDetailDto parentCustomer) {
-		this.parentCustomer = parentCustomer;
+	public void setParent(CustomerVo parent) {
+		this.parent = parent;
+	}
+
+	public List<ContactInfoVo> getPhone() {
+		return phone;
+	}
+
+	public void setPhone(List<ContactInfoVo> phone) {
+		this.phone = phone;
+	}
+
+	public List<DepartmentListDto> getDeptOwner() {
+		return deptOwner;
+	}
+
+	public void setDeptOwner(List<DepartmentListDto> deptOwner) {
+		this.deptOwner = deptOwner;
+	}
+
+	public List<UserListDto> getManagerOwner() {
+		return managerOwner;
+	}
+
+	public void setManagerOwner(List<UserListDto> managerOwner) {
+		this.managerOwner = managerOwner;
 	}
 
 	public Map<String, Object> getProperties() {
@@ -73,12 +107,12 @@ public class CustomerDetailDto {
 		this.properties = properties;
 	}
 
-	public String getCreateTimeStr() {
-		return createTimeStr;
+	public String getCreateTime() {
+		return createTime;
 	}
 
-	public void setCreateTimeStr(String createTimeStr) {
-		this.createTimeStr = createTimeStr;
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
 	}
 
 }

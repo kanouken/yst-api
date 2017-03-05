@@ -1,17 +1,19 @@
 package org.ost.entity.user.dto;
 
 public class UserListDto {
-	private Integer id;
+	private String id;
 	private String name;
 	private String deptName;
 	private String email;
 	private String headPhoto;
 
-	public Integer getId() {
+	private String deptID;
+
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -45,6 +47,14 @@ public class UserListDto {
 
 	public void setHeadPhoto(String headPhoto) {
 		this.headPhoto = headPhoto;
+	}
+
+	public String getDeptID() {
+		return deptID;
+	}
+
+	public void setDeptID(String deptID) {
+		this.deptID = deptID;
 	}
 
 }

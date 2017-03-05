@@ -5,10 +5,16 @@ import java.util.Map;
 
 import org.ost.entity.customer.address.vo.AddressVo;
 import org.ost.entity.customer.contacts.vo.ContactInfoVo;
+import org.ost.entity.org.department.dto.DepartmentListDto;
+import org.ost.entity.user.dto.UserListDto;
 
 public class CustomerCreateVo {
 
-	private String schemaId;
+	private Integer id;
+	
+	/**
+	 * 当前用户名称
+	 */
 	private String userName;
 
 	private String name;
@@ -19,12 +25,34 @@ public class CustomerCreateVo {
 
 	private List<ContactInfoVo> contactInfos;
 
-	public String getSchemaId() {
-		return schemaId;
+	private List<DepartmentListDto> deptOwners;
+
+	private List<UserListDto> managerOwners;
+
+	
+	
+	public Integer getId() {
+		return id;
 	}
 
-	public void setSchemaId(String schemaId) {
-		this.schemaId = schemaId;
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public List<DepartmentListDto> getDeptOwners() {
+		return deptOwners;
+	}
+
+	public void setDeptOwners(List<DepartmentListDto> deptOwners) {
+		this.deptOwners = deptOwners;
+	}
+
+	public List<UserListDto> getManagerOwners() {
+		return managerOwners;
+	}
+
+	public void setManagerOwners(List<UserListDto> managerOwners) {
+		this.managerOwners = managerOwners;
 	}
 
 	public String getUserName() {

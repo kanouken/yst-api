@@ -41,7 +41,7 @@
 				</foreach>
 
 			</if>
-			and schemaId = #{customer.tenantId,jdbcType=VARCHAR}
+			and schemaId = #{customer.schemaId,jdbcType=VARCHAR}
 			and isDelete =
 			0
 		</where>
@@ -83,7 +83,7 @@
 					'$.${key}',#{paramsMap[${key}],jdbcType=VARCHAR}) > 0
 				</foreach>
 			</if>
-			and schemaId = #{customer.tenantId,jdbcType=VARCHAR}
+			and schemaId = #{customer.schemaId,jdbcType=VARCHAR}
 			and isDelete =
 			0
 		</where>
@@ -105,11 +105,36 @@
 			</if>
 		</set>
 		where id = #{customer.id}
-		and schemaId = #{customer.tenantId}
+		and schemaId = #{customer.schemaId}
 	</update>
 
 
+	<select id="selectCustomerOrg" resultType="org.ost.entity.customer.org.CustomerOrg">
 
+		select * from tbl_organize_customer toc
+		<where>
+			toc.customerID in
+			<foreach item="customerId" collection="customerIds" open="(" separator=","
+				close=")">
+				#{customerId}
+			</foreach>
+			and isDelete = 0
+		</where>
+	</select>
+	
+	
+	<select id="selectCustomerUsers" resultType="org.ost.entity.customer.user.UserCustomers">
+
+		select * from tbl_user_customer tuc
+		<where>
+			tuc.customerID in
+			<foreach item="customerId" collection="customerIds" open="(" separator=","
+				close=")">
+				#{customerId}
+			</foreach>
+			and isDelete = 0
+		</where>
+	</select>
 
 
 </mapper>

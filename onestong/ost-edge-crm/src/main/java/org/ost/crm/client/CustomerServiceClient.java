@@ -7,11 +7,9 @@ import org.ost.entity.base.PageEntity;
 import org.ost.entity.customer.Customer;
 import org.ost.entity.customer.dto.CustomerDetailDto;
 import org.ost.entity.customer.dto.CustomerListDto;
-import org.ost.entity.customer.dto.CustomerUpdateDto;
 import org.ost.entity.customer.vo.CustomerCreateVo;
 import org.ost.entity.user.Users;
 import org.springframework.cloud.netflix.feign.FeignClient;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -20,28 +18,32 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "customerService")
-public interface CustomerServiceClient {
+public interface CustomerServiceClient extends BaseClient {
 
-	@RequestMapping(method = RequestMethod.POST, value = "customer/", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	void createCustomer(@RequestHeader(value = "schemaID", required = true) String schemaId,
-			@RequestBody CustomerCreateVo customer);
+	@RequestMapping(value = "customer/", method = RequestMethod.POST)
+	public OperateResult<CustomerCreateVo> createCustomer(
+			@RequestHeader(value = TENANT_ID, required = true) String schemaId, @RequestBody CustomerCreateVo customer);
 
 	@RequestMapping(value = "customer/list/", method = RequestMethod.POST)
-	public PageEntity<CustomerListDto> queryMember(@RequestHeader(value = "schemaID", required = true) String schemaId,
-			@RequestHeader(value = "curPage", defaultValue = "1") Integer curPage,
-			@RequestHeader(value = "perPageSum", defaultValue = "20") Integer perPageSum,
+	public OperateResult<PageEntity<CustomerListDto>> queryMember(@RequestHeader(value = TENANT_ID, required = true) String schemaId,
+			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
+			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
 			@RequestBody Customer customer);
 
 	@RequestMapping("customer/{id}/")
 	public OperateResult<CustomerDetailDto> queryDetail(@PathVariable(value = "id") Integer id,
-			@RequestHeader(value = "schemaID", required = false) String schemaId);
+			@RequestHeader(value = TENANT_ID, required = false) String schemaId);
+
+	@RequestMapping(value = "customer/{id}", method = RequestMethod.DELETE)
+	public OperateResult<Integer> deleteCustomer(@PathVariable(value = "id") Integer id,
+			@RequestHeader(value = TENANT_ID, required = false) String schemaId, Users users);
 
 	@RequestMapping(value = "customer/{id}", method = RequestMethod.PUT)
-	public OperateResult<Integer> updateCustomer(@PathVariable(value = "id") Integer customerId,
-			@RequestBody CustomerUpdateDto updateDto);
+	public OperateResult<String> updateCustomer(@PathVariable(value = "id") Integer customerId,
+			@RequestHeader(value = TENANT_ID) String schemaId, @RequestBody CustomerCreateVo updateDto);
 
 	@RequestMapping(value = "/queryByContacts", method = RequestMethod.GET)
-	public OperateResult<CustomerListDto> queryDetailByContacts(@RequestHeader(value = "schemaID") String schemaID,
+	public OperateResult<CustomerListDto> queryDetailByContacts(@RequestHeader(value = TENANT_ID) String schemaID,
 			@RequestParam(value = "contactsId") Integer contactsId);
 
 	@RequestMapping(value = "customer/queryByIds", method = RequestMethod.GET)

@@ -8,7 +8,6 @@ import org.ost.entity.base.PageEntity;
 import org.ost.entity.customer.Customer;
 import org.ost.entity.customer.dto.CustomerDetailDto;
 import org.ost.entity.customer.dto.CustomerListDto;
-import org.ost.entity.customer.dto.CustomerUpdateDto;
 import org.ost.entity.customer.vo.CustomerCreateVo;
 import org.ost.entity.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,38 +22,48 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 @RestController
+@RequestMapping(value = "customer")
 public class CustomerController extends Action {
 	@Autowired
 	private CustomerService customerService;
 
 	@RequestMapping(value = "/{id}")
 	public OperateResult<CustomerDetailDto> detail(@PathVariable(value = "id") Integer id,
-			@RequestHeader(value = "schemaID", required = false) String schemaId) {
+			@RequestHeader(value = TENANT_ID, required = false) String schemaId) {
 		return new OperateResult<CustomerDetailDto>(customerService.queryDetail(id, schemaId));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public OperateResult<Integer> delete(@PathVariable(value = "id") Integer id,
-			@RequestHeader(value = "schemaID", required = false) String schemaId, Users users) {
+			@RequestHeader(value = TENANT_ID, required = false) String schemaId, Users users) {
 		return new OperateResult<Integer>(customerService.deleteCustomer(id, schemaId, users));
 	}
 
+	/**
+	 * 新增客户
+	 * 
+	 * @param schemaId
+	 * @param customer
+	 * @return
+	 * @throws JsonProcessingException
+	 */
 	@RequestMapping(value = "", method = RequestMethod.POST)
 	public OperateResult<CustomerCreateVo> createCustomer(
-			@RequestHeader(value = "schemaID", required = true) String schemaId, @RequestBody CustomerCreateVo customer)
+			@RequestHeader(value = TENANT_ID, required = true) String schemaId, @RequestBody CustomerCreateVo customer)
 			throws JsonProcessingException {
-		return new OperateResult<CustomerCreateVo>(customerService.createCustomer(customer));
+		return new OperateResult<CustomerCreateVo>(customerService.createCustomer(schemaId, customer));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-	public OperateResult<Integer> updateCustomer(@PathVariable(value = "id") Integer customerId,
-			@RequestBody CustomerUpdateDto updateDto) {
-		return new OperateResult<Integer>(customerService.updateCustomer(updateDto));
+	public OperateResult<String> updateCustomer(@PathVariable(value = "id") Integer customerId,
+			@RequestHeader(value = TENANT_ID) String schemaId, @RequestBody CustomerCreateVo updateDto)
+			throws JsonProcessingException {
+		return new OperateResult<String>(customerService.updateCustomer(customerId, schemaId, updateDto));
 	}
 
 	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	public OperateResult<PageEntity<CustomerListDto>> queryMember(
-			@RequestHeader(value = "schemaID", required = true) String schemaID,
+			@RequestHeader(value = TENANT_ID, required = true) String schemaID,
 			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
 			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
 			@RequestBody Customer customer) {
@@ -75,15 +84,12 @@ public class CustomerController extends Action {
 			@RequestParam(value = "ids") Integer[] ids) {
 		return new OperateResult<List<CustomerListDto>>(customerService.queryByIds(schemaID, ids));
 	}
-	
+
 	@RequestMapping(value = "/project", method = RequestMethod.POST)
 	public OperateResult<String> createCustomerProject(@RequestHeader(value = "schemaID") String schemaID,
-			@RequestParam(value="customerId") Integer customerId,@RequestParam(value="projectId") Integer projectId,
-			Users users
-			) {
-		return new OperateResult<String>(this.customerService.createCustomerProject(users,customerId,projectId));
+			@RequestParam(value = "customerId") Integer customerId,
+			@RequestParam(value = "projectId") Integer projectId, Users users) {
+		return new OperateResult<String>(this.customerService.createCustomerProject(users, customerId, projectId));
 	}
-	
-	
 
 }

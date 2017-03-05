@@ -19,6 +19,7 @@ import org.ost.entity.contacts.mapper.ContactsEntityMapper;
 import org.ost.entity.customer.dto.CustomerDetailDto;
 import org.ost.entity.customer.dto.CustomerListDto;
 import org.ost.entity.customer.dto.CustomerUpdateDto;
+import org.ost.entity.customer.vo.CustomerCreateVo;
 import org.ost.entity.customer.vo.CustomerVo;
 import org.ost.entity.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,29 +34,35 @@ public class ContactsService {
 	private CustomerServiceClient customerServiceClient;
 
 	public ContactsCreateDto createContacts(Users users, ContactsCreateDto contactsCreateDto) {
-		ContactsDto contactsDto = ContactsEntityMapper.INSTANCE.contactsCreateDtoToContactsDto(contactsCreateDto);
-		contactsDto.setSchemaId(users.getSchemaId());
-		contactsDto.setCurrentUserName(users.getRealname());
-		OperateResult<ContactsDto> result = this.contactsServiceClient.createContact(users.getSchemaId(), contactsDto);
-		if (result.getData() != null) {
-			// success
-			// 更新 客户 联系人关系
-			CustomerUpdateDto customerUpdateDto = new CustomerUpdateDto();
-			customerUpdateDto.setUpdateBy(users.getRealname());
-			customerUpdateDto.setId(contactsCreateDto.getCustomer().getId());
-			List<ContactsDto> contactsDtos = new ArrayList<ContactsDto>();
-			contactsDtos.add(contactsDto);
-			customerUpdateDto.setContacts(contactsDtos);
-			OperateResult<Integer> result2 = this.customerServiceClient
-					.updateCustomer(contactsCreateDto.getCustomer().getId(), customerUpdateDto);
-			if (result2.getData() == null) {
-				// TODO transcation
-				throw new ApiException("联系人创建失败", result2.getInnerException());
-			}
-		} else {
-			throw new ApiException("联系人创建失败", result.getInnerException());
-		}
-		return contactsCreateDto;
+		// ContactsDto contactsDto =
+		// ContactsEntityMapper.INSTANCE.contactsCreateDtoToContactsDto(contactsCreateDto);
+		// contactsDto.setSchemaId(users.getSchemaId());
+		// contactsDto.setCurrentUserName(users.getRealname());
+		// OperateResult<ContactsDto> result =
+		// this.contactsServiceClient.createContact(users.getSchemaId(),
+		// contactsDto);
+		// if (result.getData() != null) {
+		// // success
+		// // 更新 客户 联系人关系
+		// CustomerCreateVo customerUpdateDto = new CustomerCreateVo();
+		// customerUpdateDto.setUserName(users.getRealname());
+		// customerUpdateDto.setId(contactsCreateDto.getCustomer().getId());
+		// List<ContactsDto> contactsDtos = new ArrayList<ContactsDto>();
+		// contactsDtos.add(contactsDto);
+		// customerUpdateDto.setContacts(contactsDtos);
+		// OperateResult<String> result2 = this.customerServiceClient
+		// .updateCustomer(contactsCreateDto.getCustomer().getId(),
+		// users.getSchemaId(), customerUpdateDto);
+		// if (result2.getData() == null) {
+		// // TODO transcation
+		// throw new ApiException("联系人创建失败", result2.getInnerException());
+		// }
+		// } else {
+		// throw new ApiException("联系人创建失败", result.getInnerException());
+		// }
+		// return contactsCreateDto;
+
+		return null;
 	}
 
 	public ContactsDetailDto queryDetail(Integer contactsId, Users users) {

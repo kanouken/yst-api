@@ -115,7 +115,7 @@ public class ApprovalService {
 			approvalUser.setUpdateBy(aEvent.getUpdateBy());
 			approvalUser.setCreateTime(new Date());
 			approvalUser.setUpdateTime(new Date());
-			approvalUser.setUserId(approver.getId());
+			approvalUser.setUserId(Integer.parseInt(approver.getId()));
 			approvalUsersDao.insertSelective(approvalUser);
 		});
 		return dto;
@@ -179,7 +179,7 @@ public class ApprovalService {
 
 		approvers.forEach(approver -> {
 			UserListDto _user = new UserListDto();
-			_user.setId(approver.getUserId());
+			_user.setId(String.valueOf(approver.getUserId()));
 			_user.setName(approver.getUpdateBy());
 			_approvers.add(_user);
 		});
@@ -216,7 +216,7 @@ public class ApprovalService {
 				aEvent.setIsDelete(Short.parseShort("0"));
 				aEvent.setUserId(user.getUserId());
 				List<ApprovalEvent> aEvents = approvalDao.selectByRowBounds(aEvent, rb);
-				
+
 				records = ApprovalEventEntityMapper.INSTANCE.approvalEventToApprovalListDto(aEvents);
 			}
 		} else {

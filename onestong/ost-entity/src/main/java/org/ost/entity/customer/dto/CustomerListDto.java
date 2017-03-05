@@ -1,12 +1,38 @@
 package org.ost.entity.customer.dto;
 
+import java.util.List;
 import java.util.Map;
+
+import org.ost.entity.org.department.dto.DepartmentListDto;
+import org.ost.entity.user.dto.UserListDto;
 
 public class CustomerListDto {
 	private Integer id;
 	private String name;
 	private String py;
 	private String szm;
+
+	private List<DepartmentListDto> deptOwner;
+	
+	private List<UserListDto> managerOwner;
+	
+	
+	
+	public List<DepartmentListDto> getDeptOwner() {
+		return deptOwner;
+	}
+
+	public void setDeptOwner(List<DepartmentListDto> deptOwner) {
+		this.deptOwner = deptOwner;
+	}
+
+	public List<UserListDto> getManagerOwner() {
+		return managerOwner;
+	}
+
+	public void setManagerOwner(List<UserListDto> managerOwner) {
+		this.managerOwner = managerOwner;
+	}
 
 	public String getPy() {
 		return py;
