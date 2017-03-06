@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import io.swagger.annotations.Api;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -43,6 +44,7 @@ import net.sf.json.JSONObject;
  * 
  */
 @Controller
+@Api(tags="考勤相关")
 @RequestMapping("/api/attenceEvent")
 public class AttenceEventDataApi extends Action {
 

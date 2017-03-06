@@ -1,6 +1,10 @@
 package org.ost.crm.services.contacts;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.common.tools.OperateResult;
+import org.common.tools.db.Page;
 import org.common.tools.exception.ApiException;
 import org.ost.crm.client.ContactsServiceClient;
 import org.ost.crm.client.CustomerServiceClient;
@@ -57,15 +61,33 @@ public class ContactsService {
 		return detailDto;
 	}
 
-	public PageEntity<ContactsListDto> queryContacts(String schemaID, Integer customerID, String keyword, String name,
-			String phone, Users users, Integer curPage, Integer perPageSum) {
-		OperateResult<PageEntity<ContactsListDto>> result = contactsServiceClient.queryContacts(curPage, schemaID,
-				perPageSum, null, name, phone, customerID);
-		OperateResult<CustomerDetailDto> result2 = this.customerServiceClient.queryDetail(customerID, schemaID);
-		result.getData().getObjects().forEach(contactsListDto -> {
-			contactsListDto.setCustomer(new CustomerVo(result2.getData().getId(), result2.getData().getName()));
-		});
-		return result.getData();
+	/**
+	 * 联系人列表
+	 * 
+	 * @param customerID
+	 * @param keyword
+	 * @param name
+	 * @param phone
+	 * @param users
+	 * @param curPage
+	 * @param perPageSum
+	 * @return
+	 */
+	public Map<String, Object> queryContacts(Integer customerID, String keyword, String name, String phone, Users users,
+			Integer curPage, Integer perPageSum) {
+		OperateResult<PageEntity<ContactsListDto>> result = contactsServiceClient.contactList(curPage,
+				users.getSchemaId(), perPageSum, null, name, phone, customerID);
+		if (result.success() && result.getData().getTotalRecord() > 0 && customerID != null) {
+			OperateResult<CustomerDetailDto> result2 = this.customerServiceClient.queryDetail(customerID,
+					users.getSchemaId());
+			result.getData().getObjects().forEach(contactsListDto -> {
+				contactsListDto.setCustomer(new CustomerVo(result2.getData().getId(), result2.getData().getName()));
+			});
+		}
+		Page page = new Page();
+		page.setCurPage(curPage);
+		page.setTotalRecords(result.getData().getTotalRecord());
+		return OperateResult.renderPage(page, result.getData().getObjects());
 	}
 
 	/**
@@ -76,11 +98,14 @@ public class ContactsService {
 	 * @param dto
 	 * @return
 	 */
-	public ContactsCreateDto updateContacts(Integer contactsId, Users users, ContactsCreateDto dto) {
+	public String updateContacts(Integer contactsId, Users users, ContactsCreateDto dto) {
 		ContactsDto contactsDto = ContactsEntityMapper.INSTANCE.contactsCreateDtoToContactsDto(dto);
-		OperateResult<ContactsDto> result = contactsServiceClient.updateContact(contactsId, contactsDto);
-		if (result.getData() != null) {
-			return dto;
+		contactsDto.setCurrentUserName(users.getRealname());
+		contactsDto.setSchemaId(users.getSchemaId());
+		OperateResult<ContactsDto> result = contactsServiceClient.updateContact(contactsId, users.getSchemaId(),
+				contactsDto);
+		if (result.success()) {
+			return HttpStatus.OK.name();
 		} else {
 			throw new ApiException("更新联系人失败", result.getInnerException());
 		}

@@ -25,6 +25,7 @@ import org.ost.entity.customer.contacts.ContactsInfo;
 import org.ost.entity.customer.contacts.mapper.ContactInfoEntityMapper;
 import org.ost.entity.customer.dto.CustomerDetailDto;
 import org.ost.entity.customer.dto.CustomerListDto;
+import org.ost.entity.customer.dto.CustomerProjectDto;
 import org.ost.entity.customer.mapper.CustomerEntityMapper;
 import org.ost.entity.customer.org.CustomerOrg;
 import org.ost.entity.customer.user.UserCustomers;
@@ -352,16 +353,17 @@ public class CustomerService {
 	private CustomerProjectDao cpDao;
 
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public String createCustomerProject(Users users, Integer customerId, Integer projectId) {
+	public String createCustomerProject(String schemaId, CustomerProjectDto dto) {
 		CustomerProject cProject = new CustomerProject();
-		cProject.setProjectID(projectId);
-		cProject.setCustomerID(customerId);
-		cProject.setCreateBy(users.getRealname());
-		cProject.setUpdateBy(users.getRealname());
+		cProject.setProjectID(dto.getProject().getId());
+		cProject.setCustomerID(dto.getCustomer().getId());
+		cProject.setCreateBy(dto.getUserName());
+		cProject.setUpdateBy(dto.getUserName());
 		cProject.setCreateTime(new Date());
 		cProject.setUpdateTime(new Date());
+		cProject.setSchemaId(schemaId);
 		cpDao.insert(cProject);
-		return "ok";
+		return HttpStatus.OK.name();
 	}
 
 }

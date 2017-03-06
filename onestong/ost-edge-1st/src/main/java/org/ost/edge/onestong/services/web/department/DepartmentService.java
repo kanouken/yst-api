@@ -18,6 +18,7 @@ import org.ost.edge.onestong.model.user.User;
 import org.ost.edge.onestong.services.web.user.UsersService;
 import org.ost.edge.onestong.tools.Constants;
 import org.ost.entity.org.department.Departments;
+import org.ost.entity.org.department.dto.DepartmentListDto;
 import org.ost.entity.org.department.mapper.DepartmentEntityMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -183,9 +184,10 @@ public class DepartmentService {
 	}
 
 	@Transactional(readOnly = true)
-	public Object queryAllDepts(User currentUser) {
+	public List<DepartmentListDto>  queryAllDepts(User currentUser) {
 		Departments dept = new Departments();
 		dept.setDomainId(currentUser.getDomainId());
+		dept.setValid(Byte.parseByte("0"));
 		List<Departments> depts = this.deptDao.select(dept).stream().sorted((d1, d2) -> {
 			return d1.getDeptId().compareTo(d2.getDeptId());
 		}).collect(Collectors.toList());

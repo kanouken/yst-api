@@ -2,6 +2,8 @@ package org.ost.crm;
 
 import java.io.IOException;
 
+import org.ost.crm.conf.FeignDecoder;
+import org.ost.crm.conf.FeignEncoder;
 import org.ost.crm.interceptor.AuthCheckInterceptor;
 import org.ost.crm.interceptor.CrossDomainInterceptor;
 import org.springframework.boot.SpringApplication;
@@ -43,6 +45,16 @@ public class CrmApplication extends WebMvcConfigurerAdapter {
 	@Bean
 	public RestTemplate restTemplate() {
 		return new RestTemplate();
+	}
+	
+	@Bean
+	public FeignDecoder feignDecoder(){
+		return new FeignDecoder();
+	}
+
+	@Bean
+	public FeignEncoder feignEncoder(){
+		return new FeignEncoder();
 	}
 
 	public static void main(String[] args) {

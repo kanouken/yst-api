@@ -12,7 +12,7 @@ import org.ost.entity.base.BaseEntity;
 public class Project extends BaseEntity {
 	private String name;
 	private Integer projectTypeID;
-	private Integer state;
+	private Byte state;
 	private Date startTime;
 
 	private Integer isCyc;
@@ -36,11 +36,11 @@ public class Project extends BaseEntity {
 		this.projectTypeID = projectTypeID;
 	}
 
-	public Integer getState() {
+	public Byte getState() {
 		return state;
 	}
 
-	public void setState(Integer state) {
+	public void setState(Byte state) {
 		this.state = state;
 	}
 

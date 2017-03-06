@@ -19,6 +19,8 @@ import org.ost.edge.onestong.services.web.user.UsersService;
 import org.ost.edge.onestong.tools.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,12 +28,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.swagger.annotations.Api;
+
 /**
  * 员工 模块 API
  * 
  * @author mac
  * 
  */
+@Api(tags = "用户相关")
 @RestController
 @RequestMapping("/api/users")
 public class UsersDataApi extends Action {
@@ -57,7 +62,7 @@ public class UsersDataApi extends Action {
 	 * 
 	 * 
 	 * 
-	 *         {"statusCode":"200","description":"login success","data":{
+	 * 		{"statusCode":"200","description":"login success","data":{
 	 *         "account"
 	 *         :{"accountId":"7","loginName":"test0127@126.cn","loginPassword"
 	 *         :"e10adc3949ba59abbe56e057f20f883e"
@@ -78,30 +83,30 @@ public class UsersDataApi extends Action {
 	 *         :"","optional3":"","deviceId":"3453535-3543543sfsf0sfsf"}}}
 	 */
 	@ResponseBody
-	@RequestMapping("login")
+	@PostMapping("login")
 	public Object login(@RequestBody Map<String, Object> entity) {
 		OperateResult op = new OperateResult();
 		try {
 			Object email = entity.get("email");
 			Object password = entity.get("password");
 			Object deviceId = entity.get("deviceId");
-			
-			Object  clientId = entity.get("clientId");
-			if (null == email || null == password || null == deviceId ) {
+
+			Object clientId = entity.get("clientId");
+			if (null == email || null == password || null == deviceId) {
 
 				op.setStatusCode(Constants.PARAMTERS_NOT_COMPLETE);
-				op.setDescription(null);
+				op.setDescription("参数不完整 email、password、deviceId、clientId");
 				op.setData(null);
 
 				return op;
 			}
-			op = this.usersService.login(email, password, deviceId,clientId);
+			op = this.usersService.login(email, password, deviceId, clientId);
 
 		} catch (Exception e) {
 			if (logger.isErrorEnabled()) {
 				logger.error("login failed ", e);
 				op.setStatusCode(Constants.SERVER_ERROR);
-				op.setDescription("server has gone away ,try again later!");
+				op.setDescription("服务器异常");
 				op.setData(null);
 			}
 		}
@@ -112,7 +117,7 @@ public class UsersDataApi extends Action {
 	 * 注销 entity {userId}
 	 */
 	@ResponseBody
-	@RequestMapping("logout")
+	@PostMapping("logout")
 	public Object logout(@RequestBody Map<String, Object> entity) {
 		OperateResult op = new OperateResult();
 		User user = null;
@@ -125,8 +130,7 @@ public class UsersDataApi extends Action {
 				return op;
 			}
 
-			user = this.usersService.findOneById(Integer.valueOf(userId
-					.toString().trim()));
+			user = this.usersService.findOneById(Integer.valueOf(userId.toString().trim()));
 
 			if (null == user) {
 				op.setStatusCode(Constants.USER_NOT_FOUND);
@@ -156,30 +160,24 @@ public class UsersDataApi extends Action {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "{userId}/profile/update/{token}", method = RequestMethod.POST)
-	public Object profileUpdate(@PathVariable("token") String token,
-			@PathVariable("userId") Integer userId,
+	public Object profileUpdate(@PathVariable("token") String token, @PathVariable("userId") Integer userId,
 			@RequestBody Map<String, Object> entity) {
 		OperateResult op = new OperateResult();
 		User user = null;
 
 		Account account = null;
 		// 手机号
-		String cellPhone = entity.get("cellPhone") == null ? "" : entity.get(
-				"cellPhone").toString();
+		String cellPhone = entity.get("cellPhone") == null ? "" : entity.get("cellPhone").toString();
 		// 密码
-		String newPassword = entity.get("newPassword") == null ? "" : entity
-				.get("newPassword").toString();
+		String newPassword = entity.get("newPassword") == null ? "" : entity.get("newPassword").toString();
 		// 确认密码
-		String confirmPassword = entity.get("confirmPassword") == null ? ""
-				: entity.get("confirmPassword").toString();
+		String confirmPassword = entity.get("confirmPassword") == null ? "" : entity.get("confirmPassword").toString();
 
-		String orginalPassword = entity.get("orginalPassword") == null ? ""
-				: entity.get("orginalPassword").toString();
+		String orginalPassword = entity.get("orginalPassword") == null ? "" : entity.get("orginalPassword").toString();
 
 		try {
 
-			user = this.usersService.findOneById(Integer.valueOf(userId
-					.toString().trim()));
+			user = this.usersService.findOneById(Integer.valueOf(userId.toString().trim()));
 			if (null == user) {
 				op.setStatusCode(Constants.USER_NOT_FOUND);
 				op.setDescription("user can't found!");
@@ -189,12 +187,10 @@ public class UsersDataApi extends Action {
 			account = this.accountService.findOneById(user.getAccountId());
 
 			// 密码修改
-			if (StringUtils.isNotBlank(orginalPassword)
-					&& StringUtils.isNotBlank(newPassword)
+			if (StringUtils.isNotBlank(orginalPassword) && StringUtils.isNotBlank(newPassword)
 					&& StringUtils.isNotBlank(confirmPassword)) {
 
-				if (!account.getLoginPassword().equals(
-						Md5Util.md5(orginalPassword))) {
+				if (!account.getLoginPassword().equals(Md5Util.md5(orginalPassword))) {
 					op.setStatusCode(Constants.ORGINAL_PASSWORD_INCORRECT);
 					op.setDescription("原密码错误！");
 					op.setData(null);
@@ -244,14 +240,13 @@ public class UsersDataApi extends Action {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "{userId}/headpic/update/{token}", method = RequestMethod.POST)
-	public Object headPicUpdate(@PathVariable("token") String token,
-			@PathVariable("userId") Integer userId, MultipartFile headPic) {
+	public Object headPicUpdate(@PathVariable("token") String token, @PathVariable("userId") Integer userId,
+			MultipartFile headPic) {
 		OperateResult op = new OperateResult();
 		User user = null;
 		try {
 
-			user = this.usersService.findOneById(Integer.valueOf(userId
-					.toString().trim()));
+			user = this.usersService.findOneById(Integer.valueOf(userId.toString().trim()));
 
 			if (null == user) {
 				op.setStatusCode(Constants.USER_NOT_FOUND);
@@ -280,54 +275,24 @@ public class UsersDataApi extends Action {
 
 		return op;
 	}
-	
-	@RequestMapping(value="/contacts",method = RequestMethod.GET)
-	public Object  queryAllContacts(HttpServletRequest request){
-		return this.usersService.queryAllContacts(currentUser());
-	}
-	
-	
+
 	/**
-	 * 返回所有用户  domain用户
+	 * 返回所有用户 domain用户
 	 */
 	@ResponseBody
-	@RequestMapping("{userId}/contacts/{token}")
-	public Object getAllContacts(@PathVariable("token") String token,
-			@PathVariable("userId") Integer userId) {
+	@RequestMapping(value = "/contacts", method = RequestMethod.GET)
+	public Object getAllContacts(@RequestAttribute(value = LOGIN_USER) User user) {
 		OperateResult op = new OperateResult();
-		User user = null;
-		try {
-			user = this.usersService.findOneById(userId);
-			if (null == user) {
-				if (logger.isErrorEnabled()) {
-					logger.error("获取所有联系人 --- 用户不存在");
-				}
-				op.setStatusCode(Constants.USER_NOT_FOUND);
-				op.setDescription("user can not found!");
-				return op;
-			}
-			List<Map<String, Object>> users = this.usersService
-					.findAllUsers(user.getDomainId());
-			if (CollectionUtils.isNotEmpty(users)) {
-				op.setStatusCode(Constants.HTTP_200);
-				op.setDescription("get all contacts success");
-				op.setData(users);
-			} else {
-				op.setStatusCode(Constants.HTTP_200);
-				op.setDescription("no contacts!");
-				op.setData(null);
-			}
-
-		} catch (Exception e) {
-			if (logger.isErrorEnabled()) {
-
-				logger.error("获取所有联系人 失败", e);
-			}
-			op.setStatusCode(Constants.SERVER_ERROR);
-			op.setDescription("server has gone away,try again later!");
+		List<Map<String, Object>> users = this.usersService.findAllUsers(user.getDomainId());
+		if (CollectionUtils.isNotEmpty(users)) {
+			op.setStatusCode(Constants.HTTP_200);
+			op.setDescription("get all contacts success");
+			op.setData(users);
+		} else {
+			op.setStatusCode(Constants.HTTP_200);
+			op.setDescription("no contacts!");
 			op.setData(null);
 		}
-
 		return op;
 
 	}
@@ -340,8 +305,7 @@ public class UsersDataApi extends Action {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "search/{nickName}/{token}", method = RequestMethod.GET)
-	public Object searchByNickName(@PathVariable("nickName") String nickName,
-			@PathVariable("token") String token)
+	public Object searchByNickName(@PathVariable("nickName") String nickName, @PathVariable("token") String token)
 			throws UnsupportedEncodingException {
 		OperateResult op = new OperateResult();
 		nickName = new String(nickName.getBytes("iso8859-1"), "UTF-8");
@@ -370,16 +334,17 @@ public class UsersDataApi extends Action {
 	public void getAllCustomerTag() {
 
 	}
+
 	/**
 	 * 获取用户基本信息
+	 * 
 	 * @param userId
 	 * @param token
 	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping(value = "profile/{userId}/{token}", method = RequestMethod.GET)
-	public Object userProfile(@PathVariable("userId") Integer userId,
-			@PathVariable("token") String token) {
+	public Object userProfile(@PathVariable("userId") Integer userId, @PathVariable("token") String token) {
 
 		OperateResult op = new OperateResult();
 		User user = null;
@@ -397,7 +362,7 @@ public class UsersDataApi extends Action {
 				op.setDescription("user can not found!");
 				return op;
 			}
-			
+
 			op.setStatusCode(HTTP_200);
 			op.setDescription("get user profile success");
 			op.setData(user);

@@ -20,6 +20,7 @@ import org.ost.entity.project.dto.ProjectTypeDto;
 public interface ProjectEntityMapper {
 	ProjectEntityMapper INSTANCE = Mappers.getMapper(ProjectEntityMapper.class);
 
+	@Mappings({ @Mapping(source = "typeID", target = "projectTypeID") })
 	Project createOrUpateDtoToProject(ProjectCreateOrUpdateDto dto);
 
 	ProjectPayment projectPaymentDtoToProjectPayment(ProjectPaymentDto ppdto);

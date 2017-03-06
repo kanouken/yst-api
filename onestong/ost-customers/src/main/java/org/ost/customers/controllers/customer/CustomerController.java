@@ -6,8 +6,10 @@ import org.common.tools.OperateResult;
 import org.ost.customers.services.CustomerService;
 import org.ost.entity.base.PageEntity;
 import org.ost.entity.customer.Customer;
+import org.ost.entity.customer.CustomerProject;
 import org.ost.entity.customer.dto.CustomerDetailDto;
 import org.ost.entity.customer.dto.CustomerListDto;
+import org.ost.entity.customer.dto.CustomerProjectDto;
 import org.ost.entity.customer.vo.CustomerCreateVo;
 import org.ost.entity.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,10 +88,9 @@ public class CustomerController extends Action {
 	}
 
 	@RequestMapping(value = "/project", method = RequestMethod.POST)
-	public OperateResult<String> createCustomerProject(@RequestHeader(value = "schemaID") String schemaID,
-			@RequestParam(value = "customerId") Integer customerId,
-			@RequestParam(value = "projectId") Integer projectId, Users users) {
-		return new OperateResult<String>(this.customerService.createCustomerProject(users, customerId, projectId));
+	public OperateResult<String> createCustomerProject(@RequestHeader(value = TENANT_ID) String schemaID,
+			@RequestBody CustomerProjectDto dto) {
+		return new OperateResult<String>(this.customerService.createCustomerProject(schemaID, dto));
 	}
 
 }

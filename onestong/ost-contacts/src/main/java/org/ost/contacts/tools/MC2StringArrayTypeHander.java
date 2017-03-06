@@ -4,6 +4,8 @@ import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
@@ -13,24 +15,24 @@ import org.apache.ibatis.type.MappedTypes;
  * @author xnq
  *
  */
-@MappedTypes({String[].class})  
+@MappedTypes({List.class})  
 @MappedJdbcTypes({JdbcType.VARCHAR})  
-public class MC2StringArrayTypeHander extends BaseTypeHandler<String[]> {
+public class MC2StringArrayTypeHander extends BaseTypeHandler<List<String>> {
 
 	@Override
-	public String[] getNullableResult(ResultSet rs, String columnName)
+	public List<String> getNullableResult(ResultSet rs, String columnName)
 			throws SQLException {
 	       return getStringArray(rs.getString(columnName));  
 	}
 
 	@Override
-	public String[] getNullableResult(ResultSet rs, int index)
+	public List<String> getNullableResult(ResultSet rs, int index)
 			throws SQLException {
 		return getStringArray(rs.getString(index));
 	}
 
 	@Override
-	public String[] getNullableResult(CallableStatement cs, int columnIndex)
+	public List<String> getNullableResult(CallableStatement cs, int columnIndex)
 			throws SQLException {
        return this.getStringArray(cs.getString(columnIndex));  
 
@@ -38,7 +40,7 @@ public class MC2StringArrayTypeHander extends BaseTypeHandler<String[]> {
 
 	@Override
 	public void setNonNullParameter(PreparedStatement ps, int i ,
-			String[] parameter, JdbcType arg3) throws SQLException {
+			List<String> parameter, JdbcType arg3) throws SQLException {
 		 StringBuffer result = new StringBuffer();  
 	       for (String value : parameter)  
 	           result.append(value).append(",");  
@@ -46,10 +48,10 @@ public class MC2StringArrayTypeHander extends BaseTypeHandler<String[]> {
 	       ps.setString(i, result.toString());  
 	}
 	
-	private String[] getStringArray(String columnValue) {  
+	private List<String> getStringArray(String columnValue) {  
 	       if (columnValue == null)  
 	           return null;  
-	       return columnValue.split(",");  
+	       return Arrays.asList(columnValue.split(","));  
 	    }  
 
 }

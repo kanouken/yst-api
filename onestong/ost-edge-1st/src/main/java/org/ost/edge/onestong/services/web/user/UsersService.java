@@ -538,7 +538,7 @@ public class UsersService {
 
 				}
 
-				if (!(account.getLoginPassword().equals(Md5Util.md5(password.toString().trim())))) {
+				if (!(account.getLoginPassword().equalsIgnoreCase(password.toString().trim()))) {
 					op.setStatusCode(Constants.PASSWORD_INCORRECT);
 					op.setDescription("密码不正确！");
 					op.setData(null);

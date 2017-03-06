@@ -20,10 +20,10 @@ public interface ContactDao extends Mapper<Contacts> {
 			+ "INSTR(CONCAT(t.firstName,t.lastName),#{name}) >0 "
 			+ "or  INSTR(t.val,#{email}) or instr(t.val,#{phone}) >0 ";
 
-	@Select(SELECT_COUNT)
-	Integer selectCountContacts(@Param("name") String name, @Param("phone") String phone, @Param("email") String email);
+	Integer selectCountContacts(@Param("name") String name, @Param("phone") String phone, @Param("email") String email,
+			@Param("customerId") Integer customerId);
 
 	List<ContactsListDto> selectContacts(@Param("name") String name, @Param("phone") String phone,
-			@Param("email") String email, RowBounds rb);
+			@Param("email") String email, @Param("customerId") Integer customerId, RowBounds rb);
 
 }

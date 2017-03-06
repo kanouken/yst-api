@@ -17,13 +17,13 @@ public class ProjectCreateOrUpdateDto {
 	private CustomerVo customer;
 	private String cyc;
 
-	private List<DeptCreateOrUpdateDto> deptOwners;
+	private List<DeptCreateOrUpdateDto> deptOwner;
 
 	private String details;
 	private String id;
 
 	private String isCyc;
-	private List<UserCreateOrUpdateDto> managerOwners;
+	private List<UserCreateOrUpdateDto> managerOwner;
 	private String name;
 	private String startTime;
 	private String startTimeStr;
@@ -78,14 +78,6 @@ public class ProjectCreateOrUpdateDto {
 		this.cyc = cyc;
 	}
 
-	public List<DeptCreateOrUpdateDto> getDeptOwners() {
-		return deptOwners;
-	}
-
-	public void setDeptOwners(List<DeptCreateOrUpdateDto> deptOwners) {
-		this.deptOwners = deptOwners;
-	}
-
 	public String getDetails() {
 		return details;
 	}
@@ -110,16 +102,24 @@ public class ProjectCreateOrUpdateDto {
 		this.isCyc = isCyc;
 	}
 
-	public List<UserCreateOrUpdateDto> getManagerOwners() {
-		return managerOwners;
-	}
-
-	public void setManagerOwners(List<UserCreateOrUpdateDto> managerOwners) {
-		this.managerOwners = managerOwners;
-	}
-
 	public String getName() {
 		return name;
+	}
+
+	public List<DeptCreateOrUpdateDto> getDeptOwner() {
+		return deptOwner;
+	}
+
+	public void setDeptOwner(List<DeptCreateOrUpdateDto> deptOwner) {
+		this.deptOwner = deptOwner;
+	}
+
+	public List<UserCreateOrUpdateDto> getManagerOwner() {
+		return managerOwner;
+	}
+
+	public void setManagerOwner(List<UserCreateOrUpdateDto> managerOwner) {
+		this.managerOwner = managerOwner;
 	}
 
 	public void setName(String name) {

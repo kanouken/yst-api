@@ -27,18 +27,18 @@ public class AuthFilter extends ZuulFilter {
 		ctx.getRequest().getRemoteHost();
 		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
 			// 无token
-			ctx.setSendZuulResponse(false);
-			OperateResult op = new OperateResult("", "forbidden", "");
-			op.setStatusCode("500");
-			try {
-				ctx.setResponseBody(mapper.writeValueAsString(op));
-			} catch (JsonProcessingException e) {
-			}
-			return null;
+//			ctx.setSendZuulResponse(false);
+//			OperateResult op = new OperateResult("", "forbidden", "");
+//			op.setStatusCode("500");
+//			try {
+//				ctx.setResponseBody(mapper.writeValueAsString(op));
+//			} catch (JsonProcessingException e) {
+//			}
+//			return null;
 		}
 		// token
-		String token = null;
-		token = authHeader.substring(7);
+//		String token = null;
+//		token = authHeader.substring(7);
 //		try {
 //			Claims body = Jwts.parser().requireSubject("server").setSigningKey(gw.getJwtPrivatekey())
 //					.parseClaimsJws(token).getBody();

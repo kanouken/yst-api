@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
-import org.common.tools.OperateResult;
 import org.common.tools.pinyin.Chinese2PY;
 import org.ost.contacts.dao.ContactDao;
 import org.ost.contacts.dao.CustomerContactsDao;
@@ -20,6 +19,7 @@ import org.ost.contacts.model.ContactsAddressExample;
 import org.ost.contacts.model.ContactsExample;
 import org.ost.contacts.model.ContactsFileExample;
 import org.ost.contacts.model.ContactsInfoExample;
+import org.ost.contacts.model.CustomerContactsExample;
 import org.ost.contacts.model.ProjectContactsExample;
 import org.ost.entity.base.PageEntity;
 import org.ost.entity.contacts.Contacts;
@@ -33,7 +33,7 @@ import org.ost.entity.contacts.dto.ContactsListDto;
 import org.ost.entity.contacts.file.ContactsFile;
 import org.ost.entity.contacts.mapper.ContactsEntityMapper;
 import org.ost.entity.customer.vo.CustomerVo;
-import org.ost.entity.project.dto.ProjectCreateOrUpdateDto;
+import org.ost.entity.project.dto.ProjectContactsDto;
 import org.ost.entity.user.Users;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,8 +129,8 @@ public class ContactsService {
 	}
 
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public ContactsDto updateContacts(Integer id, ContactsDto contactsDto) {
-		// TODO 更新 客户联系人 关系
+	public ContactsDto updateContacts(Integer id, String schemaId, ContactsDto contactsDto) {
+
 		Contacts contact = new Contacts();
 		contact.setId(id);
 		contact.setCreateTime(new Date());
@@ -151,6 +151,19 @@ public class ContactsService {
 		contact.setSex(contactsDto.getSex());
 		contact.setSchemaId(contactsDto.getSchemaId());
 		contactDao.updateByPrimaryKeySelective(contact);
+
+		// 更新 客户联系人 关系
+		if (contactsDto.getCustomer() != null) {
+			// old
+			CustomerContactsExample cce = new CustomerContactsExample();
+			cce.createCriteria().andSchemaidEqualTo(schemaId).andIsdeleteEqualTo(Byte.parseByte("0"))
+					.andContactidEqualTo(id);
+			CustomerContacts cc = new CustomerContacts();
+			cc.setUpdateBy(contactsDto.getCurrentUserName());
+			cc.setUpdateTime(contact.getUpdateTime());
+			cc.setCustomerID(contactsDto.getCustomer().getId());
+			this.customerContactsDao.updateByExampleSelective(cc, cce);
+		}
 		// clean address
 		ContactsAddressExample addressExample = new ContactsAddressExample();
 		addressExample.createCriteria().andSchemaidEqualTo(contactsDto.getSchemaId()).andContactidEqualTo(id);
@@ -208,10 +221,10 @@ public class ContactsService {
 			String name, String phone, Integer customerID) {
 		PageEntity<ContactsListDto> pages = new PageEntity<ContactsListDto>();
 		List<ContactsListDto> contacts = new ArrayList<ContactsListDto>();
-		Integer totalRecords = this.contactDao.selectCountContacts(name, phone, email);
+		Integer totalRecords = this.contactDao.selectCountContacts(name, phone, email, customerID);
 		RowBounds rb = new RowBounds();
 		if (totalRecords > 0) {
-			contacts = this.contactDao.selectContacts(name, phone, email, rb);
+			contacts = this.contactDao.selectContacts(name, phone, email, customerID, rb);
 		}
 		pages.setCurPage(curPage);
 		pages.setTotalRecord(totalRecords);
@@ -302,37 +315,34 @@ public class ContactsService {
 	 * @param dto
 	 */
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public String createOrUpdateProjectContacts(String schemaID, ProjectCreateOrUpdateDto dto) {
-
+	public String createProjectContacts(String schemaID, ProjectContactsDto dto) {
 		dto.getContacts().forEach(contacts -> {
-
 			ProjectContacts pContacts = new ProjectContacts();
 			pContacts.setContactID(contacts.getId());
-			pContacts.setProjectID(Integer.parseInt(dto.getId()));
-			pContacts.setCreateBy(dto.getCreateBy());
+			pContacts.setProjectID(dto.getProject().getId());
+			pContacts.setCreateBy(dto.getUserName());
 			pContacts.setSchemaId(schemaID);
-			pContacts.setUpdateBy(dto.getCreateBy());
+			pContacts.setUpdateBy(dto.getUserName());
 			pContacts.setCreateTime(new Date());
 			pContacts.setUpdateTime(new Date());
 			pContacts.setIsDelete(Short.parseShort("0"));
 			this.pcDao.insert(pContacts);
 		});
-		return "ok";
+		return HttpStatus.OK.name();
 	}
 
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public String updateConactsProject(String schemaID, List<ContactsListDto> dtos) {
+	public String updateConactsProject(String schemaID, ProjectContactsDto dto) {
 		ProjectContactsExample pce = new ProjectContactsExample();
-		pce.createCriteria().andSchemaidEqualTo(schemaID).andProjectidEqualTo(dtos.get(0).getProjectId())
+		pce.createCriteria().andSchemaidEqualTo(schemaID).andProjectidEqualTo(dto.getProject().getId())
 				.andIsdeleteEqualTo(Byte.parseByte("0"));
 		ProjectContacts pContacts = new ProjectContacts();
 		pContacts.setIsDelete(Short.valueOf("1"));
 		pContacts.setUpdateTime(new Date());
-		pContacts.setUpdateBy(dtos.get(0).getCurrentUserName());
+		pContacts.setUpdateBy(dto.getUserName());
 		this.pcDao.updateByExampleSelective(pContacts, pce);
 
-		dtos.forEach(contacts -> {
-
+		dto.getContacts().forEach(contacts -> {
 			ProjectContacts _pContacts = new ProjectContacts();
 			_pContacts.setContactID(contacts.getId());
 			_pContacts.setProjectID(contacts.getProjectId());
@@ -341,7 +351,7 @@ public class ContactsService {
 			_pContacts.setUpdateBy(contacts.getCurrentUserName());
 			this.pcDao.insertSelective(_pContacts);
 		});
-		return "ok";
+		return HttpStatus.OK.name();
 	}
 
 }

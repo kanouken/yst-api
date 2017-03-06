@@ -3,8 +3,6 @@ package org.ost.edge.onestong.controller.api.departments;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.common.tools.OperateResult;
 import org.ost.edge.onestong.controller.base.Action;
@@ -15,9 +13,11 @@ import org.ost.edge.onestong.services.authority.AuthorityService;
 import org.ost.edge.onestong.services.web.department.DepartmentService;
 import org.ost.edge.onestong.services.web.user.UsersService;
 import org.ost.edge.onestong.tools.Constants;
+import org.ost.entity.org.department.Departments;
+import org.ost.entity.org.department.dto.DepartmentListDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,17 +36,14 @@ public class DepartmentDataApi extends Action {
 	private AuthorityService authorityService;
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
-	public Object queryAllDepts(
+	public OperateResult<List<DepartmentListDto>> queryAllDepts(
 			// @RequestHeader(value = PAGE_CURRENT, defaultValue =
 			// PAGE_CURRENT_DEFAULT) Integer curPage,
 			// @RequestHeader(value = PAGE_PER_SIZE, defaultValue =
 			// PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
-			// @RequestParam(value = "keyword", required = false) String
-			// keyword,
-			HttpServletRequest request
-			) {
-		
-		return this.departmentService.queryAllDepts(currentUser());
+			@RequestParam(value = "keyword", required = false) String keyword,
+			@RequestAttribute(value = LOGIN_USER) User user) {
+		return new OperateResult<List<DepartmentListDto>>(this.departmentService.queryAllDepts(user));
 
 	}
 
@@ -135,43 +132,16 @@ public class DepartmentDataApi extends Action {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "all/{userId}/{token}", method = RequestMethod.GET)
-	public Object allDepartment(@PathVariable("userId") Integer userId, @PathVariable("token") String token) {
-
+	@RequestMapping(value = "all", method = RequestMethod.GET)
+	public Object allDepartment(@RequestAttribute(value = LOGIN_USER) User user) {
 		OperateResult op = new OperateResult();
-		User user = null;
-		try {
-
-			user = this.userService.findOneById(userId);
-			if (null == user) {
-
-				if (logger.isErrorEnabled()) {
-					logger.error("获取所有domain 部门 --- 用户不存在");
-
-				}
-				op.setStatusCode(Constants.USER_NOT_FOUND);
-				op.setDescription("user can not found!");
-				return op;
-			}
-
-			Department d = new Department();
-			d.setDomainId(user.getDomainId());
-			List<Map<String, Object>> depts = this.departmentService
-					.findAllDepartmentsAndParentNameFilterByDomain(user.getDomainId());
-
-			op.setStatusCode(HTTP_200);
-			op.setDescription("get all departments success!");
-			op.setData(depts);
-
-		} catch (Exception e) {
-
-			if (logger.isErrorEnabled()) {
-				logger.error("获取所有 domain 部门失败 domain name=" + user.companyName, e);
-			}
-			op.setStatusCode(Constants.SERVER_ERROR);
-			op.setDescription("服务器异常！稍后再试");
-			op.setData(null);
-		}
+		Department d = new Department();
+		d.setDomainId(user.getDomainId());
+		List<Map<String, Object>> depts = this.departmentService
+				.findAllDepartmentsAndParentNameFilterByDomain(user.getDomainId());
+		op.setStatusCode(HTTP_200);
+		op.setDescription("get all departments success!");
+		op.setData(depts);
 
 		return op;
 	}

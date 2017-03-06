@@ -25,6 +25,15 @@ public class ContactsListDto {
 	private String sex;
 	private String sexName;
 	private String szm;
+	private String role;
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
 
 	public Integer getProjectId() {
 		return projectId;

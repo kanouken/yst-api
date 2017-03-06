@@ -1,11 +1,23 @@
 package org.common.tools;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.common.tools.db.Page;
+
 public class OperateResult<T> {
 
 	private String innerException;
 
 	public String getInnerException() {
 		return innerException;
+	}
+
+	public static Map<String, Object> renderPage(Page page, Object object) {
+		Map<String, Object> reqMap = new HashMap<String, Object>();
+		reqMap.put("page", page);
+		reqMap.put("objects", object);
+		return reqMap;
 	}
 
 	public Boolean success() {

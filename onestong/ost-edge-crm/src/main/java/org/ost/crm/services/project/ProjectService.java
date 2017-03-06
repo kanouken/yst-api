@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.common.tools.OperateResult;
 import org.common.tools.exception.ApiException;
+import org.omg.CORBA.PRIVATE_MEMBER;
 import org.ost.crm.client.ContactsServiceClient;
 import org.ost.crm.client.CustomerServiceClient;
 import org.ost.crm.dao.project.ProjectDao;
@@ -23,19 +24,23 @@ import org.ost.crm.model.common.CommonParams;
 import org.ost.crm.services.base.BaseService;
 import org.ost.entity.contacts.dto.ContactsListDto;
 import org.ost.entity.contacts.mapper.ContactsEntityMapper;
+import org.ost.entity.customer.dto.CustomerProjectDto;
 import org.ost.entity.project.Project;
-import org.ost.entity.project.ProjectFile;
 import org.ost.entity.project.ProjectOrg;
 import org.ost.entity.project.ProjectPayment;
+import org.ost.entity.project.ProjectState;
 import org.ost.entity.project.ProjectType;
 import org.ost.entity.project.ProjectTypeStep;
 import org.ost.entity.project.UserProject;
+import org.ost.entity.project.dto.ProjectContactsDto;
 import org.ost.entity.project.dto.ProjectCreateOrUpdateDto;
 import org.ost.entity.project.dto.ProjectPaymentDto;
 import org.ost.entity.project.dto.ProjectStepsDetailDto;
 import org.ost.entity.project.mapper.ProjectEntityMapper;
+import org.ost.entity.project.vo.ProjectVo;
 import org.ost.entity.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,16 +75,28 @@ public class ProjectService extends BaseService {
 		project.setSchemaId(user.getSchemaId());
 		project.setCreateTime(new Date());
 		project.setUpdateTime(new Date());
+		if (dto.getStartTimeStr() != null) {
+			project.setState(ProjectState.LONG_ATT.getState());
+		} else {
+			project.setState(ProjectState.NORMAL.getState());
+		}
 		projectDao.insert(project);
-		OperateResult<String> result = this.contactsServiceClient.updateContactProject(user.getSchemaId(), dto);
-		if (result.getData() != null) {
-			//
+		ProjectContactsDto projectContactsDto = new ProjectContactsDto();
+		projectContactsDto.setProject(new ProjectVo(project.getId(), project.getName()));
+		projectContactsDto.setContacts(ContactsEntityMapper.INSTANCE.contactsDtoToContactsListDto(dto.getContacts()));
+		projectContactsDto.setUserName(user.getRealname());
+		OperateResult<String> result = this.contactsServiceClient.updateContactProject(user.getSchemaId(),
+				projectContactsDto);
+		if (result.success()) {
+			// project customer
+			CustomerProjectDto customerProjectDto = new CustomerProjectDto();
+			customerProjectDto.setCustomer(dto.getCustomer());
+			customerProjectDto.setProject(new ProjectVo(project.getId(), project.getName()));
+			customerProjectDto.setUserName(user.getRealname());
 			OperateResult<String> result2 = this.customerServiceClient.createCustomerProject(user.getSchemaId(),
-					dto.getCustomer().getId(), project.getId(), user);
-
-			if (result2.getData() != null) {
-				//
-				dto.getDeptOwners().forEach(dept -> {
+					customerProjectDto);
+			if (result2.success()) {
+				dto.getDeptOwner().forEach(dept -> {
 					ProjectOrg pOrg = new ProjectOrg();
 					pOrg.setOrganizeID(dept.getId());
 					pOrg.setProjectID(project.getId());
@@ -89,11 +106,9 @@ public class ProjectService extends BaseService {
 					pOrg.setUpdateTime(new Date());
 					pOrg.setSchemaId(user.getSchemaId());
 					poDao.insertSelective(pOrg);
-
 				});
-
 				//
-				dto.getManagerOwners().forEach(users -> {
+				dto.getManagerOwner().forEach(users -> {
 					UserProject uProject = new UserProject();
 					uProject.setUserID(users.getId());
 					uProject.setProjectID(project.getId());
@@ -104,7 +119,6 @@ public class ProjectService extends BaseService {
 					uProject.setSchemaId(user.getSchemaId());
 					userProjectDao.insertSelective(uProject);
 				});
-
 			} else {
 				throw new ApiException("新增项目失败", result2.getInnerException());
 			}
@@ -112,7 +126,7 @@ public class ProjectService extends BaseService {
 		} else {
 			throw new ApiException("新增项目失败", result.getInnerException());
 		}
-		return "ok";
+		return HttpStatus.OK.name();
 	}
 
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
@@ -149,7 +163,11 @@ public class ProjectService extends BaseService {
 			dto.setProjectId(projectId);
 			dto.setCurrentUserName(users.getRealname());
 		});
-		OperateResult<String> result = contactsServiceClient.updateProject(users.getSchemaId(), dtos);
+		ProjectContactsDto pContactsDto = new ProjectContactsDto();
+		pContactsDto.setProject(new ProjectVo(projectId, ""));
+		pContactsDto.setContacts(dtos);
+		pContactsDto.setUserName(users.getRealname());
+		OperateResult<String> result = contactsServiceClient.updateProject(users.getSchemaId(), pContactsDto);
 		if (result.getData() != null) {
 			return result.getData();
 		} else {
@@ -166,7 +184,11 @@ public class ProjectService extends BaseService {
 		this.projectDao.updateByPrimaryKeySelective(project);
 		// update contacts
 		List<ContactsListDto> listDtos = ContactsEntityMapper.INSTANCE.contactsDtoToContactsListDto(dto.getContacts());
-		OperateResult<String> result = contactsServiceClient.updateProject(user.getSchemaId(), listDtos);
+		ProjectContactsDto pContactsDto = new ProjectContactsDto();
+		pContactsDto.setProject(new ProjectVo(Integer.parseInt(dto.getId()), ""));
+		pContactsDto.setContacts(listDtos);
+		pContactsDto.setUserName(user.getRealname());
+		OperateResult<String> result = contactsServiceClient.updateProject(user.getSchemaId(), pContactsDto);
 		if (result.getData() != null) {
 			// update TODO 修改客户
 

@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.Api;
+@Api(tags="审批相关")
 @RestController
 @RequestMapping(value = "approvalEvent")
 public class ApplyController extends Action {

@@ -4,9 +4,7 @@ public class ContactsAddressDto {
 	private String province;
 	private String city;
 	private String district;
-	private String detailAddress1;
-	private String detailAddress2;
-	private String detailAddress3;
+	private String detailAddress;
 	private Double lat;
 	private Double lng;
 
@@ -34,28 +32,12 @@ public class ContactsAddressDto {
 		this.district = district;
 	}
 
-	public String getDetailAddress1() {
-		return detailAddress1;
+	public String getDetailAddress() {
+		return detailAddress;
 	}
 
-	public void setDetailAddress1(String detailAddress1) {
-		this.detailAddress1 = detailAddress1;
-	}
-
-	public String getDetailAddress2() {
-		return detailAddress2;
-	}
-
-	public void setDetailAddress2(String detailAddress2) {
-		this.detailAddress2 = detailAddress2;
-	}
-
-	public String getDetailAddress3() {
-		return detailAddress3;
-	}
-
-	public void setDetailAddress3(String detailAddress3) {
-		this.detailAddress3 = detailAddress3;
+	public void setDetailAddress(String detailAddress) {
+		this.detailAddress = detailAddress;
 	}
 
 	public Double getLat() {
