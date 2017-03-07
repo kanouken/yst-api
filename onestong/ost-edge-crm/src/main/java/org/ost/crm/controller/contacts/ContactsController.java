@@ -46,14 +46,14 @@ public class ContactsController extends Action {
 	}
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public Map<String, Object> queryContacts(
+	public OperateResult<Map<String, Object>> queryContacts(
 			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
 			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
 			@RequestAttribute(value = LOGIN_USER) Users users,
 			@RequestParam(value = "customerID", required = false) Integer customerID,
 			@RequestParam(value = "keyword", required = false) String keyword,
 			@RequestParam(value = "name", required = false) String name, @RequestParam(value = "phone") String phone) {
-		return this.contactsService.queryContacts(customerID, keyword, name, phone, users, curPage, perPageSum);
+		return new OperateResult<>(this.contactsService.queryContacts(customerID, keyword, name, phone, users, curPage, perPageSum));
 	}
 
 	/**
