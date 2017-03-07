@@ -12,12 +12,6 @@ public class ProjectTypeVo {
 
 	private String startTimeWarningEnable;
 
-	private String createBy;
-
-	private String updateBy;
-
-	private String schemaId;
-
 	public String getName() {
 
 		return name;
@@ -77,38 +71,4 @@ public class ProjectTypeVo {
 		this.startTimeWarningEnable = startTimeWarningEnable;
 
 	}
-
-	public String getCreateBy() {
-
-		return createBy;
-
-	}
-
-	public void setCreateBy(String createBy) {
-
-		this.createBy = createBy;
-
-	}
-
-
-	public String getSchemaId() {
-		return schemaId;
-	}
-
-	public void setSchemaId(String schemaId) {
-		this.schemaId = schemaId;
-	}
-
-	public String getUpdateBy() {
-
-		return updateBy;
-
-	}
-
-	public void setUpdateBy(String updateBy) {
-
-		this.updateBy = updateBy;
-
-	}
-
 }
