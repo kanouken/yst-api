@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.session.RowBounds;
 import org.ost.entity.project.ProjectType;
+import org.ost.entity.project.vo.ProjectTypeVo;
 import org.springframework.stereotype.Repository;
 
 import feign.Param;
@@ -14,6 +15,7 @@ import tk.mybatis.mapper.common.Mapper;
 public interface ProjectTypeDao extends Mapper<ProjectType> {
 	Integer selectTypeCount(@Param("parmamsMap") Map<String, String> params);
 
-	List<ProjectType> selectTypeList(@Param("parmamsMap") Map<String, String> params, RowBounds rb);
+	List<ProjectTypeVo> selectTypeList(@Param("parmamsMap") Map<String, String> params, RowBounds rb);
 	
+	ProjectTypeVo selectTypeById(@Param("parmamsMap") ProjectType pro);
 }

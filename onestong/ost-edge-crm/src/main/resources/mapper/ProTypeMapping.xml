@@ -6,10 +6,13 @@
 		SELECT count(1) FROM
 		tbl_project_type
 	</select>
-	<select id="selectTypeList" resultType="org.ost.entity.project.ProjectType">
+	<select id="selectTypeList" resultType="org.ost.entity.project.vo.ProjectTypeVo">
 		SELECT * FROM
 		tbl_project_type
 	</select>
-
+	<select id="selectTypeById" resultType="org.ost.entity.project.vo.ProjectTypeVo">
+		SELECT * FROM
+		tbl_project_type where id=#{id}
+	</select>
 	
 </mapper>
