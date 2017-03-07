@@ -66,7 +66,7 @@ public class ProjectsController extends Action {
 	}
 
 	/**
-	 * 新增项目
+	 * 新增项目 ✅
 	 * 
 	 * @param user
 	 * @param dto
@@ -107,7 +107,7 @@ public class ProjectsController extends Action {
 	}
 
 	/**
-	 * 更新 ／ 新增回款流程
+	 * 更新 ／ 新增回款流程 ✅
 	 * 
 	 * @param projectId
 	 * @param users
@@ -122,7 +122,7 @@ public class ProjectsController extends Action {
 
 	/**
 	 * 
-	 * 更新联系人
+	 * 更新联系人 ✅
 	 * 
 	 * @param projectId
 	 * @param users
@@ -137,18 +137,19 @@ public class ProjectsController extends Action {
 
 	/**
 	 * 更新项目阶段
-	 * 
+	 * ✅
 	 * @param projectId
 	 * @param users
 	 * @param dtos
 	 */
 	@PutMapping(value = "steps/{projectId}")
-	public void updateProjectSteps(@PathVariable(value = "projectId") Integer projectId,
+	public OperateResult<String> updateProjectSteps(@PathVariable(value = "projectId") Integer projectId,
 			@RequestAttribute(value = LOGIN_USER) Users users, @RequestBody List<ProjectStepsDto> dtos) {
+		return new OperateResult<String>(projectService.updateProjectSteps(projectId, users, dtos));
 	}
 
 	/**
-	 * 获取项目阶段
+	 * 获取项目阶段 ✅
 	 * 
 	 * @param typeID
 	 * @param user
@@ -161,7 +162,7 @@ public class ProjectsController extends Action {
 	}
 
 	/**
-	 * 获取项目参数
+	 * 获取项目参数 ✅
 	 * 
 	 * @param users
 	 * @return

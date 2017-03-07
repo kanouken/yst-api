@@ -52,8 +52,10 @@ public class ContactsController extends Action {
 			@RequestAttribute(value = LOGIN_USER) Users users,
 			@RequestParam(value = "customerID", required = false) Integer customerID,
 			@RequestParam(value = "keyword", required = false) String keyword,
-			@RequestParam(value = "name", required = false) String name, @RequestParam(value = "phone") String phone) {
-		return new OperateResult<>(this.contactsService.queryContacts(customerID, keyword, name, phone, users, curPage, perPageSum));
+			@RequestParam(value = "name", required = false) String name,
+			@RequestParam(value = "phone", required = false) String phone) {
+		return new OperateResult<>(
+				this.contactsService.queryContacts(customerID, keyword, name, phone, users, curPage, perPageSum));
 	}
 
 	/**

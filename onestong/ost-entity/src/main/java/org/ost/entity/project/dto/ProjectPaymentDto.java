@@ -1,10 +1,20 @@
 package org.ost.entity.project.dto;
 
 public class ProjectPaymentDto {
+
+	private String id;
 	private String memo;
 	private String rate;
 	private String state;
 	private String timeStr;
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public String getMemo() {
 		return memo;

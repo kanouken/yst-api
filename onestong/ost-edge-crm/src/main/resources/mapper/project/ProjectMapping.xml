@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="org.ost.crm.dao.project.ProjectDao">
+
+
+	<delete id="deleteProjectSteps">
+		delete from tbl_project_steps
+		where schemaID =
+		#{schemaId}
+		and projectID = #{projectId}
+	</delete>
+</mapper>

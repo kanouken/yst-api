@@ -1,5 +1,6 @@
 package org.ost.crm.services.project;
 
+import java.sql.PseudoColumnUsage;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import org.ost.crm.dao.project.ProjectFileDao;
 import org.ost.crm.dao.project.ProjectOrgDao;
 import org.ost.crm.dao.project.ProjectPaymentDao;
 import org.ost.crm.dao.project.ProjectPaymentExample;
+import org.ost.crm.dao.project.ProjectStepDao;
 import org.ost.crm.dao.project.ProjectTypeDao;
 import org.ost.crm.dao.project.ProjectTypeStepDao;
 import org.ost.crm.dao.project.UserProjectDao;
@@ -29,6 +31,7 @@ import org.ost.entity.project.Project;
 import org.ost.entity.project.ProjectOrg;
 import org.ost.entity.project.ProjectPayment;
 import org.ost.entity.project.ProjectState;
+import org.ost.entity.project.ProjectStep;
 import org.ost.entity.project.ProjectType;
 import org.ost.entity.project.ProjectTypeStep;
 import org.ost.entity.project.UserProject;
@@ -36,6 +39,7 @@ import org.ost.entity.project.dto.ProjectContactsDto;
 import org.ost.entity.project.dto.ProjectCreateOrUpdateDto;
 import org.ost.entity.project.dto.ProjectPaymentDto;
 import org.ost.entity.project.dto.ProjectStepsDetailDto;
+import org.ost.entity.project.dto.ProjectStepsDto;
 import org.ost.entity.project.mapper.ProjectEntityMapper;
 import org.ost.entity.project.vo.ProjectVo;
 import org.ost.entity.user.Users;
@@ -53,6 +57,8 @@ public class ProjectService extends BaseService {
 	@Autowired
 	private ProjectFileDao projectFileDao;
 
+	@Autowired
+	private ProjectStepDao projectStepDao;
 	@Autowired
 	private ContactsServiceClient contactsServiceClient;
 
@@ -153,9 +159,11 @@ public class ProjectService extends BaseService {
 			ProjectPayment _pp = ProjectEntityMapper.INSTANCE.projectPaymentDtoToProjectPayment(ppdto);
 			_pp.setCreateBy(users.getRealname());
 			_pp.setUpdateBy(users.getRealname());
+			_pp.setProjectID(projectId);
+			_pp.setSchemaId(users.getSchemaId());
 			ppDao.insertSelective(_pp);
 		});
-		return "ok";
+		return HttpStatus.OK.name();
 	}
 
 	public String updateProjectContacts(Users users, Integer projectId, List<ContactsListDto> dtos) {
@@ -253,7 +261,8 @@ public class ProjectService extends BaseService {
 
 	@Transactional(readOnly = true)
 	public Project queryDetail(Integer projectId, Users user) {
-		// TODO Auto-generated method stub
+		
+		
 		return null;
 	}
 
@@ -262,6 +271,21 @@ public class ProjectService extends BaseService {
 			String typeId, Integer curPage, Integer perPageSum) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
+	public String updateProjectSteps(Integer projectId, Users users, List<ProjectStepsDto> dtos) {
+		// clear all
+		this.projectDao.deleteProjectSteps(projectId, users.getSchemaId());
+		List<ProjectStep> projectSteps = ProjectEntityMapper.INSTANCE.projectStepsDtoToProjectStep(dtos);
+		projectSteps.forEach(ps -> {
+			ps.setCreateBy(users.getRealname());
+			ps.setUpdateBy(users.getRealname());
+			ps.setSchemaId(users.getSchemaId());
+			ps.setProjectID(projectId);
+			this.projectStepDao.insertSelective(ps);
+		});
+		return HttpStatus.OK.name();
 	}
 
 }

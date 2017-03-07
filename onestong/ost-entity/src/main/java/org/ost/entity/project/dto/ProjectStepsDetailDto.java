@@ -3,6 +3,11 @@ package org.ost.entity.project.dto;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 项目类型阶段详细
+ * @author xnq
+ *
+ */
 public class ProjectStepsDetailDto {
 
 	private Map<String, Object> cycWarning;

@@ -1,19 +1,20 @@
 package org.ost.entity.project;
 
 import javax.persistence.Entity;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import org.ost.entity.base.BaseEntity;
 
 @Entity
-@Table(name = "tbl_project")
+@Table(name = "tbl_project_type_step")
 public class ProjectTypeStep extends BaseEntity {
 	private Integer id;
 
 	private Integer projectTypeID;
 
 	private String memo;
-
+	@OrderBy
 	private Double step;
 
 	private Integer rate;

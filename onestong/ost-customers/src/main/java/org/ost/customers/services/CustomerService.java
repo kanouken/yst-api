@@ -187,8 +187,10 @@ public class CustomerService {
 		if (result != null) {
 			CustomerDetailDto detailDto = CustomerEntityMapper.INSTANCE.customerToCustomerDetailDto(result);
 			Customer parent = null;
-			if ((parent = customerDao.selectByPrimaryKey(customer.getProperty())) != null) {
-				detailDto.setParent(new CustomerVo(customer.getParentId(), parent.getName()));
+			if (result.getParentId() != null) {
+				if ((parent = customerDao.selectByPrimaryKey(result.getParentId())) != null) {
+					detailDto.setParent(new CustomerVo(result.getParentId(), parent.getName()));
+				}
 			}
 
 			// phone

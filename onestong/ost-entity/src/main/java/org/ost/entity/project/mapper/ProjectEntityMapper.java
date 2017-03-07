@@ -8,6 +8,7 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import org.ost.entity.project.Project;
 import org.ost.entity.project.ProjectPayment;
+import org.ost.entity.project.ProjectStep;
 import org.ost.entity.project.ProjectType;
 import org.ost.entity.project.ProjectTypeStep;
 import org.ost.entity.project.dto.ProjectCreateOrUpdateDto;
@@ -23,6 +24,7 @@ public interface ProjectEntityMapper {
 	@Mappings({ @Mapping(source = "typeID", target = "projectTypeID") })
 	Project createOrUpateDtoToProject(ProjectCreateOrUpdateDto dto);
 
+	@Mapping(source = "timeStr", target = "time", dateFormat = "yyyy-MM-dd")
 	ProjectPayment projectPaymentDtoToProjectPayment(ProjectPaymentDto ppdto);
 
 	@Mappings({
@@ -43,5 +45,13 @@ public interface ProjectEntityMapper {
 	ProjectTypeDto projectTypeToProjectTypeDto(ProjectType ptype);
 
 	List<ProjectTypeDto> projectTypesToProjectTypeDtos(List<ProjectType> pTypes);
+
+	@Mappings({ @Mapping(source = "timeStr", target = "time", dateFormat = "yyyy-MM-dd"),
+			@Mapping(source = "id", target = "projectTypeStepID"),
+			@Mapping(target="id",ignore=true)
+	})
+	ProjectStep projectStepsDtoToProjectStep(ProjectStepsDto dtos);
+
+	List<ProjectStep> projectStepsDtoToProjectStep(List<ProjectStepsDto> dtos);
 
 }

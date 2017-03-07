@@ -29,7 +29,7 @@ public class CustomerController extends Action {
 	@Autowired
 	private CustomerService customerService;
 
-	@RequestMapping(value = "/{id}")
+	@RequestMapping(value = "/{id}",method = RequestMethod.GET)
 	public OperateResult<CustomerDetailDto> detail(@PathVariable(value = "id") Integer id,
 			@RequestHeader(value = TENANT_ID, required = false) String schemaId) {
 		return new OperateResult<CustomerDetailDto>(customerService.queryDetail(id, schemaId));

@@ -120,7 +120,7 @@ public class CustomerService extends BaseService {
 
 	}
 
-	public Object queryCustomers(Users current, Map<String, String> params, Page page) {
+	public Map<String, Object> queryCustomers(Users current, Map<String, String> params, Page page) {
 		Customer customer = new Customer();
 		customer.setSchemaId(current.getSchemaId());
 		String name = null;
@@ -129,9 +129,9 @@ public class CustomerService extends BaseService {
 			params.remove("name");
 		}
 		customer.setProperty(params);
-		OperateResult<PageEntity<CustomerListDto>> result = this.customerServiceClient.queryMember(current.getSchemaId(),
-				page.getCurPage(), page.getPerPageSum(), customer);
-		if(result.success()){
+		OperateResult<PageEntity<CustomerListDto>> result = this.customerServiceClient
+				.queryMember(current.getSchemaId(), page.getCurPage(), page.getPerPageSum(), customer);
+		if (result.success()) {
 			List<CustomerListDto> customers = result.getData().getObjects();
 			final List<Map<String, Object>> tmps = new ArrayList<Map<String, Object>>();
 			customers.forEach(c -> {
@@ -140,17 +140,13 @@ public class CustomerService extends BaseService {
 				_t.remove("properties");
 				tmps.add(_t);
 			});
-			PageEntity<Map<String, Object>> _result = new PageEntity<Map<String, Object>>();
-			_result.setCurPage(result.getData().getCurPage());
-			_result.setTotalRecord(result.getData().getTotalRecord());
-			_result.setObjects(tmps);
-			return _result;
-		}else{
-			
+			page.setTotalRecords(result.getData().getTotalRecord());
+			return OperateResult.renderPage(page, tmps);
+		} else {
+
 			throw new ApiException("获取列表失败", result.getInnerException());
 		}
 	}
-	
 
 	private static Map<String, Object> transBean2Map(Object obj) {
 		if (obj == null) {
@@ -201,7 +197,8 @@ public class CustomerService extends BaseService {
 		return;
 
 	}
-	//TODO cache
+
+	// TODO cache
 	@Transactional(readOnly = true)
 	public Map<String, Object> queryConditions() {
 		List<CommonParams> belongIndustry = this.getParams("customer_belongIndustry");

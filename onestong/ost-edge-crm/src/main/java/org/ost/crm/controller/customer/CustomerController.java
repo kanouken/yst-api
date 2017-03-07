@@ -83,7 +83,7 @@ public class CustomerController extends Action {
 	}
 
 	@RequestMapping(value = "list", method = RequestMethod.GET)
-	public Object queryCustomers(
+	public OperateResult<Map<String, Object>> queryCustomers(
 			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
 			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
 			@RequestAttribute(value = LOGIN_USER) Users current,
@@ -116,7 +116,7 @@ public class CustomerController extends Action {
 		Page page = new Page();
 		page.setCurPage(curPage);
 		page.setPerPageSum(perPageSum);
-		return this.customerService.queryCustomers(current, params, page);
+		return new OperateResult<Map<String,Object>>(this.customerService.queryCustomers(current, params, page));
 	}
 
 }

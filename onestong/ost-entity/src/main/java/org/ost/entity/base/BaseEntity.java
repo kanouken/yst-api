@@ -17,7 +17,7 @@ public class BaseEntity {
 	private Integer id;
 	@Column(nullable = false, name = "schemaId")
 	private String schemaId;
-	@OrderBy(value="DESC")
+
 	private Date createTime;
 	private Date updateTime;
 	private short isDelete;
