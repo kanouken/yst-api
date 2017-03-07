@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="org.ost.crm.dao.project.ProjectTypeDao">
+	<select id="selectTypeCount" resultType="java.lang.Integer">
+		SELECT count(1) FROM
+		tbl_project_type
+	</select>
+	<select id="selectTypeList" resultType="org.ost.entity.project.vo.ProjectTypeVo">
+		SELECT * FROM
+		tbl_project_type
+	</select>
+	<select id="selectTypeById" resultType="org.ost.entity.project.vo.ProjectTypeVo">
+		SELECT * FROM
+		tbl_project_type where id=#{id}
+	</select>
+	
+</mapper>

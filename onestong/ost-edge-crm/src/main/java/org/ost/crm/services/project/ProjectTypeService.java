@@ -10,6 +10,7 @@ import org.common.tools.db.Page;
 import org.common.tools.exception.ApiException;
 import org.ost.crm.dao.project.ProjectTypeDao;
 import org.ost.entity.base.PageEntity;
+import org.ost.entity.contacts.dto.ContactsDto;
 import org.ost.entity.project.ProjectType;
 import org.ost.entity.project.vo.ProjectTypeVo;
 import org.ost.entity.user.Users;
@@ -33,7 +34,7 @@ public class ProjectTypeService {
 	 * @param PTVo
 	 */
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public String createmProjectType(Users user, ProjectTypeVo proTVo) throws JsonProcessingException {
+	public void createmProjectType(Users user, ProjectTypeVo proTVo) throws JsonProcessingException {
 		ProjectType pType = new ProjectType();
 		pType.setName(proTVo.getName());
 		pType.setCycWarningDay(proTVo.getCycWarningDay());
@@ -46,12 +47,7 @@ public class ProjectTypeService {
 		pType.setUpdateTime(new Date());
 		pType.setCreateBy(user.getRealname());
 		pType.setUpdateBy(pType.getCreateBy());
-		int result = this.projectTypeDao.insert(pType);
-		if (result > 0) {
-			return HttpStatus.OK.name();
-		} else {
-			throw new ApiException("新增项目分类失败");
-		}
+		this.projectTypeDao.insert(pType);
 	}
 
 	/**
@@ -68,13 +64,9 @@ public class ProjectTypeService {
 		projectType.setCycWarningEnable(proTVo.getCycWarningEnable());
 		projectType.setStartTimeWarningDay(proTVo.getStartTimeWarningDay());
 		projectType.setStartTimeWarningEnable(proTVo.getStartTimeWarningEnable());
-		projectType.setCreateTime(new Date());
 		projectType.setUpdateTime(new Date());
-		projectType.setIsDelete(Short.valueOf("0"));
-		projectType.setCreateBy(user.getRealname());
 		projectType.setUpdateBy(projectType.getCreateBy());
-		projectType.setSchemaId(user.getSchemaId());
-		int result = this.projectTypeDao.updateByPrimaryKey(projectType);
+		int result = this.projectTypeDao.updateByPrimaryKeySelective(projectType);
 		if (result > 0) {
 			return HttpStatus.OK.name();
 		} else {
@@ -90,24 +82,21 @@ public class ProjectTypeService {
 	 * @return
 	 */
 	@Transactional(readOnly = true)
-	public PageEntity<ProjectType> proTypeList(String schemaId, Integer curPage, Integer perPageSum) {
-		ProjectType pro = new ProjectType();
-		pro.setSchemaId(schemaId);
+	public Map<String, Object> proTypeList(Integer id, String name, Users user, Integer curPage, Integer perPageSum) {
 		Page page = new Page();
 		page.setCurPage(curPage.intValue());
 		page.setPerPageSum(perPageSum.intValue());
 		RowBounds row = new RowBounds(page.getNextPage(), page.getPerPageSum());
 		Map<String, String> params = null;
 		Integer totalRecord = this.projectTypeDao.selectTypeCount(params);
-		List<ProjectType> proList = this.projectTypeDao.selectTypeList(params, row);
+		List<ProjectTypeVo> proList = this.projectTypeDao.selectTypeList(params, row);
 		if (totalRecord > 0) {
 			proList = this.projectTypeDao.selectTypeList(params, row);
 		}
-		PageEntity<ProjectType> p = new PageEntity<ProjectType>();
+		PageEntity<ProjectTypeVo> p = new PageEntity<ProjectTypeVo>();
 		p.setCurPage(curPage);
 		p.setTotalRecord(perPageSum);
-		p.setObjects(proList);
-		return p;
+		return OperateResult.renderPage(page, proList);
 	}
 
 	/**
@@ -116,11 +105,12 @@ public class ProjectTypeService {
 	 * @param id
 	 */
 	@Transactional(readOnly = true)
-	public void proTypeDetail(Integer id, String schemaId) {
+	public ProjectTypeVo proTypeDetail(Integer id, Users user) {
 		ProjectType pro = new ProjectType();
+		pro.setIsDelete(Short.valueOf("0"));
 		pro.setId(id);
-		pro.setSchemaId(schemaId);
-		this.projectTypeDao.selectOne(pro);
+		return this.projectTypeDao.selectTypeById(pro);
+		//return this.projectTypeDao.selectOne(pro);
 	}
 
 	/**
@@ -129,12 +119,12 @@ public class ProjectTypeService {
 	 * @param id
 	 */
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public String deleteType(Integer id, String schemaId) {
+	public String deleteType(Integer id, Users user) {
 		ProjectType pro = new ProjectType();
 		pro.setIsDelete(Short.valueOf("1"));
 		pro.setId(id);
-		pro.setSchemaId(schemaId);
-		int result = projectTypeDao.deleteByPrimaryKey(pro);
+		pro.setSchemaId(user.getSchemaId());
+		int result = projectTypeDao.updateByPrimaryKeySelective(pro);
 		if (result > 0) {
 			return HttpStatus.OK.name();
 		} else {

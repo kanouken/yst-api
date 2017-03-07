@@ -2,6 +2,8 @@ package org.ost.entity.project.vo;
 
 public class ProjectTypeVo {
 
+	private Integer id;
+
 	private String name;
 
 	private Integer cycWarningDay;
@@ -71,4 +73,13 @@ public class ProjectTypeVo {
 		this.startTimeWarningEnable = startTimeWarningEnable;
 
 	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	
 }
