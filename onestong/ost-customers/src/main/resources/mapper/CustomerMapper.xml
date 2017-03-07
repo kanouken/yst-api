@@ -114,25 +114,37 @@
 		select * from tbl_organize_customer toc
 		<where>
 			toc.customerID in
-			<foreach item="customerId" collection="customerIds" open="(" separator=","
-				close=")">
+			<foreach item="customerId" collection="customerIds" open="("
+				separator="," close=")">
 				#{customerId}
 			</foreach>
 			and isDelete = 0
 		</where>
 	</select>
-	
-	
+
+
 	<select id="selectCustomerUsers" resultType="org.ost.entity.customer.user.UserCustomers">
 
 		select * from tbl_user_customer tuc
 		<where>
 			tuc.customerID in
-			<foreach item="customerId" collection="customerIds" open="(" separator=","
-				close=")">
+			<foreach item="customerId" collection="customerIds" open="("
+				separator="," close=")">
 				#{customerId}
 			</foreach>
 			and isDelete = 0
+		</where>
+	</select>
+
+	<select id="selectByProject" resultType="org.ost.entity.customer.vo.CustomerVo">
+		select
+		tc.id,
+		tc.name
+		from tbl_customer tc left join tbl_project_customer
+		tpc
+		on(tc.schemaID,tc.id) =(tpc.schemaID,tpc.customerID)
+		<where>
+			tpc.projectID = #{projectId} and tpc.schemaID = #{schemaId}
 		</where>
 	</select>
 

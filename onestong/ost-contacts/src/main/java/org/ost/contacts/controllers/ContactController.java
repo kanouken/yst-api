@@ -11,6 +11,7 @@ import org.ost.entity.project.dto.ProjectContactsDto;
 import org.ost.entity.project.dto.ProjectCreateOrUpdateDto;
 import org.ost.entity.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import sun.tools.tree.ThisExpression;
 
 @RestController
 @RequestMapping(value = "contacts")
@@ -57,9 +59,8 @@ public class ContactController extends Action {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public OperateResult<ContactsDto> updateContact(@PathVariable(value = "id") Integer id,
-			@RequestHeader(value=TENANT_ID) String schemaId,
-			@RequestBody ContactsDto contactDto) {
-		return new OperateResult<ContactsDto>(this.contactService.updateContacts(id,schemaId, contactDto));
+			@RequestHeader(value = TENANT_ID) String schemaId, @RequestBody ContactsDto contactDto) {
+		return new OperateResult<ContactsDto>(this.contactService.updateContacts(id, schemaId, contactDto));
 	}
 
 	@RequestMapping(value = "/project", method = RequestMethod.POST)
@@ -69,8 +70,15 @@ public class ContactController extends Action {
 	}
 
 	@RequestMapping(value = "/project", method = RequestMethod.PUT)
-	public OperateResult<String> updateProject(@RequestHeader(value =TENANT_ID) String schemaID,
+	public OperateResult<String> updateProject(@RequestHeader(value = TENANT_ID) String schemaID,
 			@RequestBody ProjectContactsDto dtos) {
 		return new OperateResult<String>(this.contactService.updateConactsProject(schemaID, dtos));
 	}
+
+	@GetMapping(value = "queryByProject")
+	public OperateResult<List<ContactsListDto>> queryByProject(@RequestHeader(value = TENANT_ID) String schemaID,
+			@RequestParam(value = "projectId") Integer projectId) {
+		return new OperateResult<List<ContactsListDto>>(contactService.queryByProject(schemaID, projectId));
+	}
+
 }

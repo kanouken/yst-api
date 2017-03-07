@@ -27,6 +27,7 @@ import org.ost.crm.services.base.BaseService;
 import org.ost.entity.contacts.dto.ContactsListDto;
 import org.ost.entity.contacts.mapper.ContactsEntityMapper;
 import org.ost.entity.customer.dto.CustomerProjectDto;
+import org.ost.entity.customer.vo.CustomerVo;
 import org.ost.entity.project.Project;
 import org.ost.entity.project.ProjectOrg;
 import org.ost.entity.project.ProjectPayment;
@@ -37,6 +38,7 @@ import org.ost.entity.project.ProjectTypeStep;
 import org.ost.entity.project.UserProject;
 import org.ost.entity.project.dto.ProjectContactsDto;
 import org.ost.entity.project.dto.ProjectCreateOrUpdateDto;
+import org.ost.entity.project.dto.ProjectDetailDto;
 import org.ost.entity.project.dto.ProjectPaymentDto;
 import org.ost.entity.project.dto.ProjectStepsDetailDto;
 import org.ost.entity.project.dto.ProjectStepsDto;
@@ -111,6 +113,7 @@ public class ProjectService extends BaseService {
 					pOrg.setCreateTime(new Date());
 					pOrg.setUpdateTime(new Date());
 					pOrg.setSchemaId(user.getSchemaId());
+					pOrg.setOrganizeName(dept.getName());
 					poDao.insertSelective(pOrg);
 				});
 				//
@@ -123,6 +126,9 @@ public class ProjectService extends BaseService {
 					uProject.setCreateTime(new Date());
 					uProject.setUpdateTime(new Date());
 					uProject.setSchemaId(user.getSchemaId());
+					uProject.setUserName(users.getName());
+					uProject.setOrganizeID(users.getDeptId());
+					uProject.setOrganizeName(users.getDeptName());
 					userProjectDao.insertSelective(uProject);
 				});
 			} else {
@@ -184,27 +190,60 @@ public class ProjectService extends BaseService {
 	}
 
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public String updateProject(Users user, ProjectCreateOrUpdateDto dto) {
+	public String updateProject(Users user, Integer projectId, ProjectCreateOrUpdateDto dto) {
 		Project project = ProjectEntityMapper.INSTANCE.createOrUpateDtoToProject(dto);
 		project.setUpdateTime(new Date());
 		project.setUpdateBy(user.getRealname());
-		project.setSchemaId(user.getSchemaId());
 		this.projectDao.updateByPrimaryKeySelective(project);
 		// update contacts
 		List<ContactsListDto> listDtos = ContactsEntityMapper.INSTANCE.contactsDtoToContactsListDto(dto.getContacts());
 		ProjectContactsDto pContactsDto = new ProjectContactsDto();
-		pContactsDto.setProject(new ProjectVo(Integer.parseInt(dto.getId()), ""));
+		pContactsDto.setProject(new ProjectVo(projectId, ""));
 		pContactsDto.setContacts(listDtos);
 		pContactsDto.setUserName(user.getRealname());
 		OperateResult<String> result = contactsServiceClient.updateProject(user.getSchemaId(), pContactsDto);
-		if (result.getData() != null) {
-			// update TODO 修改客户
+		if (result.success()) {
+			// update 客户
+			CustomerProjectDto customerProjectDto = new CustomerProjectDto();
+			customerProjectDto.setCustomer(dto.getCustomer());
+			customerProjectDto.setProject(new ProjectVo(projectId, ""));
+			customerProjectDto.setUserName(user.getRealname());
+			OperateResult<String> result2 = this.customerServiceClient.updateCustomerProject(user.getSchemaId(),
+					customerProjectDto);
+			if (result2.success()) {
+				// update 部门
+				this.projectDao.deleteProjectOrg(user.getSchemaId(), projectId);
+				dto.getDeptOwner().forEach(dept -> {
+					ProjectOrg pOrg = new ProjectOrg();
+					pOrg.setOrganizeID(dept.getId());
+					pOrg.setProjectID(project.getId());
+					pOrg.setCreateBy(project.getCreateBy());
+					pOrg.setUpdateBy(project.getUpdateBy());
+					pOrg.setCreateTime(new Date());
+					pOrg.setUpdateTime(new Date());
+					pOrg.setSchemaId(user.getSchemaId());
+					pOrg.setOrganizeName(dept.getName());
+					poDao.insertSelective(pOrg);
+				});
+				//
+				this.projectDao.deleteProjectUser(user.getSchemaId(), projectId);
+				dto.getManagerOwner().forEach(users -> {
+					UserProject uProject = new UserProject();
+					uProject.setUserID(users.getId());
+					uProject.setProjectID(project.getId());
+					uProject.setCreateBy(project.getCreateBy());
+					uProject.setUpdateBy(project.getUpdateBy());
+					uProject.setCreateTime(new Date());
+					uProject.setUpdateTime(new Date());
+					uProject.setSchemaId(user.getSchemaId());
+					uProject.setUserName(users.getName());
+					uProject.setOrganizeID(users.getDeptId());
+					uProject.setOrganizeName(users.getDeptName());
+					userProjectDao.insertSelective(uProject);
+				});
+			}
 
-			// TODO 部门
-
-			// TODO 经理
-
-			return result.getData();
+			return HttpStatus.OK.name();
 		} else {
 			throw new ApiException("更新项目失败", result.getInnerException());
 		}
@@ -260,10 +299,49 @@ public class ProjectService extends BaseService {
 	}
 
 	@Transactional(readOnly = true)
-	public Project queryDetail(Integer projectId, Users user) {
-		
-		
-		return null;
+	public ProjectDetailDto queryDetail(Integer projectId, Users user) {
+		Project project = projectDao.selectByPrimaryKey(projectId);
+
+		ProjectDetailDto detailDto = ProjectEntityMapper.INSTANCE.projectToProjectDetailDto(project);
+		// dept owner
+		ProjectOrg pOrg = new ProjectOrg();
+		pOrg.setIsDelete(project.getIsDelete());
+		pOrg.setSchemaId(user.getSchemaId());
+		pOrg.setProjectID(project.getId());
+		// contacts
+		OperateResult<List<ContactsListDto>> result = this.contactsServiceClient.queryByProject(user.getSchemaId(),
+				projectId);
+
+		// customer
+
+		OperateResult<CustomerVo> result2 = this.customerServiceClient.queryByProject(user.getSchemaId(), projectId);
+		detailDto.setCustomer(result2.getData());
+		detailDto.setContacts(result.getData());
+		List<ProjectOrg> projectOrgs = poDao.select(pOrg);
+		detailDto.setDeptOwner(ProjectEntityMapper.INSTANCE.projectOrgToDepartmentListDto(projectOrgs));
+		// manager
+		UserProject uProject = new UserProject();
+		uProject.setIsDelete(project.getIsDelete());
+		uProject.setSchemaId(user.getSchemaId());
+		List<UserProject> ups = userProjectDao.select(uProject);
+		detailDto.setManagerOwner(ProjectEntityMapper.INSTANCE.userProjectToUserListDto(ups));
+
+		// payment
+		ProjectPayment pp = new ProjectPayment();
+		pp.setIsDelete(project.getIsDelete());
+		pp.setProjectID(projectId);
+		List<ProjectPayment> pps = this.ppDao.select(pp);
+		detailDto.setPayment(ProjectEntityMapper.INSTANCE.projectPaymentToProjectPaymentDto(pps));
+		// steps
+		List<ProjectTypeStep> ptssList = this.projectDao.selectProjectSteps(user.getSchemaId(), projectId);
+		detailDto.setSteps(ProjectEntityMapper.INSTANCE.projectTypeStepToProjectStepDto(ptssList));
+
+		// type
+		ProjectType type = ptDao.selectByPrimaryKey(project.getProjectTypeID());
+		if (type != null) {
+			detailDto.setTypeName(type.getName());
+		}
+		return detailDto;
 	}
 
 	@Transactional(readOnly = true)

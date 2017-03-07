@@ -1,5 +1,6 @@
 package org.ost.entity.project.dto;
 
+import java.util.Date;
 import java.util.List;
 
 import org.ost.entity.contacts.dto.ContactsListDto;
@@ -22,12 +23,21 @@ public class ProjectDetailDto {
 	private List<UserListDto> managerOwner;
 	private String name;
 	private List<ProjectPaymentDto> payment;
+	private Date startTime;
 	private String startTimeStr;
 	private String state;
 	private String stateName;
 	private List<ProjectStepsDto> steps;
 	private String typeID;
 	private String typeName;
+
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
 
 	public String getAmount() {
 		return amount;

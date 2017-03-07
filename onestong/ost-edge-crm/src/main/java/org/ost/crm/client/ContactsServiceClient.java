@@ -9,6 +9,7 @@ import org.ost.entity.contacts.dto.ContactsListDto;
 import org.ost.entity.project.dto.ProjectContactsDto;
 import org.ost.entity.project.dto.ProjectCreateOrUpdateDto;
 import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -54,4 +55,8 @@ public interface ContactsServiceClient extends BaseClient {
 	@RequestMapping(value = "contacts/project", method = RequestMethod.PUT, consumes = "application/json")
 	public OperateResult<String> updateProject(@RequestHeader(value = TENANT_ID) String schemaID,
 			@RequestBody ProjectContactsDto dto);
+
+	@RequestMapping(value = "contacts/queryByProject", method = RequestMethod.GET)
+	public OperateResult<List<ContactsListDto>> queryByProject(@RequestHeader(value = TENANT_ID) String schemaID,
+			@RequestParam(value = "projectId") Integer projectId);
 }

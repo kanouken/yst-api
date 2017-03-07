@@ -5,10 +5,13 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.session.RowBounds;
 import org.ost.entity.customer.Customer;
+import org.ost.entity.customer.CustomerProject;
 import org.ost.entity.customer.org.CustomerOrg;
 import org.ost.entity.customer.user.UserCustomers;
+import org.ost.entity.customer.vo.CustomerVo;
 import org.springframework.stereotype.Repository;
 
 import tk.mybatis.mapper.common.Mapper;
@@ -40,5 +43,10 @@ public interface CustomerDao extends Mapper<Customer> {
 	List<CustomerOrg> selectCustomerOrg(@Param("customerIds") int[] customerIds);
 
 	List<UserCustomers> selectCustomerUsers(@Param("customerIds") int[] customerIds);
+
+	CustomerVo selectByProject(@Param("schemaId") String schemaID, @Param("projectId") Integer projectId);
+
+	@Update("update tbl_project_customer set customerID = #{customerID} ,updateBy = #{updateBy},updateTime=#{updateTime}  where projectID = #{projectID} and schemaID =#{schemaId} ")
+	Integer updateCustomerProject(CustomerProject cProject);
 
 }

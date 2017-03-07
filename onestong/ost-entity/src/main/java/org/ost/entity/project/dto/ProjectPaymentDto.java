@@ -1,12 +1,32 @@
 package org.ost.entity.project.dto;
 
+import java.util.Date;
+
 public class ProjectPaymentDto {
 
 	private String id;
 	private String memo;
 	private String rate;
 	private String state;
+	private String stateName;
+	private Date time;
 	private String timeStr;
+
+	public String getStateName() {
+		return stateName;
+	}
+
+	public void setStateName(String stateName) {
+		this.stateName = stateName;
+	}
+
+	public Date getTime() {
+		return time;
+	}
+
+	public void setTime(Date time) {
+		this.time = time;
+	}
 
 	public String getId() {
 		return id;

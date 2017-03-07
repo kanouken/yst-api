@@ -12,7 +12,36 @@ public class UserProject extends BaseEntity {
 
 	private Integer userID;
 
+	private String userName;
+
 	private Integer projectID;
+
+	private Integer organizeID;
+	private String organizeName;
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public Integer getOrganizeID() {
+		return organizeID;
+	}
+
+	public void setOrganizeID(Integer organizeID) {
+		this.organizeID = organizeID;
+	}
+
+	public String getOrganizeName() {
+		return organizeName;
+	}
+
+	public void setOrganizeName(String organizeName) {
+		this.organizeName = organizeName;
+	}
 
 	public Integer getId() {
 		return id;

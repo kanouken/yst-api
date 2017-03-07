@@ -22,7 +22,7 @@
 	<select id="selectContacts" resultMap="contactsListMapper">
 
 		SELECT
-	<!--  GROUP_CONCAT(t1.type) contactInfoTypes ,-->	
+		<!-- GROUP_CONCAT(t1.type) contactInfoTypes , -->
 		GROUP_CONCAT(t1.val)
 		contactInfoVals,
 		t1.id ,
@@ -58,7 +58,8 @@
 		FROM
 		tbl_contact tc
 		LEFT
-		JOIN tbl_contact_info tci ON(tc.id , tc.schemaID) =(tci.contactID ,
+		JOIN
+		tbl_contact_info tci ON(tc.id , tc.schemaID) =(tci.contactID ,
 		tci.schemaID)
 		and tci.type = 'email'
 		left join tbl_customer_contact tcc
@@ -145,4 +146,22 @@
 
 		</where>
 	</select>
+
+	<select id="selectByProject" resultType="org.ost.entity.contacts.dto.ContactsListDto">
+		select
+		tc.id,
+		CONCAT(tc.firstName,tc.lastName) name,
+		tc.position,
+		tc.dept,
+		tpc.role
+		from tbl_contact tc left join tbl_project_contact tpc
+
+		on(tc.id
+		,tc.schemaID) = (tpc.contactID,tpc.schemaID)
+
+		where tpc.projectID =
+		#{projectId} and tpc.schemaID = #{schemaId}
+
+	</select>
+
 </mapper>

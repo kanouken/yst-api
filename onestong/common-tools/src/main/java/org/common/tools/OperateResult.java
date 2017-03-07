@@ -22,7 +22,7 @@ public class OperateResult<T> {
 
 	public Boolean success() {
 		boolean flag = true;
-		if (this.getData() == null) {
+		if (this.getData() == null && !this.getStatusCode().equalsIgnoreCase("200")) {
 			flag = false;
 		}
 		return flag;
@@ -44,6 +44,14 @@ public class OperateResult<T> {
 		this.innerException = innerException;
 		this.description = description;
 		this.data = data;
+	}
+	
+	public OperateResult(String innerException, String description, T data,String statusCode) {
+		super();
+		this.innerException = innerException;
+		this.description = description;
+		this.data = data;
+		this.statusCode = statusCode;
 	}
 
 	public OperateResult() {

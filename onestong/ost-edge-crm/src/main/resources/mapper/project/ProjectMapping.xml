@@ -10,4 +10,29 @@
 		#{schemaId}
 		and projectID = #{projectId}
 	</delete>
+
+	<select id="selectProjectSteps" resultType="org.ost.entity.project.ProjectTypeStep">
+		select
+		tpts.*
+
+		from tbl_project tp left join
+		tbl_project_steps tps on
+
+		(tp.id,tp.schemaID) =
+		(tps.projectID,tps.schemaID)
+
+		left join
+		tbl_project_type_step tpts
+
+		on
+		(tps.projectTypeStepID,tps.schemaID) =
+		(tpts.id,tpts.schemaID)
+
+		<where>
+			tp.id = #{projectId} and tp.schemaID=#{schemaId} order by
+			tpts.step
+			asc
+		</where>
+
+	</select>
 </mapper>

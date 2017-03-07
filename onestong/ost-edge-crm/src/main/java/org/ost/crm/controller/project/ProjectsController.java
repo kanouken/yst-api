@@ -9,6 +9,7 @@ import org.ost.crm.services.project.ProjectService;
 import org.ost.entity.contacts.dto.ContactsListDto;
 import org.ost.entity.project.Project;
 import org.ost.entity.project.dto.ProjectCreateOrUpdateDto;
+import org.ost.entity.project.dto.ProjectDetailDto;
 import org.ost.entity.project.dto.ProjectPaymentDto;
 import org.ost.entity.project.dto.ProjectStepsDetailDto;
 import org.ost.entity.project.dto.ProjectStepsDto;
@@ -34,15 +35,15 @@ public class ProjectsController extends Action {
 	private ProjectService projectService;
 
 	/**
-	 * 项目详细
+	 * 项目详细 ✅
 	 * 
 	 * @param projectId
 	 * @return
 	 */
 	@GetMapping(value = "{id}")
-	public OperateResult<Project> queryDetail(@PathVariable(value = "id") Integer projectId,
+	public OperateResult<ProjectDetailDto> queryDetail(@PathVariable(value = "id") Integer projectId,
 			@RequestAttribute(value = LOGIN_USER) Users user) {
-		return new OperateResult<Project>(projectService.queryDetail(projectId, user));
+		return new OperateResult<ProjectDetailDto>(projectService.queryDetail(projectId, user));
 	}
 
 	/**
@@ -86,11 +87,10 @@ public class ProjectsController extends Action {
 	 * @param dto
 	 * @return
 	 */
-	@PutMapping(value = "")
+	@PutMapping(value = "{id}")
 	public OperateResult<String> updateProject(@RequestAttribute(value = LOGIN_USER) Users user,
-			@RequestBody ProjectCreateOrUpdateDto dto) {
-
-		return new OperateResult<String>(projectService.updateProject(user, dto));
+			@PathVariable(value = "id") Integer id, @RequestBody ProjectCreateOrUpdateDto dto) {
+		return new OperateResult<String>(projectService.updateProject(user,id, dto));
 	}
 
 	/**
@@ -136,8 +136,8 @@ public class ProjectsController extends Action {
 	}
 
 	/**
-	 * 更新项目阶段
-	 * ✅
+	 * 更新项目阶段 ✅
+	 * 
 	 * @param projectId
 	 * @param users
 	 * @param dtos

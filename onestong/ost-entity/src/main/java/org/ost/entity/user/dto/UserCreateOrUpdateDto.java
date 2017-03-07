@@ -5,6 +5,9 @@ public class UserCreateOrUpdateDto {
 
 	private String name;
 
+	private String deptName;
+	private Integer deptId;
+
 	public Integer getId() {
 		return id;
 	}
@@ -19,6 +22,22 @@ public class UserCreateOrUpdateDto {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getDeptName() {
+		return deptName;
+	}
+
+	public void setDeptName(String deptName) {
+		this.deptName = deptName;
+	}
+
+	public Integer getDeptId() {
+		return deptId;
+	}
+
+	public void setDeptId(Integer deptId) {
+		this.deptId = deptId;
 	}
 
 }

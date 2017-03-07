@@ -5,23 +5,32 @@ import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.ValueMapping;
 import org.mapstruct.factory.Mappers;
+import org.ost.entity.org.department.dto.DepartmentListDto;
 import org.ost.entity.project.Project;
+import org.ost.entity.project.ProjectOrg;
 import org.ost.entity.project.ProjectPayment;
 import org.ost.entity.project.ProjectStep;
 import org.ost.entity.project.ProjectType;
 import org.ost.entity.project.ProjectTypeStep;
+import org.ost.entity.project.UserProject;
 import org.ost.entity.project.dto.ProjectCreateOrUpdateDto;
+import org.ost.entity.project.dto.ProjectDetailDto;
 import org.ost.entity.project.dto.ProjectPaymentDto;
 import org.ost.entity.project.dto.ProjectStepsDetailDto;
 import org.ost.entity.project.dto.ProjectStepsDto;
 import org.ost.entity.project.dto.ProjectTypeDto;
+import org.ost.entity.user.dto.UserListDto;
 
 @Mapper
 public interface ProjectEntityMapper {
 	ProjectEntityMapper INSTANCE = Mappers.getMapper(ProjectEntityMapper.class);
 
-	@Mappings({ @Mapping(source = "typeID", target = "projectTypeID") })
+	@Mappings({ @Mapping(source = "typeID", target = "projectTypeID"), @Mapping(source = "details", target = "detail"),
+			@Mapping( source="startTimeStr", target = "startTime", dateFormat = "yyyy-MM-dd")
+
+	})
 	Project createOrUpateDtoToProject(ProjectCreateOrUpdateDto dto);
 
 	@Mapping(source = "timeStr", target = "time", dateFormat = "yyyy-MM-dd")
@@ -47,11 +56,35 @@ public interface ProjectEntityMapper {
 	List<ProjectTypeDto> projectTypesToProjectTypeDtos(List<ProjectType> pTypes);
 
 	@Mappings({ @Mapping(source = "timeStr", target = "time", dateFormat = "yyyy-MM-dd"),
-			@Mapping(source = "id", target = "projectTypeStepID"),
-			@Mapping(target="id",ignore=true)
-	})
+			@Mapping(source = "id", target = "projectTypeStepID"), @Mapping(target = "id", ignore = true) })
 	ProjectStep projectStepsDtoToProjectStep(ProjectStepsDto dtos);
 
 	List<ProjectStep> projectStepsDtoToProjectStep(List<ProjectStepsDto> dtos);
+
+	@Mappings({ @Mapping(source = "detail", target = "details"), @Mapping(source = "projectTypeID", target = "typeID"),
+			@Mapping(source = "startTime", target = "startTimeStr", dateFormat = "yyyy-MM-dd HH:mm"),
+			@Mapping(target = "stateName", expression = "java(org.ost.entity.project.ProjectState.getProjectState(project.getState()).getName())")
+
+	})
+	ProjectDetailDto projectToProjectDetailDto(Project project);
+
+	@Mappings({ @Mapping(source = "organizeID", target = "id"), @Mapping(source = "organizeName", target = "name") })
+	DepartmentListDto projectOrgToDepartmentListDto(ProjectOrg projectOrgs);
+
+	List<DepartmentListDto> projectOrgToDepartmentListDto(List<ProjectOrg> projectOrgs);
+
+	@Mappings({ @Mapping(source = "userID", target = "id"), @Mapping(source = "organizeID", target = "deptID"),
+			@Mapping(source = "organizeName", target = "deptName"), @Mapping(source = "userName", target = "name") })
+	UserListDto userProjectToUserListDto(UserProject ups);
+
+	List<UserListDto> userProjectToUserListDto(List<UserProject> ups);
+
+	@Mappings({ @Mapping(source = "time", target = "timeStr", dateFormat = "yyyy-MM-dd"),
+			@Mapping(target = "stateName", expression = "java(org.ost.entity.project.ProjectPaymentState.getProjectPaymentState(pps.getState()).getName())")
+
+	})
+	ProjectPaymentDto projectPaymentToProjectPaymentDto(ProjectPayment pps);
+
+	List<ProjectPaymentDto> projectPaymentToProjectPaymentDto(List<ProjectPayment> pps);
 
 }

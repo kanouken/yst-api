@@ -9,8 +9,10 @@ import org.ost.entity.customer.dto.CustomerDetailDto;
 import org.ost.entity.customer.dto.CustomerListDto;
 import org.ost.entity.customer.dto.CustomerProjectDto;
 import org.ost.entity.customer.vo.CustomerCreateVo;
+import org.ost.entity.customer.vo.CustomerVo;
 import org.ost.entity.user.Users;
 import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -21,11 +23,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "customerService")
 public interface CustomerServiceClient extends BaseClient {
 
-	@RequestMapping(value = "customer/", method = RequestMethod.POST ,consumes="application/json")
+	@RequestMapping(value = "customer/", method = RequestMethod.POST, consumes = "application/json")
 	public OperateResult<CustomerCreateVo> createCustomer(
 			@RequestHeader(value = TENANT_ID, required = true) String schemaId, @RequestBody CustomerCreateVo customer);
 
-	@RequestMapping(value = "customer/list/", method = RequestMethod.POST,consumes="application/json")
+	@RequestMapping(value = "customer/list/", method = RequestMethod.POST, consumes = "application/json")
 	public OperateResult<PageEntity<CustomerListDto>> queryMember(
 			@RequestHeader(value = TENANT_ID, required = true) String schemaId,
 			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
@@ -40,7 +42,7 @@ public interface CustomerServiceClient extends BaseClient {
 	public OperateResult<Integer> deleteCustomer(@PathVariable(value = "id") Integer id,
 			@RequestHeader(value = TENANT_ID, required = false) String schemaId, Users users);
 
-	@RequestMapping(value = "customer/{id}", method = RequestMethod.PUT,consumes="application/json")
+	@RequestMapping(value = "customer/{id}", method = RequestMethod.PUT, consumes = "application/json")
 	public OperateResult<String> updateCustomer(@PathVariable(value = "id") Integer customerId,
 			@RequestHeader(value = TENANT_ID) String schemaId, @RequestBody CustomerCreateVo updateDto);
 
@@ -52,8 +54,15 @@ public interface CustomerServiceClient extends BaseClient {
 	public OperateResult<List<CustomerListDto>> queryByIds(@RequestHeader(value = "schemaID") String schemaID,
 			@RequestParam(value = "ids") int[] ids);
 
-	@RequestMapping(value = "customer/project", method = RequestMethod.POST ,consumes="application/json")
+	@RequestMapping(value = "customer/project", method = RequestMethod.POST, consumes = "application/json")
 	public OperateResult<String> createCustomerProject(@RequestHeader(value = TENANT_ID) String schemaID,
 			@RequestBody CustomerProjectDto dto);
 
+	@RequestMapping(value = "customer/project", method = RequestMethod.PUT, consumes = "application/json")
+	public OperateResult<String> updateCustomerProject(@RequestHeader(value = TENANT_ID) String schemaID,
+			@RequestBody CustomerProjectDto dto);
+
+	@RequestMapping(value = "customer/queryByProject", method = RequestMethod.GET)
+	public OperateResult<CustomerVo> queryByProject(@RequestHeader(value = TENANT_ID) String schemaID,
+			@RequestParam(value = "projectId") Integer projectId);
 }

@@ -8,17 +8,27 @@ import javax.persistence.Table;
 import org.ost.entity.base.BaseEntity;
 
 @Entity
-@Table(name="tbl_project")
+@Table(name = "tbl_project")
 public class Project extends BaseEntity {
 	private String name;
 	private Integer projectTypeID;
 	private Byte state;
 	private Date startTime;
 
+	private String detail;
+
 	private Integer isCyc;
 
 	private Integer cyc;
 	private Integer amount;
+
+	public String getDetail() {
+		return detail;
+	}
+
+	public void setDetail(String detail) {
+		this.detail = detail;
+	}
 
 	public String getName() {
 		return name;

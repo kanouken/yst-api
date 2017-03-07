@@ -345,13 +345,19 @@ public class ContactsService {
 		dto.getContacts().forEach(contacts -> {
 			ProjectContacts _pContacts = new ProjectContacts();
 			_pContacts.setContactID(contacts.getId());
-			_pContacts.setProjectID(contacts.getProjectId());
+			_pContacts.setProjectID(dto.getProject().getId());
 			_pContacts.setCreateBy(contacts.getCurrentUserName());
 			_pContacts.setSchemaId(schemaID);
 			_pContacts.setUpdateBy(contacts.getCurrentUserName());
 			this.pcDao.insertSelective(_pContacts);
 		});
 		return HttpStatus.OK.name();
+	}
+
+	@Transactional(readOnly = true)
+	public List<ContactsListDto> queryByProject(String schemaID, Integer projectId) {
+		List<ContactsListDto> contactsListDtos = this.contactDao.selectByProject(schemaID, projectId);
+		return contactsListDtos;
 	}
 
 }

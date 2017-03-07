@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.common.tools.db.Page;
+import org.common.tools.exception.ApiException;
 import org.common.tools.pinyin.Chinese2PY;
 import org.ost.customers.dao.CustomerDao;
 import org.ost.customers.dao.CustomerOrgDao;
@@ -364,7 +365,26 @@ public class CustomerService {
 		cProject.setCreateTime(new Date());
 		cProject.setUpdateTime(new Date());
 		cProject.setSchemaId(schemaId);
-		cpDao.insert(cProject);
+		cpDao.insertSelective(cProject);
+		return HttpStatus.OK.name();
+	}
+
+	@Transactional(readOnly = true)
+	public CustomerVo queryByProject(String schemaID, Integer projectId) {
+		CustomerVo customerVo = this.customerDao.selectByProject(schemaID, projectId);
+		return customerVo;
+	}
+
+	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
+	public String updateCustomerProject(String schemaID, CustomerProjectDto dto) {
+
+		CustomerProject cProject = new CustomerProject();
+		cProject.setUpdateBy(dto.getUserName());
+		cProject.setSchemaId(schemaID);
+		cProject.setProjectID(dto.getProject().getId());
+		cProject.setCustomerID(dto.getCustomer().getId());
+		cProject.setUpdateTime(new Date());
+		this.customerDao.updateCustomerProject(cProject);
 		return HttpStatus.OK.name();
 	}
 

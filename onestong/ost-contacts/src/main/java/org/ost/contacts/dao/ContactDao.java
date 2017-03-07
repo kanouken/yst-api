@@ -26,4 +26,6 @@ public interface ContactDao extends Mapper<Contacts> {
 	List<ContactsListDto> selectContacts(@Param("name") String name, @Param("phone") String phone,
 			@Param("email") String email, @Param("customerId") Integer customerId, RowBounds rb);
 
+	List<ContactsListDto> selectByProject(@Param("schemaId")String schemaID,@Param("projectId") Integer projectId);
+
 }

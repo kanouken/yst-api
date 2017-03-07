@@ -11,8 +11,10 @@ import org.ost.entity.customer.dto.CustomerDetailDto;
 import org.ost.entity.customer.dto.CustomerListDto;
 import org.ost.entity.customer.dto.CustomerProjectDto;
 import org.ost.entity.customer.vo.CustomerCreateVo;
+import org.ost.entity.customer.vo.CustomerVo;
 import org.ost.entity.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -92,5 +94,16 @@ public class CustomerController extends Action {
 			@RequestBody CustomerProjectDto dto) {
 		return new OperateResult<String>(this.customerService.createCustomerProject(schemaID, dto));
 	}
-
+	
+	@RequestMapping(value = "/project", method = RequestMethod.PUT)
+	public OperateResult<String> updateCustomerProject(@RequestHeader(value = TENANT_ID) String schemaID,
+			@RequestBody CustomerProjectDto dto) {
+		return new OperateResult<String>(this.customerService.updateCustomerProject(schemaID, dto));
+	}
+	
+	@GetMapping(value="/queryByProject")
+	public OperateResult<CustomerVo> queryByProject(@RequestHeader(value = TENANT_ID) String schemaID,
+			@RequestParam(value="projectId") Integer projectId){
+		return new OperateResult<CustomerVo>(this.customerService.queryByProject(schemaID,projectId));
+	}
 }
