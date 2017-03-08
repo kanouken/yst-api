@@ -2,6 +2,7 @@ package org.ost.crm.controller.project;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import org.common.tools.OperateResult;
 import org.ost.crm.controller.base.Action;
@@ -51,9 +52,11 @@ public class ProjectsController extends Action {
 	 * 
 	 * @param projectId
 	 * @return
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
 	 */
 	@GetMapping(value = "list")
-	public OperateResult<Project> queryProjects(
+	public OperateResult<Map<String, Object>> queryProjects(
 			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
 			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
 			@RequestAttribute(value = LOGIN_USER) Users user,
@@ -61,8 +64,8 @@ public class ProjectsController extends Action {
 			@RequestParam(value = "keyword", required = false) String keyword,
 			@RequestParam(value = "name", required = false) String name,
 			@RequestParam(value = "state", required = false) String state,
-			@RequestParam(value = "typeID", required = false) String typeId) {
-		return new OperateResult<Project>(
+			@RequestParam(value = "typeID", required = false) String typeId) throws InterruptedException, ExecutionException {
+		return new OperateResult<Map<String,Object>>(
 				projectService.queryProjects(user, customerId, keyword, name, state, typeId, curPage, perPageSum));
 	}
 

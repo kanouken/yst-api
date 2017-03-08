@@ -7,12 +7,12 @@
 
 		select id,name from tbl_customer tc
 		<where>
-			tc in
+			tc.id in 
 			<foreach item="id" collection="ids" open="(" separator=","
 				close=")">
 				#{id}
 			</foreach>
-			and is_delete = 0
+			and isDelete = 0
 		</where>
 	</select>
 

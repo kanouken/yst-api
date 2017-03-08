@@ -88,7 +88,7 @@ public class CustomerController extends Action {
 			@RequestParam(value = "ids") Integer[] ids) {
 		return new OperateResult<List<CustomerListDto>>(customerService.queryByIds(schemaID, ids));
 	}
-
+	@Deprecated
 	@RequestMapping(value = "/project", method = RequestMethod.POST)
 	public OperateResult<String> createCustomerProject(@RequestHeader(value = TENANT_ID) String schemaID,
 			@RequestBody CustomerProjectDto dto) {

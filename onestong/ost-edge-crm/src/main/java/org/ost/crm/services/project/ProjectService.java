@@ -1,18 +1,30 @@
 package org.ost.crm.services.project;
 
 import java.sql.PseudoColumnUsage;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.ibatis.session.RowBounds;
 import org.common.tools.OperateResult;
+import org.common.tools.db.Page;
 import org.common.tools.exception.ApiException;
 import org.omg.CORBA.PRIVATE_MEMBER;
 import org.ost.crm.client.ContactsServiceClient;
 import org.ost.crm.client.CustomerServiceClient;
+import org.ost.crm.dao.project.CustomerProjectDao;
 import org.ost.crm.dao.project.ProjectDao;
 import org.ost.crm.dao.project.ProjectFileDao;
 import org.ost.crm.dao.project.ProjectOrgDao;
@@ -26,6 +38,8 @@ import org.ost.crm.model.common.CommonParams;
 import org.ost.crm.services.base.BaseService;
 import org.ost.entity.contacts.dto.ContactsListDto;
 import org.ost.entity.contacts.mapper.ContactsEntityMapper;
+import org.ost.entity.customer.CustomerProject;
+import org.ost.entity.customer.dto.CustomerListDto;
 import org.ost.entity.customer.dto.CustomerProjectDto;
 import org.ost.entity.customer.vo.CustomerVo;
 import org.ost.entity.project.Project;
@@ -39,6 +53,8 @@ import org.ost.entity.project.UserProject;
 import org.ost.entity.project.dto.ProjectContactsDto;
 import org.ost.entity.project.dto.ProjectCreateOrUpdateDto;
 import org.ost.entity.project.dto.ProjectDetailDto;
+import org.ost.entity.project.dto.ProjectListDto;
+import org.ost.entity.project.dto.ProjectListDto.CurrentStep;
 import org.ost.entity.project.dto.ProjectPaymentDto;
 import org.ost.entity.project.dto.ProjectStepsDetailDto;
 import org.ost.entity.project.dto.ProjectStepsDto;
@@ -58,6 +74,9 @@ public class ProjectService extends BaseService {
 	private ProjectDao projectDao;
 	@Autowired
 	private ProjectFileDao projectFileDao;
+
+	@Autowired
+	private CustomerProjectDao projectCustomerDao;
 
 	@Autowired
 	private ProjectStepDao projectStepDao;
@@ -89,55 +108,60 @@ public class ProjectService extends BaseService {
 			project.setState(ProjectState.NORMAL.getState());
 		}
 		projectDao.insert(project);
-		ProjectContactsDto projectContactsDto = new ProjectContactsDto();
-		projectContactsDto.setProject(new ProjectVo(project.getId(), project.getName()));
-		projectContactsDto.setContacts(ContactsEntityMapper.INSTANCE.contactsDtoToContactsListDto(dto.getContacts()));
-		projectContactsDto.setUserName(user.getRealname());
-		OperateResult<String> result = this.contactsServiceClient.updateContactProject(user.getSchemaId(),
-				projectContactsDto);
-		if (result.success()) {
-			// project customer
-			CustomerProjectDto customerProjectDto = new CustomerProjectDto();
-			customerProjectDto.setCustomer(dto.getCustomer());
-			customerProjectDto.setProject(new ProjectVo(project.getId(), project.getName()));
-			customerProjectDto.setUserName(user.getRealname());
-			OperateResult<String> result2 = this.customerServiceClient.createCustomerProject(user.getSchemaId(),
-					customerProjectDto);
-			if (result2.success()) {
-				dto.getDeptOwner().forEach(dept -> {
-					ProjectOrg pOrg = new ProjectOrg();
-					pOrg.setOrganizeID(dept.getId());
-					pOrg.setProjectID(project.getId());
-					pOrg.setCreateBy(project.getCreateBy());
-					pOrg.setUpdateBy(project.getUpdateBy());
-					pOrg.setCreateTime(new Date());
-					pOrg.setUpdateTime(new Date());
-					pOrg.setSchemaId(user.getSchemaId());
-					pOrg.setOrganizeName(dept.getName());
-					poDao.insertSelective(pOrg);
-				});
-				//
-				dto.getManagerOwner().forEach(users -> {
-					UserProject uProject = new UserProject();
-					uProject.setUserID(users.getId());
-					uProject.setProjectID(project.getId());
-					uProject.setCreateBy(project.getCreateBy());
-					uProject.setUpdateBy(project.getUpdateBy());
-					uProject.setCreateTime(new Date());
-					uProject.setUpdateTime(new Date());
-					uProject.setSchemaId(user.getSchemaId());
-					uProject.setUserName(users.getName());
-					uProject.setOrganizeID(users.getDeptId());
-					uProject.setOrganizeName(users.getDeptName());
-					userProjectDao.insertSelective(uProject);
-				});
-			} else {
-				throw new ApiException("新增项目失败", result2.getInnerException());
+		if (CollectionUtils.isNotEmpty(dto.getContacts())) {
+			ProjectContactsDto projectContactsDto = new ProjectContactsDto();
+			projectContactsDto.setProject(new ProjectVo(project.getId(), project.getName()));
+			projectContactsDto
+					.setContacts(ContactsEntityMapper.INSTANCE.contactsDtoToContactsListDto(dto.getContacts()));
+			projectContactsDto.setUserName(user.getRealname());
+			OperateResult<String> result = this.contactsServiceClient.updateContactProject(user.getSchemaId(),
+					projectContactsDto);
+			if (!result.success()) {
+				throw new ApiException("新建项目失败", result.getInnerException());
 			}
-
-		} else {
-			throw new ApiException("新增项目失败", result.getInnerException());
 		}
+		// project customer
+
+		if (dto.getCustomer() != null) {
+			CustomerProject cProject = new CustomerProject();
+			cProject.setProjectID(project.getId());
+			cProject.setCustomerID(dto.getCustomer().getId());
+			cProject.setCreateBy(project.getCreateBy());
+			cProject.setUpdateBy(project.getUpdateBy());
+			cProject.setCreateTime(project.getCreateTime());
+			cProject.setUpdateTime(project.getUpdateTime());
+			cProject.setSchemaId(project.getSchemaId());
+			projectCustomerDao.insertSelective(cProject);
+		}
+
+		dto.getDeptOwner().forEach(dept -> {
+			ProjectOrg pOrg = new ProjectOrg();
+			pOrg.setOrganizeID(dept.getId());
+			pOrg.setProjectID(project.getId());
+			pOrg.setCreateBy(project.getCreateBy());
+			pOrg.setUpdateBy(project.getUpdateBy());
+			pOrg.setCreateTime(new Date());
+			pOrg.setUpdateTime(new Date());
+			pOrg.setSchemaId(user.getSchemaId());
+			pOrg.setOrganizeName(dept.getName());
+			poDao.insertSelective(pOrg);
+		});
+		//
+		dto.getManagerOwner().forEach(users -> {
+			UserProject uProject = new UserProject();
+			uProject.setUserID(users.getId());
+			uProject.setProjectID(project.getId());
+			uProject.setCreateBy(project.getCreateBy());
+			uProject.setUpdateBy(project.getUpdateBy());
+			uProject.setCreateTime(new Date());
+			uProject.setUpdateTime(new Date());
+			uProject.setSchemaId(user.getSchemaId());
+			uProject.setUserName(users.getName());
+			uProject.setOrganizeID(users.getDeptId());
+			uProject.setOrganizeName(users.getDeptName());
+			userProjectDao.insertSelective(uProject);
+		});
+
 		return HttpStatus.OK.name();
 	}
 
@@ -345,10 +369,110 @@ public class ProjectService extends BaseService {
 	}
 
 	@Transactional(readOnly = true)
-	public Project queryProjects(Users user, Integer customerId, String keyword, String name, String state,
-			String typeId, Integer curPage, Integer perPageSum) {
-		// TODO Auto-generated method stub
-		return null;
+	public Map<String, Object> queryProjects(Users user, Integer customerId, String keyword, String name, String state,
+			String typeId, Integer curPage, Integer perPageSum) throws InterruptedException, ExecutionException {
+		List<ProjectListDto> projectListDtos = new ArrayList<>();
+		Map<String, Object> params = new HashMap<String, Object>();
+
+		Page page = new Page();
+		page.setCurPage(curPage);
+		page.setPerPageSum(perPageSum);
+
+		params.put("customerId", customerId);
+		params.put("keyword", keyword);
+		params.put("name", name);
+		params.put("state", state);
+		params.put("typeId", typeId);
+		params.put("schemaId", user.getSchemaId());
+		params.put("page", page);
+		Integer totalRecords = this.projectDao.selectCountBy(params);
+
+		if (totalRecords > 0) {
+			projectListDtos = this.projectDao.selectProjectBy(params);
+			int[] projectIds = projectListDtos.stream().mapToInt(dto -> Integer.valueOf(dto.getId())).toArray();
+			int[] customerIds = projectListDtos.stream().filter(dto -> dto.getCustomer() != null)
+					.mapToInt(dto -> dto.getCustomer().getId()).toArray();
+			List<Project> projects = this.projectDao.selectProjectConfigStepsAndHistorySetps(user.getSchemaId(),
+					projectIds);
+
+			CompletableFuture<OperateResult<List<CustomerListDto>>> customerFuture = CompletableFuture
+					.supplyAsync(() -> this.customerServiceClient.queryByIds(user.getSchemaId(), customerIds));
+			this.configCurrentStepForProject(projects, projectListDtos);
+			// customer
+			OperateResult<List<CustomerListDto>> result = customerFuture.get();
+			if (result.success()) {
+				projectListDtos.forEach(dto -> {
+					if (dto.getCustomer() != null) {
+						Optional<CustomerListDto> _result = result.getData().stream()
+								.filter(customer -> customer.getId().equals(Integer.valueOf(dto.getCustomer().getId()))).findFirst();
+						if (_result.isPresent()) {
+							dto.setCustomer(new CustomerVo(dto.getCustomer().getId(), _result.get().getName()));
+						}
+					}
+				});
+			}
+		}
+		page.setTotalRecords(totalRecords);
+		return OperateResult.renderPage(page, projectListDtos);
+	}
+
+	private void configCurrentStepForProject(List<Project> infos, List<ProjectListDto> listDtos) {
+		DateFormat dFormat = new SimpleDateFormat("yyyy-MM-dd");
+		for (Project project : infos) {
+			Integer isLastStep = 0;
+			Integer isOverTime = 0;
+
+			long stepFromNow = 0;
+
+			Long commitTime = null;
+			long warningDay = 0;
+			CurrentStep _currentStep = new CurrentStep();
+
+			if (CollectionUtils.isEmpty(project.getHistorySteps())) {
+				isLastStep = 0;
+				isOverTime = 0;
+			} else {
+				if (project.getHistorySteps().size() == project.getTypeSteps().size()) {
+					// 最后阶段
+					isLastStep = 1;
+				}
+				project.getHistorySteps().sort((a, b) -> b.compareTo(a));
+				ProjectStep currentStep = project.getHistorySteps().get(project.getHistorySteps().size() - 1);
+				_currentStep.setId(String.valueOf(currentStep.getId()));
+				_currentStep.setTime(currentStep.getTime());
+				_currentStep.setTimeStr(dFormat.format(currentStep.getTime()));
+
+				commitTime = currentStep.getTime().getTime();
+				// 阶段进行时间
+				long day = 0, diff = 0;
+				diff = new Date().getTime() - commitTime;
+				day = diff / (24 * 60 * 60 * 1000);
+				stepFromNow = day;
+				if (CollectionUtils.isNotEmpty(project.getTypeSteps())) {
+					Optional<ProjectTypeStep> result = project.getTypeSteps().stream()
+							.filter(typeStep -> typeStep.getId().equals(currentStep.getProjectTypeStepID()))
+							.findFirst();
+					if (result.isPresent()) {
+						_currentStep.setMemo(result.get().getMemo());
+						warningDay = result.get().getDay();
+						if (stepFromNow > warningDay) {
+							isOverTime = 1;
+						} else {
+							isOverTime = 0;
+						}
+					}
+				}
+			}
+			for (int i = 0; i < listDtos.size(); i++) {
+				if (listDtos.get(i).getId().equals(project.getId().toString())) {
+					_currentStep.setIsLastStep(String.valueOf(isLastStep));
+					_currentStep.setIsOverTime(String.valueOf(isOverTime));
+					_currentStep.setStepDay(String.valueOf(stepFromNow));
+					listDtos.get(i).setCurrentStep(_currentStep);
+					break;
+				}
+			}
+		}
 	}
 
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
@@ -366,4 +490,47 @@ public class ProjectService extends BaseService {
 		return HttpStatus.OK.name();
 	}
 
+	public static void main(String[] args) throws ParseException {
+		List<ProjectStep> list = new ArrayList<ProjectStep>();
+		ProjectStep pStep1 = new ProjectStep();
+		pStep1.setId(1);
+		ProjectStep pStep2 = new ProjectStep();
+		pStep2.setId(2);
+
+		ProjectStep pStep3 = new ProjectStep();
+		pStep3.setId(5);
+		list.add(pStep3);
+		list.add(pStep1);
+		list.add(pStep2);
+
+		// for (int i = 0; i < list.size(); i++) {
+		// System.err.println(list.get(i).getId());
+		// }
+		//
+		// list.sort((a,b)-> b.compareTo(a));
+		// for (int i = 0; i < list.size(); i++) {
+		// System.err.println(list.get(i).getId());
+		// }
+		//
+
+		String time1 = "2017-03-01";
+		String time2 = "2017-03-01";
+
+		DateFormat dfDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Long diff = dfDateFormat.parse(time2).getTime() - dfDateFormat.parse(time1).getTime();
+
+		long day = 0;
+		long hour = 0;
+		long min = 0;
+		long sec = 0;
+
+		// 已经逾期了 如果是未完成 需要显示 延期，完成了就不显示好了
+
+		day = diff / (24 * 60 * 60 * 1000);
+		hour = (diff / (60 * 60 * 1000) - day * 24);
+		min = ((diff / (60 * 1000)) - day * 24 * 60 - hour * 60);
+		sec = (diff / 1000 - day * 24 * 60 * 60 - hour * 60 * 60 - min * 60);
+
+		System.out.println(day + "天  " + hour + "小时" + min);
+	}
 }

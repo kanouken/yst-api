@@ -73,7 +73,7 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
 		ex.printStackTrace(pWriter);
 		ex.printStackTrace();
 		logger.error(writer.getBuffer().toString());
-		return new ResponseEntity<>(new OperateResult(writer.getBuffer().toString(), "服务器异常", null), HttpStatus.OK);
+		return new ResponseEntity<>(new OperateResult(writer.getBuffer().toString(), "服务器异常", null,"500"), HttpStatus.OK);
 	}
 
 }

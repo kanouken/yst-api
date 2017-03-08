@@ -3,7 +3,67 @@
 
 <mapper namespace="org.ost.crm.dao.project.ProjectDao">
 
+	<resultMap type="org.ost.entity.project.Project" id="configStepAndHisStepMap">
+		<id column="id" property="id" />
+		<collection property="historySteps" ofType="org.ost.entity.project.ProjectStep"
+			column="tps_id">
+			<id column="tpsId" property="id" />
+			<result property="projectTypeStepID" column="projectTypeStepID" />
+			<result property="time" column="time" />
+		</collection>
+		<collection property="typeSteps"
+			ofType="org.ost.entity.project.ProjectTypeStep" column="tpts_id">
+			<id column="tptsId" property="id" />
+			<result property="projectTypeID" column="projectTypeID" />
+			<result property="memo" column="memo" />
+			<result property="step" column="step" />
+			<result property="rate" column="rate" />
+			<result property="day" column="day" />
+			<result property="isEnable" column="isEnable" />
+		</collection>
+	</resultMap>
 
+
+
+
+
+
+	<resultMap type="org.ost.entity.project.dto.ProjectListDto"
+		id="projectListMap">
+		<id column="id" property="id" />
+		<result property="amount" column="amount" />
+		<result property="cyc" column="cyc" />
+		<result property="details" column="detail" />
+		<result property="isCyc" column="isCyc" />
+		<result property="name" column="name" />
+		<result property="startTime" column="startTime" />
+		<result property="state" column="state" />
+		<result property="typeID" column="projectTypeID" />
+		<result property="typeName" column="typeName" />
+		<association property="customer" resultMap="customerMap"></association>
+		<collection property="deptOwner"
+			ofType="org.ost.entity.org.department.dto.DepartmentListDto" column="top_id">
+			<id column="topId" property="id" />
+			<result property="id" column="topDeptId" />
+			<result property="name" column="topDeptName" />
+		</collection>
+
+		<collection property="managerOwner" ofType="org.ost.entity.user.dto.UserListDto"
+			column="tup_Id">
+			<id column="tupId" property="id" />
+			<result property="id" column="tupUserId" />
+			<result property="name" column="tupUserName" />
+			<result property="deptName" column="tupDeptName" />
+			<result property="deptID" column="tupDeptId" />
+		</collection>
+
+	</resultMap>
+
+
+	<resultMap id="customerMap" type="org.ost.entity.customer.vo.CustomerVo">
+		<id column="tpcId" property="id" />
+		<result property="id" column="customerID" />
+	</resultMap>
 	<delete id="deleteProjectSteps">
 		delete from tbl_project_steps
 		where schemaID =
@@ -35,4 +95,137 @@
 		</where>
 
 	</select>
+
+
+	<select id="selectCountBy" resultType="java.lang.Integer">
+		select count(distinct t1.id) from (
+		select tp.* ,tpt.name typeName
+		,tup.id tupId,tup.userName,tup.organizeName
+		xx1,top.id
+		topId,top.organizeName x2,top.organizeID
+		,tpc.id tpcId,tpc.customerID
+
+		from (
+		SELECT id,`name`,state,startTime
+		isCyc,cyc,amount,detail,schemaID,projectTypeID,createTime
+		from
+		tbl_project) tp left join tbl_user_project tup
+		on (tp.id,tp.schemaID) =
+		(tup.projectID,tup.schemaID)
+
+		left join tbl_organize_project top
+		on
+		(tp.id,tp.schemaID) = (top.projectID,top.schemaID)
+
+		left join
+		tbl_project_customer tpc
+		on (tp.id,tp.schemaID) =
+		(tpc.projectID,tpc.schemaID)
+
+		left join tbl_project_type tpt
+
+		on
+		(tp.projectTypeID,tp.schemaID) = (tpt.id,tpt.schemaID)
+
+		<where>
+			tp.schemaId = #{schemaId}
+			<if test="customerId != null">
+				and tpc.customerID =#{customerId}
+			</if>
+			<if test="typeId != null">
+				and tp.projectTypeID =#{typeId}
+			</if>
+			<if test="state != null">
+				and tp.state =#{state}
+			</if>
+			<if test="name != null and name !=''">
+				and instr(tp.name,#{name}) >0
+			</if>
+		</where>
+
+		) t1
+
+	</select>
+
+
+	<select id="selectProjectBy" resultMap="projectListMap">
+		select tp.* ,tpt.name typeName ,
+
+		tup.id tupId,tup.userName tupUserName,
+		tup.userID tupUserId,
+		tup.organizeName tupDeptName,
+		tup.organizeID
+		tupDeptId,
+		top.id topId,top.organizeName topDeptName,top.organizeID
+		topDeptId
+
+		,tpc.id tpcId,tpc.customerID
+		from (
+		SELECT
+		id,`name`,state,startTime
+		isCyc,cyc,amount,detail,schemaID,projectTypeID,createTime
+		from
+		tbl_project limit #{page.nextPage} ,#{page.perPageSum} ) tp left join tbl_user_project tup
+		on
+		(tp.id,tp.schemaID) = (tup.projectID,tup.schemaID)
+
+		left join
+		tbl_organize_project top
+		on (tp.id,tp.schemaID) =
+		(top.projectID,top.schemaID)
+
+		left join tbl_project_customer tpc
+		on
+		(tp.id,tp.schemaID) = (tpc.projectID,tpc.schemaID)
+
+		left join
+		tbl_project_type tpt
+
+		on (tp.projectTypeID,tp.schemaID) =
+		(tpt.id,tpt.schemaID)
+		<where>
+			tp.schemaId = #{schemaId}
+			<if test="customerId != null">
+				and tpc.customerID =#{customerId}
+			</if>
+			<if test="typeId != null">
+				and tp.projectTypeID =#{typeId}
+			</if>
+			<if test="state != null">
+				and tp.state =#{state}
+			</if>
+			<if test="name != null and name !=''">
+				and instr(tp.name,#{name}) >0
+			</if>
+		</where>
+
+
+	</select>
+
+
+	<select id="selectProjectConfigStepsAndHistorySetps" resultMap="configStepAndHisStepMap">
+		select tp.id,
+		tpts.id
+		tptsId,tpts.memo,tpts.step,tpts.rate,tpts.`day`,tpts.isEnable ,
+		tps.id
+		tpsId,tps.time ,tps.projectTypeStepID from tbl_project tp left
+		join
+		tbl_project_type_step tpts
+
+		on (tp.projectTypeID,tp.schemaID )=
+		(tpts.projectTypeID ,tpts.schemaID)
+
+		left join tbl_project_steps tps
+		on
+		(tp.id,tp.schemaID) = (tps.projectID,tps.schemaID)
+		where tp.id in (12)
+		<!-- <foreach collection="projectIds" item="id" separator="," open="("
+			close=")">
+			#{id}
+		</foreach> -->
+		order by ifnull(tpts.step,0) 
+
+	</select>
+
+
 </mapper>

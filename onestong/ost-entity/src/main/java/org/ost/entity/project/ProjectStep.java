@@ -9,7 +9,7 @@ import org.ost.entity.base.BaseEntity;
 
 @Entity
 @Table(name = "tbl_project_steps")
-public class ProjectStep extends BaseEntity {
+public class ProjectStep extends BaseEntity implements Comparable<ProjectStep> {
 	private Integer projectID;
 	private Integer projectTypeStepID;
 
@@ -37,6 +37,11 @@ public class ProjectStep extends BaseEntity {
 
 	public void setTime(Date time) {
 		this.time = time;
+	}
+
+	@Override
+	public int compareTo(ProjectStep o) {
+		return o.getId().compareTo(this.getId());
 	}
 
 }

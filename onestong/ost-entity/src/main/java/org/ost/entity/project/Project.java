@@ -1,9 +1,11 @@
 package org.ost.entity.project;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.ost.entity.base.BaseEntity;
 
@@ -21,6 +23,27 @@ public class Project extends BaseEntity {
 
 	private Integer cyc;
 	private Integer amount;
+
+	@Transient
+	private List<ProjectTypeStep> typeSteps;
+	@Transient
+	private List<ProjectStep> historySteps;
+
+	public List<ProjectStep> getHistorySteps() {
+		return historySteps;
+	}
+
+	public void setHistorySteps(List<ProjectStep> historySteps) {
+		this.historySteps = historySteps;
+	}
+
+	public List<ProjectTypeStep> getTypeSteps() {
+		return typeSteps;
+	}
+
+	public void setTypeSteps(List<ProjectTypeStep> typeSteps) {
+		this.typeSteps = typeSteps;
+	}
 
 	public String getDetail() {
 		return detail;

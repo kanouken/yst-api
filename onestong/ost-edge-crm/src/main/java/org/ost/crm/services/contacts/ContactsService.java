@@ -53,10 +53,12 @@ public class ContactsService {
 		OperateResult<ContactsDto> result = this.contactsServiceClient.queryDetail(contactsId, users.getSchemaId());
 		ContactsDto contactsDto = result.getData();
 		ContactsDetailDto detailDto = ContactsEntityMapper.INSTANCE.contactsDtoToContactsDetailDto(contactsDto);
-		OperateResult<CustomerDetailDto> result2 = this.customerServiceClient
-				.queryDetail(contactsDto.getCustomer().getId(), users.getSchemaId());
-		if (result2.success()) {
-			detailDto.setCustomer(new CustomerVo(result2.getData().getId(), result2.getData().getName()));
+		if(contactsDto.getCustomer() != null){
+			OperateResult<CustomerDetailDto> result2 = this.customerServiceClient
+					.queryDetail(contactsDto.getCustomer().getId(), users.getSchemaId());
+			if (result2.success()) {
+				detailDto.setCustomer(new CustomerVo(result2.getData().getId(), result2.getData().getName()));
+			}
 		}
 		return detailDto;
 	}

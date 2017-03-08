@@ -53,7 +53,7 @@ public interface CustomerServiceClient extends BaseClient {
 	@RequestMapping(value = "customer/queryByIds", method = RequestMethod.GET)
 	public OperateResult<List<CustomerListDto>> queryByIds(@RequestHeader(value = "schemaID") String schemaID,
 			@RequestParam(value = "ids") int[] ids);
-
+	@Deprecated
 	@RequestMapping(value = "customer/project", method = RequestMethod.POST, consumes = "application/json")
 	public OperateResult<String> createCustomerProject(@RequestHeader(value = TENANT_ID) String schemaID,
 			@RequestBody CustomerProjectDto dto);

@@ -116,12 +116,14 @@ public class ContactsService {
 		});
 
 		// files
-		contactsDto.getPhoto().forEach(contactsFile -> {
-			ContactsFile _contactsFile = ContactsEntityMapper.INSTANCE.contactsFileDtoToContactsFile(contactsFile,
-					contactsDto);
-			_contactsFile.setContactID(contact.getId());
-			this.fileDao.insert(_contactsFile);
-		});
+		if (CollectionUtils.isNotEmpty(contactsDto.getPhoto())) {
+			contactsDto.getPhoto().forEach(contactsFile -> {
+				ContactsFile _contactsFile = ContactsEntityMapper.INSTANCE.contactsFileDtoToContactsFile(contactsFile,
+						contactsDto);
+				_contactsFile.setContactID(contact.getId());
+				this.fileDao.insert(_contactsFile);
+			});
+		}
 
 		logger.info("an new contacts created");
 		return contactsDto;
