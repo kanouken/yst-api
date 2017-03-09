@@ -1,43 +1,14 @@
-package org.ost.entity.project;
+package org.ost.entity.project.dto;
 
-import javax.persistence.Entity;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
-
-import org.ost.entity.base.BaseEntity;
-
-@Entity
-@Table(name = "tbl_project_type_step")
-public class ProjectTypeStep extends BaseEntity {
-	//private Integer id;
-
-	private Integer projectTypeID;
-
+public class ProjectTypeStepDto {
 	private String memo;
-	@OrderBy
 	private Double step;
-
 	private Integer rate;
-
+	
 	private Integer day;
-
 	private Byte isEnable;
-
-//	public Integer getId() {
-//		return id;
-//	}
-//
-//	public void setId(Integer id) {
-//		this.id = id;
-//	}
-
-	public Integer getProjectTypeID() {
-		return projectTypeID;
-	}
-
-	public void setProjectTypeID(Integer projectTypeID) {
-		this.projectTypeID = projectTypeID;
-	}
+	
+	private Integer projectTypeID;
 
 	public String getMemo() {
 		return memo;
@@ -79,4 +50,11 @@ public class ProjectTypeStep extends BaseEntity {
 		this.isEnable = isEnable;
 	}
 
-}
+	public Integer getProjectTypeID() {
+		return projectTypeID;
+	}
+
+	public void setProjectTypeID(Integer projectTypeID) {
+		this.projectTypeID = projectTypeID;
+	}
+} 

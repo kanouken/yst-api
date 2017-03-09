@@ -6,10 +6,39 @@
 		SELECT count(1) FROM
 		tbl_project_type
 	</select>
-	<select id="selectTypeList" resultType="org.ost.entity.project.ProjectType">
+	<select id="selectTypeList" resultType="org.ost.entity.project.vo.ProjectTypeVo">
 		SELECT * FROM
 		tbl_project_type
 	</select>
+	<select id="selectTypeById" resultType="org.ost.entity.project.vo.ProjectTypeVo">
+		SELECT * FROM
+		tbl_project_type where id=#{id}
+	</select>
 
-	
+	<select id="selectByCyc" resultType="org.ost.entity.project.ProjectType">
+
+		SELECT
+
+		cycWarningDay,cycWarningEnable,startTimeWarningDay,startTimeWarningEnable
+
+		FROM
+
+		tbl_project_type
+
+	</select>
+
+
+
+	<update id="updateParam">
+
+		UPDATE tbl_project_type
+
+		SET
+
+		cycWarningDay=#{cycWarningDay},cycWarningEnable=#{cycWarningEnable},startTimeWarningDay=#{startTimeWarningDay},startTimeWarningEnable=#{startTimeWarningEnable}
+
+		WHERE id=#{projectTypeID}
+
+	</update>
+
 </mapper>

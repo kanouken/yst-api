@@ -18,4 +18,8 @@ public interface ProjectTypeDao extends Mapper<ProjectType> {
 	List<ProjectTypeVo> selectTypeList(@Param("parmamsMap") Map<String, String> params, RowBounds rb);
 	
 	ProjectTypeVo selectTypeById(@Param("parmamsMap") ProjectType pro);
+	
+	ProjectType updateParam(@Param("parmamsMap")Map<String, Object> typeStep);
+	
+	ProjectTypeVo selectByCyc(@Param("parmamsMap") Map<String, Object> typeStep);
 }
