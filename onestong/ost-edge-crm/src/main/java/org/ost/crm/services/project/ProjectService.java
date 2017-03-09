@@ -404,7 +404,8 @@ public class ProjectService extends BaseService {
 				projectListDtos.forEach(dto -> {
 					if (dto.getCustomer() != null) {
 						Optional<CustomerListDto> _result = result.getData().stream()
-								.filter(customer -> customer.getId().equals(Integer.valueOf(dto.getCustomer().getId()))).findFirst();
+								.filter(customer -> customer.getId().equals(Integer.valueOf(dto.getCustomer().getId())))
+								.findFirst();
 						if (_result.isPresent()) {
 							dto.setCustomer(new CustomerVo(dto.getCustomer().getId(), _result.get().getName()));
 						}
@@ -532,5 +533,22 @@ public class ProjectService extends BaseService {
 		sec = (diff / 1000 - day * 24 * 60 * 60 - hour * 60 * 60 - min * 60);
 
 		System.out.println(day + "天  " + hour + "小时" + min);
+	}
+
+	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
+	public String updateProjectSteps(Users user, Integer projectId, String state) {
+
+		Project project = new Project();
+		project.setId(projectId);
+		project.setUpdateBy(user.getRealname());
+		project.setUpdateTime(new Date());
+		project.setSchemaId(user.getSchemaId());
+		project.setState(Byte.parseByte(state));
+		Integer result = this.projectDao.updateByPrimaryKeySelective(project);
+		if (result > 0) {
+			return HttpStatus.OK.name();
+		} else {
+			throw new ApiException("更新项目状态失败");
+		}
 	}
 }

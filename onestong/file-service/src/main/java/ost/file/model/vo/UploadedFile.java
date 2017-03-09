@@ -3,11 +3,20 @@ package ost.file.model.vo;
 public class UploadedFile {
 	private String fid;
 
+	private String fidThum;
 	private String fileName;
 
 	private String type;
 
 	private String size;
+
+	public String getFidThum() {
+		return fidThum;
+	}
+
+	public void setFidThum(String fidThum) {
+		this.fidThum = fidThum;
+	}
 
 	public String getFid() {
 		return fid;

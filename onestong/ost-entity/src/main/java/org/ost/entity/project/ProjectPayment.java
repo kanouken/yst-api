@@ -10,7 +10,6 @@ import org.ost.entity.base.BaseEntity;
 @Entity
 @Table(name = "tbl_project_payment")
 public class ProjectPayment extends BaseEntity {
-	private Integer id;
 
 	private Integer projectID;
 
@@ -21,14 +20,6 @@ public class ProjectPayment extends BaseEntity {
 	private Byte state;
 
 	private Date time;
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
 
 	public Integer getProjectID() {
 		return projectID;

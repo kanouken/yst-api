@@ -9,6 +9,7 @@ import org.mapstruct.ValueMapping;
 import org.mapstruct.factory.Mappers;
 import org.ost.entity.org.department.dto.DepartmentListDto;
 import org.ost.entity.project.Project;
+import org.ost.entity.project.ProjectFile;
 import org.ost.entity.project.ProjectOrg;
 import org.ost.entity.project.ProjectPayment;
 import org.ost.entity.project.ProjectStep;
@@ -17,6 +18,7 @@ import org.ost.entity.project.ProjectTypeStep;
 import org.ost.entity.project.UserProject;
 import org.ost.entity.project.dto.ProjectCreateOrUpdateDto;
 import org.ost.entity.project.dto.ProjectDetailDto;
+import org.ost.entity.project.dto.ProjectFileDto;
 import org.ost.entity.project.dto.ProjectPaymentDto;
 import org.ost.entity.project.dto.ProjectStepsDetailDto;
 import org.ost.entity.project.dto.ProjectStepsDto;
@@ -28,12 +30,13 @@ public interface ProjectEntityMapper {
 	ProjectEntityMapper INSTANCE = Mappers.getMapper(ProjectEntityMapper.class);
 
 	@Mappings({ @Mapping(source = "typeID", target = "projectTypeID"), @Mapping(source = "details", target = "detail"),
-			@Mapping( source="startTimeStr", target = "startTime", dateFormat = "yyyy-MM-dd")
+			@Mapping(source = "startTimeStr", target = "startTime", dateFormat = "yyyy-MM-dd")
 
 	})
 	Project createOrUpateDtoToProject(ProjectCreateOrUpdateDto dto);
 
 	@Mapping(source = "timeStr", target = "time", dateFormat = "yyyy-MM-dd")
+	@Mapping(target="id" ,ignore=true)
 	ProjectPayment projectPaymentDtoToProjectPayment(ProjectPaymentDto ppdto);
 
 	@Mappings({
@@ -86,5 +89,13 @@ public interface ProjectEntityMapper {
 	ProjectPaymentDto projectPaymentToProjectPaymentDto(ProjectPayment pps);
 
 	List<ProjectPaymentDto> projectPaymentToProjectPaymentDto(List<ProjectPayment> pps);
+
+	@Mappings(
+
+	{ @Mapping(source = "createTime", target = "uploadTime"), @Mapping(source = "createBy", target = "uploader"),
+			@Mapping(source = "createTime", target = "uploadTimeStr", dateFormat = "yyyy-MM-dd") })
+	ProjectFileDto projectFileToProjectFileDto(ProjectFile pFiles);
+
+	List<ProjectFileDto> projectFileToProjectFileDto(List<ProjectFile> pFiles);
 
 }

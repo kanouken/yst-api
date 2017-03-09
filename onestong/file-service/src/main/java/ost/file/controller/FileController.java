@@ -3,6 +3,7 @@ package ost.file.controller;
 import java.io.IOException;
 import java.util.List;
 
+import org.common.tools.OperateResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
@@ -23,23 +24,24 @@ public class FileController {
 	private FileService fileService;
 
 	@PostMapping(value = "file/upload")
-	public Object upload(@RequestParam(value = "file") MultipartFile file) {
-		return fileService.save(file);
+	public OperateResult<UploadedFile> upload(@RequestParam(value = "file", required = true) MultipartFile file,
+			@RequestParam(value = "box", required = false) String box) throws Exception {
+		return new OperateResult<UploadedFile>(fileService.save(file, box));
 	}
 
 	@PostMapping(value = "file/uploads")
-	public Object upload(@RequestParam(value = "file") MultipartFile[] files) {
-		return fileService.saveAll(files);
+	public OperateResult<List<UploadedFile>> upload(@RequestParam(value = "file") MultipartFile[] files,
+			@RequestParam(value = "box", required = false) String box) throws Exception {
+		return new OperateResult<List<UploadedFile>>(fileService.saveAll(files, box));
 	}
 
 	@GetMapping(value = "file/download")
 	public ResponseEntity<InputStreamResource> upload(@RequestParam(value = "id") String fid) throws IOException {
 		return fileService.getFile(fid);
 	}
-	
-	
-	@GetMapping(value = "file/zip")
-	public  UploadedFile  upload(@RequestBody List<UploadedFile> files)  {
-		return fileService.zipFiles(files);
+
+	@PostMapping(value = "file/zip")
+	public OperateResult<UploadedFile> upload(@RequestBody List<UploadedFile> files) {
+		return new OperateResult<UploadedFile>(fileService.zipFiles(files));
 	}
 }

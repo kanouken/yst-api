@@ -52,8 +52,8 @@ public class ProjectsController extends Action {
 	 * 
 	 * @param projectId
 	 * @return
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
+	 * @throws ExecutionException
+	 * @throws InterruptedException
 	 */
 	@GetMapping(value = "list")
 	public OperateResult<Map<String, Object>> queryProjects(
@@ -64,8 +64,9 @@ public class ProjectsController extends Action {
 			@RequestParam(value = "keyword", required = false) String keyword,
 			@RequestParam(value = "name", required = false) String name,
 			@RequestParam(value = "state", required = false) String state,
-			@RequestParam(value = "typeID", required = false) String typeId) throws InterruptedException, ExecutionException {
-		return new OperateResult<Map<String,Object>>(
+			@RequestParam(value = "typeID", required = false) String typeId)
+			throws InterruptedException, ExecutionException {
+		return new OperateResult<Map<String, Object>>(
 				projectService.queryProjects(user, customerId, keyword, name, state, typeId, curPage, perPageSum));
 	}
 
@@ -93,7 +94,7 @@ public class ProjectsController extends Action {
 	@PutMapping(value = "{id}")
 	public OperateResult<String> updateProject(@RequestAttribute(value = LOGIN_USER) Users user,
 			@PathVariable(value = "id") Integer id, @RequestBody ProjectCreateOrUpdateDto dto) {
-		return new OperateResult<String>(projectService.updateProject(user,id, dto));
+		return new OperateResult<String>(projectService.updateProject(user, id, dto));
 	}
 
 	/**
@@ -174,4 +175,11 @@ public class ProjectsController extends Action {
 	public OperateResult<Map<String, Object>> queryProjectParams(@RequestAttribute(value = LOGIN_USER) Users users) {
 		return new OperateResult<Map<String, Object>>(projectService.queryProjectParams(users));
 	}
+
+	@PutMapping(value = "{id}/state")
+	public OperateResult<String> updateProjectState(@RequestAttribute(value = LOGIN_USER) Users user,
+			@PathVariable(value = "id") Integer projectId, @RequestParam(value = "state") String state) {
+		return new OperateResult<String>(projectService.updateProjectSteps(user, projectId, state));
+	}
+
 }

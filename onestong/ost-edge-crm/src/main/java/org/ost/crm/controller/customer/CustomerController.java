@@ -2,6 +2,7 @@ package org.ost.crm.controller.customer;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,11 +13,13 @@ import org.common.tools.db.Page;
 import org.ost.crm.controller.base.Action;
 import org.ost.crm.services.customer.CustomerService;
 import org.ost.entity.customer.dto.CustomerDetailDto;
+import org.ost.entity.customer.dto.CustomerListDto;
 import org.ost.entity.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -116,7 +119,13 @@ public class CustomerController extends Action {
 		Page page = new Page();
 		page.setCurPage(curPage);
 		page.setPerPageSum(perPageSum);
-		return new OperateResult<Map<String,Object>>(this.customerService.queryCustomers(current, params, page));
+		return new OperateResult<Map<String, Object>>(this.customerService.queryCustomers(current, params, page));
+	}
+
+	@PostMapping(value = "batch/managerOwner")
+	public OperateResult<String> updateManagerOwners(@RequestAttribute(value = LOGIN_USER) Users user,
+			@RequestBody List<CustomerListDto> dtos) {
+		return  new OperateResult<String>(customerService.updateMangerOwnersBatch(user,dtos));
 	}
 
 }

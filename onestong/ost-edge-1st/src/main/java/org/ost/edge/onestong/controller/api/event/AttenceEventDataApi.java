@@ -86,7 +86,7 @@ public class AttenceEventDataApi extends Action {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "signIn/{token}", method = RequestMethod.POST)
+	@RequestMapping(value = "signIn", method = RequestMethod.POST)
 	public Object signIn(AttenceEvent attence, @PathVariable("token") String token) {
 		DateFormat df = new SimpleDateFormat("yyyyMMdd");
 		OperateResult op = new OperateResult();
@@ -370,7 +370,7 @@ public class AttenceEventDataApi extends Action {
 	 *            event uuid
 	 */
 	@ResponseBody
-	@RequestMapping(value = "signOut/{token}", method = RequestMethod.POST)
+	@RequestMapping(value = "signOut", method = RequestMethod.POST)
 	public Object signOut(@PathVariable("token") String token, AttenceEvent event) {
 		DateFormat df = new SimpleDateFormat("yyyyMMdd");
 		OperateResult op = new OperateResult();

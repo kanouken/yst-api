@@ -316,4 +316,15 @@ public class CustomerService extends BaseService {
 		}
 
 	}
+
+	/**
+	 * 批量分配客户经理 部门
+	 * @param user
+	 * @param dtos
+	 * @return
+	 */
+	public String updateMangerOwnersBatch(Users user, List<CustomerListDto> dtos) {
+		
+		return null;
+	}
 }
