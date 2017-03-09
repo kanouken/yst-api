@@ -95,12 +95,15 @@ public class ContactsService {
 			customerContactsDao.insertSelective(cc);
 
 		}
-		contactsDto.getLocations().forEach(address -> {
-			ContactsAddress _address = ContactsEntityMapper.INSTANCE.contactsAddressDtoToContactsAddress(address,
-					contactsDto);
-			_address.setContactId(contact.getId());
-			this.addressDao.insert(_address);
-		});
+		if (CollectionUtils.isNotEmpty(contactsDto.getLocations())) {
+			contactsDto.getLocations().forEach(address -> {
+				ContactsAddress _address = ContactsEntityMapper.INSTANCE.contactsAddressDtoToContactsAddress(address,
+						contactsDto);
+				_address.setContactId(contact.getId());
+				this.addressDao.insert(_address);
+			});
+
+		}
 
 		if (CollectionUtils.isNotEmpty(contactsDto.getEmail())) {
 			contactsDto.getEmail().forEach(email -> {

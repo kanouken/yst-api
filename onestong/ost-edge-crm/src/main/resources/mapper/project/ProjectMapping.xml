@@ -72,7 +72,7 @@
 	</delete>
 
 	<select id="selectProjectSteps" resultType="org.ost.entity.project.ProjectTypeStep">
-		select
+		select tps.time,
 		tpts.*
 
 		from tbl_project tp left join

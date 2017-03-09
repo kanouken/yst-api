@@ -1,17 +1,23 @@
 package org.ost.entity.project;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.ost.entity.base.BaseEntity;
 
 @Entity
 @Table(name = "tbl_project_type_step")
 public class ProjectTypeStep extends BaseEntity {
-	//private Integer id;
+	// private Integer id;
 
 	private Integer projectTypeID;
+
+	@Transient
+	private Date time;
 
 	private String memo;
 	@OrderBy
@@ -23,13 +29,21 @@ public class ProjectTypeStep extends BaseEntity {
 
 	private Byte isEnable;
 
-//	public Integer getId() {
-//		return id;
-//	}
-//
-//	public void setId(Integer id) {
-//		this.id = id;
-//	}
+	// public Integer getId() {
+	// return id;
+	// }
+	//
+	// public void setId(Integer id) {
+	// this.id = id;
+	// }
+
+	public Date getTime() {
+		return time;
+	}
+
+	public void setTime(Date time) {
+		this.time = time;
+	}
 
 	public Integer getProjectTypeID() {
 		return projectTypeID;

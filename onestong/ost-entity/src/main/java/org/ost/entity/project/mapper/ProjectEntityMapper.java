@@ -49,7 +49,10 @@ public interface ProjectEntityMapper {
 
 	@Mappings({
 			@Mapping(target = "warning", expression = "java(new java.util.HashMap<String,Object>(){ {put(\"day\",projectTypeStep.getDay());"
-					+ "put(\"isEnable\",projectTypeStep.getIsEnable()); } })") })
+					+ "put(\"isEnable\",projectTypeStep.getIsEnable()); } })"),
+			@Mapping(source="time",target="timeStr" ,dateFormat="yyyy-MM-dd")
+	
+	})
 	ProjectStepsDto projectTypeStepToProjectStepDto(ProjectTypeStep projectTypeStep);
 
 	List<ProjectStepsDto> projectTypeStepToProjectStepDto(List<ProjectTypeStep> projectTypeSteps);

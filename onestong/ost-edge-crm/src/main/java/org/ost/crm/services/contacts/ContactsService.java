@@ -51,16 +51,21 @@ public class ContactsService {
 
 	public ContactsDetailDto queryDetail(Integer contactsId, Users users) {
 		OperateResult<ContactsDto> result = this.contactsServiceClient.queryDetail(contactsId, users.getSchemaId());
-		ContactsDto contactsDto = result.getData();
-		ContactsDetailDto detailDto = ContactsEntityMapper.INSTANCE.contactsDtoToContactsDetailDto(contactsDto);
-		if(contactsDto.getCustomer() != null){
-			OperateResult<CustomerDetailDto> result2 = this.customerServiceClient
-					.queryDetail(contactsDto.getCustomer().getId(), users.getSchemaId());
-			if (result2.success()) {
-				detailDto.setCustomer(new CustomerVo(result2.getData().getId(), result2.getData().getName()));
+		if (result.success()) {
+			ContactsDto contactsDto = result.getData();
+			ContactsDetailDto detailDto = ContactsEntityMapper.INSTANCE.contactsDtoToContactsDetailDto(contactsDto);
+			if (contactsDto.getCustomer() != null) {
+				OperateResult<CustomerDetailDto> result2 = this.customerServiceClient
+						.queryDetail(contactsDto.getCustomer().getId(), users.getSchemaId());
+				if (result2.success()) {
+					detailDto.setCustomer(new CustomerVo(result2.getData().getId(), result2.getData().getName()));
+				}
 			}
+			return detailDto;
+		} else {
+			throw new ApiException("获取联系人详细失败", result.getInnerException());
 		}
-		return detailDto;
+
 	}
 
 	/**
