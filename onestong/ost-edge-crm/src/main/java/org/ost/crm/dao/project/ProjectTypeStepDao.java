@@ -7,4 +7,6 @@ import tk.mybatis.mapper.common.Mapper;
 
 public interface ProjectTypeStepDao extends Mapper<ProjectTypeStep> {
 	Integer deleteProjectTypeStep(@Param("projectTypeID") Integer projectTypeID);
+	
+
 }

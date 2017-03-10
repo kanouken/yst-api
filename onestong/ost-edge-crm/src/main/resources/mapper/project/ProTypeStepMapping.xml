@@ -5,6 +5,7 @@
 	<delete id="deleteProjectTypeStep">
 		delete from tbl_project_type_step
 		where
-		projectTypeID = #{projectTypeID}
+		projectTypeID =
+		#{projectTypeID}
 	</delete>
 </mapper>
