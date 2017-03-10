@@ -21,7 +21,7 @@ public class ProjectTypeStepController extends Action {
 	@Autowired
 	public ProjectTypeStepService projectTypeStepService;
 	
-	@ApiOperation(value = "新增项目类型阶段", notes = "新增项目类型阶段")
+	@ApiOperation(value = "新增编辑项目类型阶段", notes = "新增编辑项目类型阶段")
 	@PostMapping(value="{projectTypeID}")
 	public void CreateProjectTypeSteps(@PathVariable(value = "projectTypeID") Integer projectTypeID,
 			@RequestAttribute(value = LOGIN_USER) Users users, @RequestBody ProjectStepsDetailDto pdto) {
