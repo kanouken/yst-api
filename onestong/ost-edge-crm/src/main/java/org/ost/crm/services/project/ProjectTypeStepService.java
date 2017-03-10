@@ -1,15 +1,15 @@
 package org.ost.crm.services.project;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
+import org.apache.commons.collections.MapUtils;
 import org.ost.crm.dao.project.ProjectTypeDao;
 import org.ost.crm.dao.project.ProjectTypeStepDao;
 import org.ost.entity.project.ProjectType;
 import org.ost.entity.project.ProjectTypeStep;
+import org.ost.entity.project.dto.ProjectStepsDetailDto;
+import org.ost.entity.project.dto.ProjectStepsDto;
 import org.ost.entity.project.dto.ProjectTypeStepDto;
-import org.ost.entity.project.vo.ProjectTypeVo;
 import org.ost.entity.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,9 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ProjectTypeStepService {
 
-	@Autowired 
-	ProjectTypeDao projectTypeDao;
-	
+	@Autowired
+	public ProjectTypeDao projectTypeDao;
+
 	@Autowired
 	public ProjectTypeStepDao projectTypeStepDao;
 
@@ -31,48 +31,38 @@ public class ProjectTypeStepService {
 	 * 
 	 * @param projectTypeID
 	 * @param users
-	 * @param psdtos
+	 * @param pdto
 	 * @return
 	 */
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public void insertTypeStep(Integer projectTypeID, Users users,ProjectTypeStepDto pTDto) {
-		Map<String, Object> typeStep=new HashMap<>();
-		typeStep.put("cycWarningDay","cycWarningDay");
-		typeStep.put("cycWarningEnable","cycWarningEnable");
-		typeStep.put("startTimeWarningDay", "startTimeWarningDay");
-		typeStep.put("startTimeWarningEnable","startTimeWarningEnable");
-		ProjectType pt=projectTypeDao.updateParam(typeStep);
-		if(pt!=null){
-			projectTypeDao.insert(pt);
-		}
-		ProjectTypeStep pts=new ProjectTypeStep();
-		//projectTypeStepDao.delete(pts);
-		pts.setCreateBy(users.getRealname());
-		pts.setUpdateBy(pts.getCreateBy());
-		pts.setCreateTime(new Date());
-		pts.setUpdateTime(new Date());
-		pts.setIsDelete(Short.valueOf("0"));
-		pts.setSchemaId(users.getSchemaId());
-		pts.setProjectTypeID(projectTypeID);
-		pts.setMemo(pTDto.getMemo());
-		pts.setDay(pTDto.getDay());
-		pts.setStep(pTDto.getStep());
-		pts.setRate(pTDto.getRate());
-		pts.setIsEnable(Byte.valueOf("1"));
-		projectTypeStepDao.insert(pts);
-	}
+	public void createOrUpdateTypeStep(Integer projectTypeID, Users users, ProjectStepsDetailDto pdto) {
+		ProjectType pro = new ProjectType();
+		pro.setCycWarningDay(MapUtils.getInteger(pdto.getCycWarning(), "cycWarningDay"));
+		pro.setCycWarningEnable(MapUtils.getString(pdto.getCycWarning(), "cycWarningEnable"));
+		pro.setStartTimeWarningDay(MapUtils.getInteger(pdto.getStartTimeWarning(), "startTimeWarningDay"));
+		pro.setStartTimeWarningEnable(MapUtils.getString(pdto.getStartTimeWarning(), "startTimeWarningEnable"));
+		pro.setId(projectTypeID);
+		projectTypeDao.updateParam(pro);
 
-	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public String updateTypeStep(Integer projectTypeID, Users users,ProjectTypeStepDto pTDto) {
-		ProjectTypeStep pts=new ProjectTypeStep();
-		pts.setId(projectTypeID);
-		pts.setUpdateBy(pts.getCreateBy());
-		pts.setUpdateTime(new Date());
-		pts.setMemo(pTDto.getMemo());
-		pts.setStep(pTDto.getStep());
-		pts.setDay(pTDto.getDay());
-		projectTypeStepDao.updateByPrimaryKeySelective(pts);
-		return HttpStatus.OK.name();
+		ProjectTypeStep ps = new ProjectTypeStep();
+		projectTypeStepDao.deleteProjectTypeStep(projectTypeID);
+
+		ps.setProjectTypeID(projectTypeID);
+		ps.setCreateBy(users.getRealname());
+		ps.setSchemaId(users.getSchemaId());
+		ps.setUpdateBy(ps.getCreateBy());
+		ps.setCreateTime(new Date());
+		ps.setUpdateTime(new Date());
+		ps.setIsDelete(Short.valueOf("0"));
+
+		pdto.getSteps().forEach(s -> {
+			ps.setMemo(s.getMemo());
+			ps.setRate(Integer.parseInt(s.getRate()));
+			ps.setStep(Double.parseDouble(s.getStep()));
+			ps.setDay(MapUtils.getInteger(s.getWarning(), "day"));
+			ps.setIsEnable(MapUtils.getByte(s.getWarning(), "isEnable"));
+		});
+		projectTypeStepDao.insert(ps);
 	}
 
 }

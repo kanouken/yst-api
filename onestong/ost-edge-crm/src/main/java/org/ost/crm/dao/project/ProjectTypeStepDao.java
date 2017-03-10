@@ -6,5 +6,5 @@ import org.ost.entity.project.ProjectTypeStep;
 import tk.mybatis.mapper.common.Mapper;
 
 public interface ProjectTypeStepDao extends Mapper<ProjectTypeStep> {
-	Integer deleteProjectTypeStep(@Param("projectTypeID") Integer projectTypeID, @Param("schemaId") String schemaId);
+	Integer deleteProjectTypeStep(@Param("projectTypeID") Integer projectTypeID);
 }
