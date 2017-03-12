@@ -24,7 +24,7 @@ public interface ContactsEntityMapper {
 	ContactsEntityMapper INSTANCE = Mappers.getMapper(ContactsEntityMapper.class);
 
 	@Mapping(target = "name", expression = "java(contacts.getFirstName() + contacts.getLastName())")
-	@Mapping(target = "sexName", expression = "java(  (contacts.getSex()!=null && contacts.getSex().equals(\"1\"))?\"女\":\"男\")")
+	@Mapping(target = "sexName", expression = "java(  (contacts.getSex()!=null && contacts.getSex().equals(\"1\"))?\"女士\":\"先生\")")
 	ContactsDto contactsToContactsDto(Contacts contacts);
 
 	@Mappings({
