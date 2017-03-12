@@ -38,7 +38,7 @@
 			<if test="params != null">
 
 				<foreach item="key" collection="params.keys" open="("
-					separator="or" close=")">
+					separator="and" close=")">
 					instr(property ->
 					'$.${key}',#{params[${key}],jdbcType=VARCHAR}) > 0
 				</foreach>
@@ -85,7 +85,7 @@
 			</trim>
 			<if test="paramsMap != null">
 				<foreach item="key" collection="paramsMap.keys" open="("
-					separator="or" close=")">
+					separator="and" close=")">
 					instr(property ->
 					'$.${key}',#{paramsMap[${key}],jdbcType=VARCHAR}) > 0
 				</foreach>
