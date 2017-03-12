@@ -34,7 +34,7 @@
 		t1.sex ,
 		   CASE WHEN t1.sex = 0 THEN '先生' 
                  WHEN t1.sex = 1 THEN '女士'
-            ELSE '其他' END  sexName,
+            ELSE '' END  sexName,
 		t1.headPic ,
 		t1.szm ,
 		t1.dept ,
