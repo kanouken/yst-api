@@ -20,11 +20,11 @@ import tk.mybatis.mapper.common.Mapper;
 public interface CustomerDao extends Mapper<Customer> {
 
 	List<Customer> selectCustomers(@Param("paramsMap") Map<String, String> params, @Param("customer") Customer customer,
-			RowBounds rb);
+			@Param("keyword") String keyword, RowBounds rb);
 
 	int updateCustomerSelective(@Param("customer") Customer customer);
 
-	Integer selectCustomerCount(@Param("params") Map<String, String> params, @Param("customer") Customer customer);
+	Integer selectCustomerCount(@Param("params") Map<String, String> params, @Param("customer") Customer customer, @Param("keyword") String keyword);
 
 	List<Customer> selectByIds(@Param("ids") Integer[] ids);
 

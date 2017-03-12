@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.common.tools.db.Page;
 import org.common.tools.exception.ApiException;
@@ -149,12 +150,14 @@ public class CustomerService {
 		RowBounds rb = new RowBounds(page.getNextPage(), page.getPerPageSum());
 		List<CustomerListDto> records = new ArrayList<CustomerListDto>();
 		Map<String, String> params = null;
+		String keyword = null;
 		if (customer.getProperty() != null) {
 			params = (Map<String, String>) customer.getProperty();
+			keyword = MapUtils.getString(params,"keyword");
 		}
-		Integer totalRecord = this.customerDao.selectCustomerCount(params, customer);
+		Integer totalRecord = this.customerDao.selectCustomerCount(params, customer,keyword);
 		if (totalRecord > 0) {
-			List<Customer> customers = this.customerDao.selectCustomers(params, customer, rb);
+			List<Customer> customers = this.customerDao.selectCustomers(params, customer,keyword, rb);
 			records = CustomerEntityMapper.INSTANCE.customersToCustomerListDtos(customers);
 
 			int[] customerIds = customers.stream().mapToInt(c -> c.getId()).toArray();

@@ -31,6 +31,9 @@
 				<if test="customer.szm != null and customer.szm != ''">
 					instr(szm,#{customer.szm}) > 0 or
 				</if>
+				<if test="keyword != null and keyword !=''">
+					instr(name,#{keyword}) >0 
+ 				</if>
 			</trim>
 			<if test="params != null">
 
@@ -75,6 +78,10 @@
 				<if test="customer.szm != null and customer.szm != ''">
 					instr(szm,#{customer.szm}) > 0 or
 				</if>
+				<if test="keyword != null and keyword != ''">
+					instr(name,#{keyword}) > 0 or
+				</if>
+				
 			</trim>
 			<if test="paramsMap != null">
 				<foreach item="key" collection="paramsMap.keys" open="("
