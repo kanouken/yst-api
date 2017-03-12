@@ -251,7 +251,7 @@ public class ContactsService {
 		info.setContactId(contacts.getId());
 		info.setIsDelete(Short.valueOf("0"));
 		List<ContactsInfo> infos = this.infoDao.select(info);
-
+		
 		ContactsFile cFile = new ContactsFile();
 		cFile.setContactID(contacts.getId());
 		cFile.setIsDelete(Short.valueOf("0"));
@@ -259,6 +259,9 @@ public class ContactsService {
 
 		ContactsDto dto = ContactsEntityMapper.INSTANCE.contactsToContactsDto(contacts);
 		dto.setLocations(ContactsEntityMapper.INSTANCE.contactsAddressToContactsAddressDto(cas));
+		if(CollectionUtils.isNotEmpty(infos)){
+			infos =  infos.stream().filter(i-> !i.getType().equals("email")).collect(Collectors.toList());
+		}
 		dto.setPhone(ContactsEntityMapper.INSTANCE.contactsInfoToContactsInfoDto(infos));
 		dto.setPhoto(ContactsEntityMapper.INSTANCE.contactsFileToContactsFileDto(cFiles));
 
