@@ -70,7 +70,7 @@ public interface ContactsEntityMapper {
 	ContactsFileDto contactsFileToContactsFileDto(ContactsFile cFile);
 
 	List<ContactsFileDto> contactsFileToContactsFileDto(List<ContactsFile> cFile);
-
+	@Mapping(source="detailAddress1",target="detailAddress")
 	ContactsAddressDto contactsAddressToContactsAddressDto(ContactsAddress cAddress);
 
 	List<ContactsAddressDto> contactsAddressToContactsAddressDto(List<ContactsAddress> cAddress);

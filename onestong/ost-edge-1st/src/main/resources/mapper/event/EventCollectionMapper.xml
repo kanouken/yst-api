@@ -68,7 +68,7 @@
 		t.update_time AS update_time,
 		t.leave_type AS title,
 		t.content AS content,
-		NULL AS signed_address,
+		t.approval_tip AS signed_address,
 		null AS signout_address,
 		NULL AS signed_time,
 		NULL AS lated_for_time,

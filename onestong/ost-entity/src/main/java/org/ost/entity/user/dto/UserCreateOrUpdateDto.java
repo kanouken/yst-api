@@ -6,7 +6,7 @@ public class UserCreateOrUpdateDto {
 	private String name;
 
 	private String deptName;
-	private Integer deptId;
+	private Integer deptID;
 
 	public Integer getId() {
 		return id;
@@ -32,12 +32,12 @@ public class UserCreateOrUpdateDto {
 		this.deptName = deptName;
 	}
 
-	public Integer getDeptId() {
-		return deptId;
+	public Integer getDeptID() {
+		return deptID;
 	}
 
-	public void setDeptId(Integer deptId) {
-		this.deptId = deptId;
+	public void setDeptID(Integer deptID) {
+		this.deptID = deptID;
 	}
 
 }

@@ -6,6 +6,8 @@ import org.ost.entity.user.dto.UserListDto;
 
 public class ApprovalEventDto {
 
+	private String userId;
+
 	private String userPic;
 
 	private String creator;
@@ -32,6 +34,14 @@ public class ApprovalEventDto {
 	private String scheduling;
 
 	private String status;
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 
 	public String getUserPic() {
 		return userPic;

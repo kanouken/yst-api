@@ -13,6 +13,16 @@ public class VisitEvents {
 	private Integer contactsId;
 	private String contactsName;
 
+	private String vistedAddress;
+
+	public String getVistedAddress() {
+		return vistedAddress;
+	}
+
+	public void setVistedAddress(String vistedAddress) {
+		this.vistedAddress = vistedAddress;
+	}
+
 	public Integer getContactsId() {
 		return contactsId;
 	}

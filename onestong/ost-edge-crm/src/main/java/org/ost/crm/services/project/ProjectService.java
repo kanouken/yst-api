@@ -159,7 +159,7 @@ public class ProjectService extends BaseService {
 			uProject.setUpdateTime(new Date());
 			uProject.setSchemaId(user.getSchemaId());
 			uProject.setUserName(users.getName());
-			uProject.setOrganizeID(users.getDeptId());
+			uProject.setOrganizeID(users.getDeptID());
 			uProject.setOrganizeName(users.getDeptName());
 			userProjectDao.insertSelective(uProject);
 		});
@@ -269,7 +269,7 @@ public class ProjectService extends BaseService {
 				uProject.setUpdateTime(new Date());
 				uProject.setSchemaId(user.getSchemaId());
 				uProject.setUserName(users.getName());
-				uProject.setOrganizeID(users.getDeptId());
+				uProject.setOrganizeID(users.getDeptID());
 				uProject.setOrganizeName(users.getDeptName());
 				userProjectDao.insertSelective(uProject);
 			});
@@ -361,6 +361,7 @@ public class ProjectService extends BaseService {
 		UserProject uProject = new UserProject();
 		uProject.setIsDelete(project.getIsDelete());
 		uProject.setSchemaId(user.getSchemaId());
+		uProject.setProjectID(projectId);
 		List<UserProject> ups = userProjectDao.select(uProject);
 		detailDto.setManagerOwner(ProjectEntityMapper.INSTANCE.userProjectToUserListDto(ups));
 

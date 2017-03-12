@@ -48,7 +48,7 @@ public class ContactsService {
 		contactsDto.setSchemaId(users.getSchemaId());
 		contactsDto.setCurrentUserName(users.getRealname());
 		OperateResult<ContactsDto> result = this.contactsServiceClient.createContact(users.getSchemaId(), contactsDto);
-		if (result.getData() != null) {
+		if (result.success()) {
 			// success
 		} else {
 			throw new ApiException("联系人创建失败", result.getInnerException());

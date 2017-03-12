@@ -513,6 +513,7 @@ public class VisitEventService extends EventBaseService {
 		ves.setUpdator(currentUser.getRealname());
 		ves.setVistedLongitude(vo.getLocation().getLng());
 		ves.setVisitedLatitude(vo.getLocation().getLat());
+		ves.setVistedAddress(vo.getLocation().getDetailAddress());
 		ves.setVeId(eId);
 		if (0 < this.visitMapper.updateByPrimaryKeySelective(ves)) {
 			return vo;
