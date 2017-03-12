@@ -153,7 +153,9 @@ public class ContactsService {
 			contact.setPy(contactsDto.getName());
 		}
 		contact.setHeadPic(contactsDto.getHeadPic());
-		contact.setSex(contactsDto.getSex());
+		if(StringUtils.isNotEmpty(contactsDto.getSex())){
+			contact.setSex(contactsDto.getSex());
+		}
 		contact.setSchemaId(contactsDto.getSchemaId());
 		contactDao.updateByPrimaryKeySelective(contact);
 
