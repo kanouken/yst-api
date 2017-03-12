@@ -13,6 +13,8 @@ projectName=$3 #spring-boot
 # Ex: application-localhost.yml
 configFile=$4
 
+buildOutPath=$5
+
 
 #### CONFIGURABLE VARIABLES ######
 #destination absolute path. It must be pre created or you can
@@ -25,7 +27,7 @@ configFolder=conf
 ##### DONT CHANGE HERE ##############
 #jar file
 # $WORKSPACE is a jenkins var
-sourFile=$WORKSPACE/$JOB_NAME/target/$projectName*.jar
+sourFile=$WORKSPACE/$JOB_NAME/$buildOutPath/target/$projectName*.jar
 destFile=$destAbsPath/$projectName.jar
 
 #config files folder
