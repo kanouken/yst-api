@@ -34,7 +34,7 @@
 				<if test="keyword != null and keyword !=''">
 					instr(name,#{keyword}) >0 or
  				</if>
-			</trim>
+			
 			<if test="params != null">
 
 				<foreach item="key" collection="params.keys" open="("
@@ -44,6 +44,7 @@
 				</foreach>
 
 			</if>
+			</trim>
 			and schemaId = #{customer.schemaId,jdbcType=VARCHAR}
 			and isDelete =
 			0
@@ -82,7 +83,7 @@
 					instr(name,#{keyword}) > 0 or
 				</if>
 				
-			</trim>
+			
 			<if test="paramsMap != null">
 				<foreach item="key" collection="paramsMap.keys" open="("
 					separator="and" close=")">
@@ -90,6 +91,7 @@
 					'$.${key}',#{paramsMap[${key}],jdbcType=VARCHAR}) > 0
 				</foreach>
 			</if>
+			</trim>
 			and schemaId = #{customer.schemaId,jdbcType=VARCHAR}
 			and isDelete =
 			0
