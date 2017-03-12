@@ -32,7 +32,7 @@
 					instr(szm,#{customer.szm}) > 0 or
 				</if>
 				<if test="keyword != null and keyword !=''">
-					instr(name,#{keyword}) >0 
+					instr(name,#{keyword}) >0 or
  				</if>
 			</trim>
 			<if test="params != null">
