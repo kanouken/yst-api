@@ -30,7 +30,9 @@ public interface ProjectEntityMapper {
 	ProjectEntityMapper INSTANCE = Mappers.getMapper(ProjectEntityMapper.class);
 
 	@Mappings({ @Mapping(source = "typeID", target = "projectTypeID"), @Mapping(source = "details", target = "detail"),
-			@Mapping(source = "startTimeStr", target = "startTime", dateFormat = "yyyy-MM-dd")
+			@Mapping(source = "startTimeStr", target = "startTime", dateFormat = "yyyy-MM-dd"),
+			@Mapping(target="isCyc",expression="java(dto.getIsCyc()==null ||dto.getIsCyc().equals(\"\") ? 0 :Integer.valueOf(dto.getIsCyc() ))"),
+			@Mapping(target="cyc",expression="java(dto.getCyc()==null ||dto.getCyc().equals(\"\") ? 0 :Integer.valueOf(dto.getCyc() ))")
 
 	})
 	Project createOrUpateDtoToProject(ProjectCreateOrUpdateDto dto);

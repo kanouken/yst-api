@@ -75,7 +75,7 @@
 		select tps.time,
 		tpts.*
 
-		from tbl_project tp left join
+		from tbl_project tp right join
 		tbl_project_steps tps on
 
 		(tp.id,tp.schemaID) =

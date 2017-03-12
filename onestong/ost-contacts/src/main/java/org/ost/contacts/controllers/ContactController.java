@@ -80,5 +80,5 @@ public class ContactController extends Action {
 			@RequestParam(value = "projectId") Integer projectId) {
 		return new OperateResult<List<ContactsListDto>>(contactService.queryByProject(schemaID, projectId));
 	}
-
+	
 }

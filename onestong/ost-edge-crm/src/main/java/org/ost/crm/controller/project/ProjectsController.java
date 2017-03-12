@@ -40,10 +40,12 @@ public class ProjectsController extends Action {
 	 * 
 	 * @param projectId
 	 * @return
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
 	 */
 	@GetMapping(value = "{id}")
 	public OperateResult<ProjectDetailDto> queryDetail(@PathVariable(value = "id") Integer projectId,
-			@RequestAttribute(value = LOGIN_USER) Users user) {
+			@RequestAttribute(value = LOGIN_USER) Users user) throws InterruptedException, ExecutionException {
 		return new OperateResult<ProjectDetailDto>(projectService.queryDetail(projectId, user));
 	}
 

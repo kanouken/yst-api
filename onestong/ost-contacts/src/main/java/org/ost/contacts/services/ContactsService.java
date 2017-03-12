@@ -330,8 +330,8 @@ public class ContactsService {
 			pContacts.setUpdateBy(dto.getUserName());
 			pContacts.setCreateTime(new Date());
 			pContacts.setUpdateTime(new Date());
-			pContacts.setIsDelete(Short.parseShort("0"));
-			this.pcDao.insert(pContacts);
+			pContacts.setRole(contacts.getRole());
+			this.pcDao.insertSelective(pContacts);
 		});
 		return HttpStatus.OK.name();
 	}
@@ -345,6 +345,7 @@ public class ContactsService {
 		pContacts.setIsDelete(Short.valueOf("1"));
 		pContacts.setUpdateTime(new Date());
 		pContacts.setUpdateBy(dto.getUserName());
+		pContacts.setProjectID(dto.getProject().getId());
 		this.pcDao.updateByExampleSelective(pContacts, pce);
 
 		dto.getContacts().forEach(contacts -> {
@@ -354,6 +355,7 @@ public class ContactsService {
 			_pContacts.setCreateBy(contacts.getCurrentUserName());
 			_pContacts.setSchemaId(schemaID);
 			_pContacts.setUpdateBy(contacts.getCurrentUserName());
+			_pContacts.setRole(contacts.getRole());
 			this.pcDao.insertSelective(_pContacts);
 		});
 		return HttpStatus.OK.name();

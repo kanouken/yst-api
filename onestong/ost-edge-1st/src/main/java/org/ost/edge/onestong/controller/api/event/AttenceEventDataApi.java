@@ -29,6 +29,8 @@ import org.ost.edge.onestong.tools.HttpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -87,7 +89,7 @@ public class AttenceEventDataApi extends Action {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "signIn", method = RequestMethod.POST)
-	public Object signIn(AttenceEvent attence, @PathVariable("token") String token) {
+	public Object signIn(@RequestBody AttenceEvent attence) {
 		DateFormat df = new SimpleDateFormat("yyyyMMdd");
 		OperateResult op = new OperateResult();
 		try {
@@ -371,7 +373,7 @@ public class AttenceEventDataApi extends Action {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "signOut", method = RequestMethod.POST)
-	public Object signOut(@PathVariable("token") String token, AttenceEvent event) {
+	public Object signOut(@RequestBody AttenceEvent event) {
 		DateFormat df = new SimpleDateFormat("yyyyMMdd");
 		OperateResult op = new OperateResult();
 		String singoutAddress = event.getSignoutAddress();
@@ -668,9 +670,8 @@ public class AttenceEventDataApi extends Action {
 	 * 打卡状态查询 查询今天单条 考勤状态 返回考勤实体
 	 */
 	@ResponseBody
-	@RequestMapping(value = "signStatusForToday/{token}", method = RequestMethod.GET)
-	public Object signStatuQuery(@PathVariable("token") String token, User user) {
-
+	@RequestMapping(value = "signStatusForToday", method = RequestMethod.GET)
+	public Object signStatuQuery(@RequestAttribute(value=LOGIN_USER) User  user) {
 		OperateResult op = new OperateResult();
 		try {
 
@@ -720,8 +721,8 @@ public class AttenceEventDataApi extends Action {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "signOutDirectly/{token}", method = RequestMethod.POST)
-	public Object signOutDirectly(@PathVariable("token") String token, AttenceEvent event) {
+	@RequestMapping(value = "signOutDirectly", method = RequestMethod.POST)
+	public Object signOutDirectly( @RequestBody AttenceEvent event) {
 		OperateResult op = new OperateResult();
 		DateFormat df = new SimpleDateFormat("yyyyMMdd");
 		try {

@@ -57,11 +57,11 @@ public interface CustomerServiceClient extends BaseClient {
 	@RequestMapping(value = "customer/project", method = RequestMethod.POST, consumes = "application/json")
 	public OperateResult<String> createCustomerProject(@RequestHeader(value = TENANT_ID) String schemaID,
 			@RequestBody CustomerProjectDto dto);
-
+	@Deprecated
 	@RequestMapping(value = "customer/project", method = RequestMethod.PUT, consumes = "application/json")
 	public OperateResult<String> updateCustomerProject(@RequestHeader(value = TENANT_ID) String schemaID,
 			@RequestBody CustomerProjectDto dto);
-
+	@Deprecated
 	@RequestMapping(value = "customer/queryByProject", method = RequestMethod.GET)
 	public OperateResult<CustomerVo> queryByProject(@RequestHeader(value = TENANT_ID) String schemaID,
 			@RequestParam(value = "projectId") Integer projectId);

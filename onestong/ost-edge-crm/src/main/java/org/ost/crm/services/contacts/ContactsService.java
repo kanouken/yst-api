@@ -1,8 +1,14 @@
 package org.ost.crm.services.contacts;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.common.tools.OperateResult;
 import org.common.tools.db.Page;
 import org.common.tools.exception.ApiException;
@@ -15,6 +21,7 @@ import org.ost.entity.contacts.dto.ContactsDto;
 import org.ost.entity.contacts.dto.ContactsListDto;
 import org.ost.entity.contacts.mapper.ContactsEntityMapper;
 import org.ost.entity.customer.dto.CustomerDetailDto;
+import org.ost.entity.customer.dto.CustomerListDto;
 import org.ost.entity.customer.vo.CustomerVo;
 import org.ost.entity.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,17 +91,32 @@ public class ContactsService {
 			Integer curPage, Integer perPageSum) {
 		OperateResult<PageEntity<ContactsListDto>> result = contactsServiceClient.contactList(curPage,
 				users.getSchemaId(), perPageSum, null, name, phone, customerID);
-		if (result.success() && result.getData().getTotalRecord() > 0 && customerID != null) {
-			OperateResult<CustomerDetailDto> result2 = this.customerServiceClient.queryDetail(customerID,
-					users.getSchemaId());
-			result.getData().getObjects().forEach(contactsListDto -> {
-				contactsListDto.setCustomer(new CustomerVo(result2.getData().getId(), result2.getData().getName()));
-			});
+		List<ContactsListDto> records = new ArrayList<ContactsListDto>();
+		if (result.success()) {
+			records = result.getData().getObjects();
+			if (CollectionUtils.isNotEmpty(result.getData().getObjects())) {
+				int[] customerIds = result.getData().getObjects().stream().mapToInt(c -> c.getCustomerID()).toArray();
+				OperateResult<List<CustomerListDto>> result2 = this.customerServiceClient
+						.queryByIds(users.getSchemaId(), customerIds);
+				if (result2.success()) {
+					records.forEach(r -> {
+						Optional<CustomerListDto> _rOptional = result2.getData().stream()
+								.filter(c -> c.getId() == r.getCustomerID()).findFirst();
+						if (_rOptional.isPresent()) {
+							r.setCustomer(new CustomerVo(_rOptional.get().getId(), _rOptional.get().getName()));
+						}
+					});
+
+				}
+			}
+			Page page = new Page();
+			page.setCurPage(curPage);
+			page.setTotalRecords(result.getData().getTotalRecord());
+			return OperateResult.renderPage(page, result.getData().getObjects());
+		} else {
+			throw new ApiException("获取联系人列表失败", result.getInnerException());
 		}
-		Page page = new Page();
-		page.setCurPage(curPage);
-		page.setTotalRecords(result.getData().getTotalRecord());
-		return OperateResult.renderPage(page, result.getData().getObjects());
+
 	}
 
 	/**

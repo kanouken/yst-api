@@ -17,7 +17,7 @@ public interface ProjectDao extends Mapper<Project> {
 
 	List<ProjectTypeStep> selectProjectSteps(@Param("schemaId") String schemaId, @Param("projectId") Integer projectId);
 
-	@Delete("delete from tbl_organize_project where schemaID=#{projectId} and projectID = #{projectId}")
+	@Delete("delete from tbl_organize_project where schemaID=#{schemaId} and projectID = #{projectId}")
 	void deleteProjectOrg(@Param("schemaId") String schemaId, @Param("projectId") Integer projectId);
 
 	@Delete("delete from tbl_user_project where schemaID= #{schemaId} and projectID= #{projectId}")
@@ -29,5 +29,8 @@ public interface ProjectDao extends Mapper<Project> {
 
 	List<Project> selectProjectConfigStepsAndHistorySetps(@Param("schemaId") String schemaId,
 			@Param("projectIds") int[] projectIds);
+	
+	@Delete("delete from tbl_project_customer where projectID = #{id}")
+	void deleteProjectCustomer(@Param("id")String id);
 
 }

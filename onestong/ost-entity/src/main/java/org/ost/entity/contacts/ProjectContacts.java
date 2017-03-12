@@ -6,10 +6,19 @@ import javax.persistence.Table;
 import org.ost.entity.base.BaseEntity;
 
 @Entity
-@Table(name="tbl_project_contact")
+@Table(name = "tbl_project_contact")
 public class ProjectContacts extends BaseEntity {
 	private Integer projectID;
 	private Integer contactID;
+	private String role;
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
 
 	public Integer getProjectID() {
 		return projectID;

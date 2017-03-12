@@ -16,6 +16,9 @@
 		<result property="sex" column="sex" />
 		<result property="sexName" column="sexName" />
 		<result property="szm" column="szm" />
+		<result property="projectId" column="projectId" />
+		<result property="customerID" column="customerID" />
+
 	</resultMap>
 
 
@@ -26,7 +29,7 @@
 		GROUP_CONCAT(t1.val)
 		contactInfoVals,
 		t1.id ,
-
+		t1.customerID,
 		t1.py ,
 		t1.sex ,
 		t1.headPic ,
@@ -81,7 +84,7 @@
 					INSTR(t.val,#{email})
 				</if>
 			</trim>
-			<trim prefixOverrides="and">
+			<trim suffixOverrides="and">
 
 				<if test="customerId != null ">
 					and t.customerID = #{customerId}
@@ -98,7 +101,8 @@
 		t1.dept ,
 		t1.position ,
 		t1.firstName ,
-		t1.lastName
+		t1.lastName ,
+		t1.customerID
 	</select>
 
 
@@ -160,7 +164,8 @@
 		,tc.schemaID) = (tpc.contactID,tpc.schemaID)
 
 		where tpc.projectID =
-		#{projectId} and tpc.schemaID = #{schemaId}
+		#{projectId} and tpc.schemaID = #{schemaId} and tpc.isDelete = 0 and
+		tc.isDelete = 0
 
 	</select>
 

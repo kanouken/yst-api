@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -39,6 +40,7 @@ import org.ost.crm.services.base.BaseService;
 import org.ost.entity.contacts.dto.ContactsListDto;
 import org.ost.entity.contacts.mapper.ContactsEntityMapper;
 import org.ost.entity.customer.CustomerProject;
+import org.ost.entity.customer.dto.CustomerDetailDto;
 import org.ost.entity.customer.dto.CustomerListDto;
 import org.ost.entity.customer.dto.CustomerProjectDto;
 import org.ost.entity.customer.vo.CustomerVo;
@@ -228,44 +230,49 @@ public class ProjectService extends BaseService {
 		OperateResult<String> result = contactsServiceClient.updateProject(user.getSchemaId(), pContactsDto);
 		if (result.success()) {
 			// update 客户
-			CustomerProjectDto customerProjectDto = new CustomerProjectDto();
-			customerProjectDto.setCustomer(dto.getCustomer());
-			customerProjectDto.setProject(new ProjectVo(projectId, ""));
-			customerProjectDto.setUserName(user.getRealname());
-			OperateResult<String> result2 = this.customerServiceClient.updateCustomerProject(user.getSchemaId(),
-					customerProjectDto);
-			if (result2.success()) {
-				// update 部门
-				this.projectDao.deleteProjectOrg(user.getSchemaId(), projectId);
-				dto.getDeptOwner().forEach(dept -> {
-					ProjectOrg pOrg = new ProjectOrg();
-					pOrg.setOrganizeID(dept.getId());
-					pOrg.setProjectID(project.getId());
-					pOrg.setCreateBy(project.getCreateBy());
-					pOrg.setUpdateBy(project.getUpdateBy());
-					pOrg.setCreateTime(new Date());
-					pOrg.setUpdateTime(new Date());
-					pOrg.setSchemaId(user.getSchemaId());
-					pOrg.setOrganizeName(dept.getName());
-					poDao.insertSelective(pOrg);
-				});
-				//
-				this.projectDao.deleteProjectUser(user.getSchemaId(), projectId);
-				dto.getManagerOwner().forEach(users -> {
-					UserProject uProject = new UserProject();
-					uProject.setUserID(users.getId());
-					uProject.setProjectID(project.getId());
-					uProject.setCreateBy(project.getCreateBy());
-					uProject.setUpdateBy(project.getUpdateBy());
-					uProject.setCreateTime(new Date());
-					uProject.setUpdateTime(new Date());
-					uProject.setSchemaId(user.getSchemaId());
-					uProject.setUserName(users.getName());
-					uProject.setOrganizeID(users.getDeptId());
-					uProject.setOrganizeName(users.getDeptName());
-					userProjectDao.insertSelective(uProject);
-				});
+			this.projectDao.deleteProjectCustomer(dto.getId());
+			if (dto.getCustomer() != null) {
+				CustomerProject cProject = new CustomerProject();
+				cProject.setProjectID(project.getId());
+				cProject.setCustomerID(dto.getCustomer().getId());
+				cProject.setCreateBy(project.getCreateBy());
+				cProject.setUpdateBy(project.getUpdateBy());
+				cProject.setCreateTime(project.getCreateTime());
+				cProject.setUpdateTime(project.getUpdateTime());
+				cProject.setSchemaId(user.getSchemaId());
+				projectCustomerDao.insertSelective(cProject);
 			}
+
+			// update 部门
+			this.projectDao.deleteProjectOrg(user.getSchemaId(), projectId);
+			dto.getDeptOwner().forEach(dept -> {
+				ProjectOrg pOrg = new ProjectOrg();
+				pOrg.setOrganizeID(dept.getId());
+				pOrg.setProjectID(project.getId());
+				pOrg.setCreateBy(project.getCreateBy());
+				pOrg.setUpdateBy(project.getUpdateBy());
+				pOrg.setCreateTime(new Date());
+				pOrg.setUpdateTime(new Date());
+				pOrg.setSchemaId(user.getSchemaId());
+				pOrg.setOrganizeName(dept.getName());
+				poDao.insertSelective(pOrg);
+			});
+			//
+			this.projectDao.deleteProjectUser(user.getSchemaId(), projectId);
+			dto.getManagerOwner().forEach(users -> {
+				UserProject uProject = new UserProject();
+				uProject.setUserID(users.getId());
+				uProject.setProjectID(project.getId());
+				uProject.setCreateBy(project.getCreateBy());
+				uProject.setUpdateBy(project.getUpdateBy());
+				uProject.setCreateTime(new Date());
+				uProject.setUpdateTime(new Date());
+				uProject.setSchemaId(user.getSchemaId());
+				uProject.setUserName(users.getName());
+				uProject.setOrganizeID(users.getDeptId());
+				uProject.setOrganizeName(users.getDeptName());
+				userProjectDao.insertSelective(uProject);
+			});
 
 			return HttpStatus.OK.name();
 		} else {
@@ -306,11 +313,10 @@ public class ProjectService extends BaseService {
 		// project state
 
 		List<Map<String, Object>> stateList = new ArrayList<Map<String, Object>>();
-
 		states.forEach(state -> {
 			stateList.add(new HashMap<String, Object>() {
 				{
-					put("id", state.getId());
+					put("id", state.getKey());
 					put("name", state.getVal());
 				}
 			});
@@ -323,7 +329,7 @@ public class ProjectService extends BaseService {
 	}
 
 	@Transactional(readOnly = true)
-	public ProjectDetailDto queryDetail(Integer projectId, Users user) {
+	public ProjectDetailDto queryDetail(Integer projectId, Users user) throws InterruptedException, ExecutionException {
 		Project project = projectDao.selectByPrimaryKey(projectId);
 
 		ProjectDetailDto detailDto = ProjectEntityMapper.INSTANCE.projectToProjectDetailDto(project);
@@ -333,14 +339,22 @@ public class ProjectService extends BaseService {
 		pOrg.setSchemaId(user.getSchemaId());
 		pOrg.setProjectID(project.getId());
 		// contacts
-		OperateResult<List<ContactsListDto>> result = this.contactsServiceClient.queryByProject(user.getSchemaId(),
-				projectId);
+		CompletableFuture<OperateResult<List<ContactsListDto>>> contactsFuture = CompletableFuture
+				.supplyAsync(() -> contactsServiceClient.queryByProject(user.getSchemaId(), projectId));
 
-		// customer
+		// TODO customer
+		CompletableFuture<OperateResult<CustomerDetailDto>> customerFuture = CompletableFuture.supplyAsync(() -> {
+			CustomerProject customerProject = new CustomerProject();
+			customerProject.setIsDelete(Short.parseShort("0"));
+			customerProject.setProjectID(project.getId());
+			List<CustomerProject> cps = projectCustomerDao.select(customerProject);
+			if (CollectionUtils.isNotEmpty(cps)) {
+				return customerServiceClient.queryDetail(cps.get(0).getCustomerID(), user.getSchemaId());
+			} else {
 
-		OperateResult<CustomerVo> result2 = this.customerServiceClient.queryByProject(user.getSchemaId(), projectId);
-		detailDto.setCustomer(result2.getData());
-		detailDto.setContacts(result.getData());
+				return null;
+			}
+		});
 		List<ProjectOrg> projectOrgs = poDao.select(pOrg);
 		detailDto.setDeptOwner(ProjectEntityMapper.INSTANCE.projectOrgToDepartmentListDto(projectOrgs));
 		// manager
@@ -364,6 +378,12 @@ public class ProjectService extends BaseService {
 		ProjectType type = ptDao.selectByPrimaryKey(project.getProjectTypeID());
 		if (type != null) {
 			detailDto.setTypeName(type.getName());
+		}
+
+		detailDto.setContacts(contactsFuture.get().getData());
+		OperateResult<CustomerDetailDto> cusotmeResult = null;
+		if ((cusotmeResult = customerFuture.get()) != null) {
+			detailDto.setCustomer(new CustomerVo(cusotmeResult.getData().getId(), cusotmeResult.getData().getName()));
 		}
 		return detailDto;
 	}
