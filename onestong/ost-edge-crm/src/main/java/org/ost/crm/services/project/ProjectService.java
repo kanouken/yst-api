@@ -18,6 +18,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.common.tools.OperateResult;
 import org.common.tools.db.Page;
@@ -188,6 +189,9 @@ public class ProjectService extends BaseService {
 		ppDao.updateByExampleSelective(pp, paymentExample);
 
 		dtos.forEach(ppdto -> {
+			if(StringUtils.isEmpty(ppdto.getTimeStr())){
+				ppdto.setTimeStr(null);
+			}
 			ProjectPayment _pp = ProjectEntityMapper.INSTANCE.projectPaymentDtoToProjectPayment(ppdto);
 			_pp.setCreateBy(users.getRealname());
 			_pp.setUpdateBy(users.getRealname());
