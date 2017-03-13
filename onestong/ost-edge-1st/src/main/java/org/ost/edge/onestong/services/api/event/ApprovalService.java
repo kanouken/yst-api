@@ -146,6 +146,13 @@ public class ApprovalService {
 			aEvent.setState(ApprovalState.PASSED.getState());
 			aEvent.setAeId(eventId);
 			approvalDao.updateByPrimaryKeySelective(aEvent);
+		}else{
+			ApprovalEvent aEvent = new ApprovalEvent();
+			aEvent.setUpdateTime(new Date());
+			aEvent.setUpdateBy(users.getRealname());
+			aEvent.setState(ApprovalState.NOT_PASS.getState());
+			aEvent.setAeId(eventId);
+			approvalDao.updateByPrimaryKeySelective(aEvent);
 		}
 		// TODO notifaction
 		return eventId;
