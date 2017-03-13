@@ -165,7 +165,7 @@
 		id,`name`,state,startTime
 		isCyc,cyc,amount,detail,schemaID,projectTypeID,createTime
 		from
-		tbl_project limit #{page.nextPage} ,#{page.perPageSum} ) tp left join tbl_user_project tup
+		tbl_project  order by createTime desc limit #{page.nextPage} ,#{page.perPageSum} ) tp left join tbl_user_project tup
 		on
 		(tp.id,tp.schemaID) = (tup.projectID,tup.schemaID)
 
@@ -198,8 +198,6 @@
 				and instr(tp.name,#{name}) >0
 			</if>
 		</where>
-		order by tp.createTime desc
-
 	</select>
 
 
