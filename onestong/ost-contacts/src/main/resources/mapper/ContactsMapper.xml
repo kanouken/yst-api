@@ -78,24 +78,26 @@
 		(tcc.contactID ,
 		tcc.schemaID)
 		) t
+		<where>
+			<trim prefixOverrides="and |or">
+				<if test="name != null and name != ''">
+					INSTR(CONCAT(t.firstName,t.lastName),#{name}) >0
+				</if>
+				<if test="phone != null and phone != ''">
+					and instr(t.val,#{phone}) >0
+				</if>
+				<if test="email != null and email != ''">
+					and INSTR(t.val,#{email})
+				</if>
+				<if test="customerId != null ">
+					and t.customerID = #{customerId}
+				</if>
+				<if test="keyword != null and keyword !=''">
+					or INSTR(CONCAT(t.firstName,t.lastName),#{keyword}) >0
+				</if>
+			</trim>
 
-		<trim prefix="where" prefixOverrides="and | or">
-			<if test="name != null and name != ''">
-				INSTR(CONCAT(t.firstName,t.lastName),#{name}) >0
-			</if>
-			<if test="phone != null and phone != ''">
-				and instr(t.val,#{phone}) >0
-			</if>
-			<if test="email != null and email != ''">
-				and INSTR(t.val,#{email})
-			</if>
-			<if test="keyword != null and keyword !=''">
-				or INSTR(CONCAT(t.firstName,t.lastName),#{keyword}) >0
-			</if>
-			<if test="customerId != null ">
-				and t.customerID = #{customerId}
-			</if>
-		</trim>
+		</where>
 		) t1
 		group by t1.id ,
 		t1.py ,
@@ -131,23 +133,25 @@
 		=
 		(tcc.contactID,tcc.schemaID)
 		) t
-		<trim prefix="where" prefixOverrides="and |or">
-			<if test="name != null and name != ''">
-				INSTR(CONCAT(t.firstName,t.lastName),#{name}) >0
-			</if>
-			<if test="phone != null and phone != ''">
-				and instr(t.val,#{phone}) >0
-			</if>
-			<if test="email != null and email != ''">
-				and INSTR(t.val,#{email})
-			</if>
-			<if test="customerId != null ">
-				and t.customerID = #{customerId}
-			</if>
-			<if test="keyword !=null and keyword !='' ">
-				or INSTR(CONCAT(t.firstName,t.lastName),#{keyword}) >0
-			</if>
-		</trim>
+		<where>
+			<trim prefixOverrides="AND |or">
+				<if test="name != null and name != ''">
+					INSTR(CONCAT(t.firstName,t.lastName),#{name}) >0
+				</if>
+				<if test="phone != null and phone != ''">
+					and instr(t.val,#{phone}) >0
+				</if>
+				<if test="email != null and email != ''">
+					and INSTR(t.val,#{email})
+				</if>
+				<if test="customerId != null ">
+					and t.customerID = #{customerId}
+				</if>
+				<if test="keyword !=null and keyword !='' ">
+					or INSTR(CONCAT(t.firstName,t.lastName),#{keyword}) >0
+				</if>
+			</trim>
+		</where>
 
 	</select>
 
