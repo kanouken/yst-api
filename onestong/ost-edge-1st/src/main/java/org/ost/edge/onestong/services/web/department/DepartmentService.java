@@ -188,9 +188,7 @@ public class DepartmentService {
 		Departments dept = new Departments();
 		dept.setDomainId(currentUser.getDomainId());
 		dept.setValid(Byte.parseByte("0"));
-		List<Departments> depts = this.deptDao.select(dept).stream().sorted((d1, d2) -> {
-			return d1.getDeptId().compareTo(d2.getDeptId());
-		}).collect(Collectors.toList());
+		List<Departments> depts = this.deptDao.select(dept);
 		return DepartmentEntityMapper.INSTANCE.departmentsToDepartmentListDtos(depts);
 	}
 

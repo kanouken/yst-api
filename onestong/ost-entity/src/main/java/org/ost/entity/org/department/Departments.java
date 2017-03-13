@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OrderBy;
 
 @Entity
 public class Departments {
@@ -25,6 +26,7 @@ public class Departments {
 	 *
 	 * @mbggenerated Mon Jan 12 19:17:19 CST 2015
 	 */
+	@OrderBy
 	private String name;
 
 	/**

@@ -675,7 +675,7 @@ AND u.user_id = #{userId,jdbcType=INTEGER}
 	<select id="selectUserAndAccount" resultType="java.util.HashMap">
 		select u.* , a.yixin_account from users u ,accounts a where
 		u.account_id = a.account_id and u.valid = 0 and a.valid = 0 and u.state = 0 and
-		a.state = 0  and u.domain_id =#{domainId,jdbcType=INTEGER} order by u.update_time desc
+		a.state = 0  and u.domain_id =#{domainId,jdbcType=INTEGER} order by u.email   
 
 	</select>
 	<select id="selectUserAndAccountByDeptId" parameterType="map"
