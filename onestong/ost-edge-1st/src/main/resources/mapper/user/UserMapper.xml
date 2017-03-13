@@ -16,12 +16,13 @@
 	<resultMap type="org.ost.edge.onestong.model.user.User" id="basicColumnMap">
 		<id column="user_id" property="userId" jdbcType="INTEGER" />
 		<result column="realname" property="realname" jdbcType="VARCHAR" />
-		<result column="department_name" property="departmentName" jdbcType="VARCHAR" />
+		<result column="department_name" property="departmentName"
+			jdbcType="VARCHAR" />
 		<result column="dept_id" property="deptId" jdbcType="INTEGER" />
 		<result column="position" property="position" jdbcType="VARCHAR" />
 		<result column="phone_num" property="phoneNum" jdbcType="VARCHAR" />
 		<result column="pic" property="pic" jdbcType="VARCHAR" />
-		
+
 		<result column="company_name" property="companyName" jdbcType="VARCHAR" />
 		<result column="email" property="email" jdbcType="VARCHAR" />
 		<result column="domain_id" property="domainId" jdbcType="INTEGER" />
@@ -52,7 +53,7 @@
 		<result column="optional3" property="optional3" jdbcType="VARCHAR" />
 		<result column="c_id" property="cId" jdbcType="VARCHAR" />
 		<result column="alias_name" property="aliasName" jdbcType="VARCHAR" />
-		
+
 		<result column="device_id" property="deviceId" jdbcType="VARCHAR" />
 		<result column="domain_id" property="domainId" jdbcType="INTEGER" />
 		<result column="phone_num" property="phoneNum" jdbcType="VARCHAR" />
@@ -78,7 +79,8 @@
 									and ${criterion.condition} #{criterion.value}
 								</when>
 								<when test="criterion.betweenValue">
-									and ${criterion.condition} #{criterion.value} and
+									and ${criterion.condition} #{criterion.value}
+									and
 									#{criterion.secondValue}
 								</when>
 								<when test="criterion.listValue">
@@ -113,7 +115,8 @@
 									and ${criterion.condition} #{criterion.value}
 								</when>
 								<when test="criterion.betweenValue">
-									and ${criterion.condition} #{criterion.value} and
+									and ${criterion.condition} #{criterion.value}
+									and
 									#{criterion.secondValue}
 								</when>
 								<when test="criterion.listValue">
@@ -136,7 +139,8 @@
 			11:03:16 CST 2014. -->
 		user_id, realname, email, dept_id, account_id, valid, state, pic,
 		is_director, create_time,
-		update_time, creator, updator, optional1, optional2,
+		update_time, creator, updator, optional1,
+		optional2,
 		optional3,device_id,domain_id,phone_num,c_id,alias_name,
 		company_name,department_name,position
 	</sql>
@@ -210,12 +214,15 @@
 		optional1, optional2, optional3,device_id,domain_id,phone_num,
 		department_name,company_name,position,alias_name,c_id
 		)
-		values (#{realname,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
+		values
+		(#{realname,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
 		#{deptId,jdbcType=INTEGER},
-		#{accountId,jdbcType=INTEGER}, #{valid,jdbcType=TINYINT}, #{state,jdbcType=TINYINT},
+		#{accountId,jdbcType=INTEGER},
+		#{valid,jdbcType=TINYINT}, #{state,jdbcType=TINYINT},
 		#{pic,jdbcType=VARCHAR}, #{isDirector,jdbcType=TINYINT},
 		#{createTime,jdbcType=TIMESTAMP},
-		#{updateTime,jdbcType=TIMESTAMP}, #{creator,jdbcType=VARCHAR}, #{updator,jdbcType=VARCHAR},
+		#{updateTime,jdbcType=TIMESTAMP},
+		#{creator,jdbcType=VARCHAR}, #{updator,jdbcType=VARCHAR},
 		#{optional1,jdbcType=VARCHAR}, #{optional2,jdbcType=VARCHAR},
 		#{optional3,jdbcType=VARCHAR}
 		,#{deviceId,jdbcType=VARCHAR},#{domainId,jdbcType=INTEGER},#{phoneNum,jdbcType=VARCHAR}
@@ -302,8 +309,8 @@
 			<if test="position!= null">
 				position ,
 			</if>
-			
-			
+
+
 			<if test="aliasName!= null">
 				alias_name ,
 			</if>
@@ -464,7 +471,8 @@
 			</if>
 
 			<if test="record.departmentName != null">
-				department_name = #{record.departmentName,jdbcType=VARCHAR},
+				department_name =
+				#{record.departmentName,jdbcType=VARCHAR},
 			</if>
 			<if test="record.companyName != null">
 				company_name = #{record.companyName,jdbcType=VARCHAR},
@@ -472,11 +480,11 @@
 			<if test="record.position != null">
 				position = #{record.position,jdbcType=VARCHAR},
 			</if>
-			
+
 			<if test="record.aliasName != null">
 				alias_name = #{record.aliasName,jdbcType=VARCHAR},
 			</if>
-			
+
 			<if test="record.cId != null">
 				c_id = #{record.cId,jdbcType=VARCHAR},
 			</if>
@@ -491,29 +499,50 @@
 			11:03:16 CST 2014. -->
 		update users
 		set user_id = #{record.userId,jdbcType=INTEGER},
-		realname = #{record.realname,jdbcType=VARCHAR},
-		email = #{record.email,jdbcType=VARCHAR},
-		dept_id = #{record.deptId,jdbcType=INTEGER},
-		account_id = #{record.accountId,jdbcType=INTEGER},
-		valid = #{record.valid,jdbcType=TINYINT},
-		state = #{record.state,jdbcType=TINYINT},
+		realname =
+		#{record.realname,jdbcType=VARCHAR},
+		email =
+		#{record.email,jdbcType=VARCHAR},
+		dept_id =
+		#{record.deptId,jdbcType=INTEGER},
+		account_id =
+		#{record.accountId,jdbcType=INTEGER},
+		valid =
+		#{record.valid,jdbcType=TINYINT},
+		state =
+		#{record.state,jdbcType=TINYINT},
 		pic = #{record.pic,jdbcType=VARCHAR},
 		is_director = #{record.isDirector,jdbcType=TINYINT},
-		create_time = #{record.createTime,jdbcType=TIMESTAMP},
-		update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-		creator = #{record.creator,jdbcType=VARCHAR},
-		updator = #{record.updator,jdbcType=VARCHAR},
-		optional1 = #{record.optional1,jdbcType=VARCHAR},
-		optional2 = #{record.optional2,jdbcType=VARCHAR},
-		optional3 = #{record.optional3,jdbcType=VARCHAR},
-		device_id = #{record.deviceId,jdbcType=VARCHAR},
-		domain_id = #{record.domainId,jdbcType=INTEGER},
-		phone_num = #{record.phoneNum,jdbcType=VARCHAR},
-		department_name = #{record.departmentName,jdbcType=VARCHAR},
-		company_name = #{record.company_name,jdbcType=VARCHAR},
-		position = #{record.position,jdbcType=VARCHAR},
-		alias_name = #{record.aliasName,jdbcType=VARCHAR},
-		c_id = #{record.cId,jdbcType=VARCHAR}
+		create_time =
+		#{record.createTime,jdbcType=TIMESTAMP},
+		update_time =
+		#{record.updateTime,jdbcType=TIMESTAMP},
+		creator =
+		#{record.creator,jdbcType=VARCHAR},
+		updator =
+		#{record.updator,jdbcType=VARCHAR},
+		optional1 =
+		#{record.optional1,jdbcType=VARCHAR},
+		optional2 =
+		#{record.optional2,jdbcType=VARCHAR},
+		optional3 =
+		#{record.optional3,jdbcType=VARCHAR},
+		device_id =
+		#{record.deviceId,jdbcType=VARCHAR},
+		domain_id =
+		#{record.domainId,jdbcType=INTEGER},
+		phone_num =
+		#{record.phoneNum,jdbcType=VARCHAR},
+		department_name =
+		#{record.departmentName,jdbcType=VARCHAR},
+		company_name =
+		#{record.company_name,jdbcType=VARCHAR},
+		position =
+		#{record.position,jdbcType=VARCHAR},
+		alias_name =
+		#{record.aliasName,jdbcType=VARCHAR},
+		c_id =
+		#{record.cId,jdbcType=VARCHAR}
 
 
 		<if test="_parameter != null">
@@ -592,21 +621,21 @@
 			<if test="position != null">
 				position = #{position,jdbcType=VARCHAR},
 			</if>
-			
-			
-			
-			
-			
+
+
+
+
+
 			<if test="aliasName != null">
 				alias_name = #{aliasName,jdbcType=VARCHAR},
 			</if>
-			
-			
+
+
 			<if test="cId != null">
 				c_id = #{cId,jdbcType=VARCHAR},
 			</if>
-			
-			
+
+
 		</set>
 		where user_id = #{userId,jdbcType=INTEGER}
 	</update>
@@ -616,85 +645,120 @@
 			11:03:16 CST 2014. -->
 		update users
 		set realname = #{realname,jdbcType=VARCHAR},
-		email = #{email,jdbcType=VARCHAR},
+		email =
+		#{email,jdbcType=VARCHAR},
 		dept_id = #{deptId,jdbcType=INTEGER},
 		account_id = #{accountId,jdbcType=INTEGER},
-		valid = #{valid,jdbcType=TINYINT},
+		valid =
+		#{valid,jdbcType=TINYINT},
 		state = #{state,jdbcType=TINYINT},
-		pic = #{pic,jdbcType=VARCHAR},
+		pic =
+		#{pic,jdbcType=VARCHAR},
 		is_director = #{isDirector,jdbcType=TINYINT},
 		create_time = #{createTime,jdbcType=TIMESTAMP},
-		update_time = #{updateTime,jdbcType=TIMESTAMP},
-		creator = #{creator,jdbcType=VARCHAR},
+		update_time =
+		#{updateTime,jdbcType=TIMESTAMP},
+		creator =
+		#{creator,jdbcType=VARCHAR},
 		updator = #{updator,jdbcType=VARCHAR},
 		optional1 = #{optional1,jdbcType=VARCHAR},
-		optional2 = #{optional2,jdbcType=VARCHAR},
-		optional3 = #{optional3,jdbcType=VARCHAR},
-		device_id = #{deviceId,jdbcType=VARCHAR},
+		optional2 =
+		#{optional2,jdbcType=VARCHAR},
+		optional3 =
+		#{optional3,jdbcType=VARCHAR},
+		device_id =
+		#{deviceId,jdbcType=VARCHAR},
 		domain_id = #{domainId,jdbcType=INTEGER},
 		phone_num = #{phoneNum,jdbcType=VARCHAR},
-		department_name = #{departmentName,jdbcType=VARCHAR},
-		company_name = #{companyName,jdbcType=VARCHAR},
-		position = #{position,jdbcType=VARCHAR},
-		alias_name = #{aliasName,jdbcType=VARCHAR},
+		department_name =
+		#{departmentName,jdbcType=VARCHAR},
+		company_name =
+		#{companyName,jdbcType=VARCHAR},
+		position =
+		#{position,jdbcType=VARCHAR},
+		alias_name =
+		#{aliasName,jdbcType=VARCHAR},
 		c_id = #{cId,jdbcType=VARCHAR}
-		
-		
-		where user_id = #{userId,jdbcType=INTEGER}
+
+
+		where
+		user_id = #{userId,jdbcType=INTEGER}
 	</update>
 
 	<!-- -->
-	<select id="selectUserAndAccountById"  parameterType="map" resultMap="basicColumnMap" >
-	SELECT
-	u.user_id,
-	u.realname,
-	u.phone_num,
-	u.email,
-	u.domain_id,
-	u.department_name,
-	u.position,
-	u.dept_id,
-	u.company_name,
-	u.pic,
-	a.account_id,
-	a.login_name,
-	a.login_password,
-	a.yixin_account,
-	a.token
-FROM
-	users u,
-	accounts a
-WHERE
-	u.account_id = a.account_id
-AND u.valid = 0
-AND u.state = 0
-AND u.user_id = #{userId,jdbcType=INTEGER}
-		
+	<select id="selectUserAndAccountById" parameterType="map"
+		resultMap="basicColumnMap">
+		SELECT
+		u.user_id,
+		u.realname,
+		u.phone_num,
+		u.email,
+		u.domain_id,
+		u.department_name,
+		u.position,
+		u.dept_id,
+		u.company_name,
+		u.pic,
+		a.account_id,
+		a.login_name,
+		a.login_password,
+		a.yixin_account,
+		a.token
+		FROM
+		users u,
+		accounts a
+		WHERE
+		u.account_id = a.account_id
+		AND u.valid = 0
+		AND u.state = 0
+		AND u.user_id = #{userId,jdbcType=INTEGER}
+
 	</select>
 
 	<select id="selectUserAndAccount" resultType="java.util.HashMap">
-		select u.* , a.yixin_account from users u ,accounts a where
-		u.account_id = a.account_id and u.valid = 0 and a.valid = 0 and u.state = 0 and
-		a.state = 0  and u.domain_id =#{domainId,jdbcType=INTEGER} order by u.email   
+		select u.* ,
+		a.yixin_account from users u ,accounts a where
+		u.account_id =
+		a.account_id and u.valid = 0 and a.valid = 0 and u.state = 0 and
+		a.state = 0 and u.domain_id =#{domainId,jdbcType=INTEGER} order by
+		u.email
 
 	</select>
 	<select id="selectUserAndAccountByDeptId" parameterType="map"
 		resultType="java.util.HashMap">
 		select u.* , a.yixin_account from users u ,accounts a where
-		u.account_id = a.account_id and u.valid = 0 and a.valid = 0 and u.state = 0 and
+		u.account_id = a.account_id and u.valid = 0 and a.valid = 0 and
+		u.state = 0 and
 		a.state = 0 and u.dept_id =#{deptId,jdbcType=INTEGER}
 
 	</select>
 
 	<select id="selectAccountByUserRealName" parameterType="map"
 		resultType="java.util.HashMap">
-		select u.user_id, u.realname, a.yixin_account from users u ,accounts a where
+		select u.user_id, u.realname, a.yixin_account from users u
+		,accounts a where
 		u.account_id = a.account_id and
 		u.valid = 0 and
 		a.valid = 0
 		and u.state = 0
 		and a.state = 0
-		and u.realname like #{realName,jdbcType=VARCHAR}
+		and u.realname like
+		#{realName,jdbcType=VARCHAR}
 
 	</select>
+
+	<select id="selectByDepartmentIds" resultType="java.util.HashMap">
+		select u.* , a.yixin_account from users u left join accounts a on
+		u.account_id = a.account_id where u.valid = 0 and a.valid = 0 and
+		u.state = 0 and
+		a.state = 0 and
+		FIND_IN_SET(u.dept_id,
+		concat
+		<foreach collection="deptIds" index="deptId" separator=","
+			open="(" close=")">
+			getChildDeptList(7)
+		</foreach>
+		)
+	</select>
+
 </mapper>

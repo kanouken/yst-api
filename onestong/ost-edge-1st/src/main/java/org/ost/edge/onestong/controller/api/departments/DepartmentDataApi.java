@@ -117,6 +117,8 @@ public class DepartmentDataApi extends Action {
 		return op;
 	}
 
+	
+	
 	/**
 	 * 获取所有domain 部门
 	 * 

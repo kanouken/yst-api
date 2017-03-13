@@ -104,6 +104,8 @@ public interface UserMapper {
     List<Map<String, Object>> selectUserAndAccount(@Param("domainId") Integer domainId);
     
     User selectUserAndAccountById(@Param("userId") Integer userId);
+
+	List<Map<String,Object>> selectByDepartmentIds(@Param("deptIds") List<String> deptIds, @Param("user") User user);
     
     
     

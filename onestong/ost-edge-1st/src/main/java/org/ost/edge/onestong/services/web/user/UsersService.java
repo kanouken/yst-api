@@ -2,6 +2,7 @@ package org.ost.edge.onestong.services.web.user;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -612,9 +613,8 @@ public class UsersService {
 					resultMap.put("token",
 							Jwts.builder().setSubject("1st").claim("userId", user.getUserId())
 									.claim("realName", user.getRealname()).claim("email", user.getEmail())
-									.claim("deptId", user.getDeptId())
-									.claim("schemaId", user.getDomainId()).setIssuedAt(new Date())
-									.signWith(SignatureAlgorithm.HS256, "1stapp").compact());
+									.claim("deptId", user.getDeptId()).claim("schemaId", user.getDomainId())
+									.setIssuedAt(new Date()).signWith(SignatureAlgorithm.HS256, "1stapp").compact());
 
 					op.setData(resultMap);
 					return op;
@@ -756,5 +756,18 @@ public class UsersService {
 		// return users;
 
 		return null;
+	}
+
+	/**
+	 * 
+	 * @param deptids
+	 * @param user
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	public List<Map<String,Object>> findUsersByDeptIds(User user, String deptids) {
+		List<String> deptIds = Arrays.asList( deptids.split(","));
+		 
+		return this.userMapper.selectByDepartmentIds(deptIds,user);
 	}
 }

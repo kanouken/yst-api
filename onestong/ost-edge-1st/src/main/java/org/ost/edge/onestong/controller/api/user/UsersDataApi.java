@@ -17,13 +17,16 @@ import org.ost.edge.onestong.model.user.User;
 import org.ost.edge.onestong.services.web.account.AccountService;
 import org.ost.edge.onestong.services.web.user.UsersService;
 import org.ost.edge.onestong.tools.Constants;
+import org.ost.entity.user.dto.UserListDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -295,6 +298,12 @@ public class UsersDataApi extends Action {
 		}
 		return op;
 
+	}
+
+	@RequestMapping(value = "/depts/contacts", method = RequestMethod.GET)
+	public OperateResult<List<Map<String,Object>> > queryColleguesByDeptId(@RequestAttribute(value = LOGIN_USER) User user,
+			@RequestParam(value = "deptIds") String deptids) {
+		return new OperateResult<List<Map<String,Object>> >(this.usersService.findUsersByDeptIds(user, deptids));
 	}
 
 	/**
