@@ -76,7 +76,8 @@
 		tpts.*
 
 		from tbl_project tp right join
-		tbl_project_steps tps on
+		tbl_project_steps
+		tps on
 
 		(tp.id,tp.schemaID) =
 		(tps.projectID,tps.schemaID)
@@ -128,24 +129,24 @@
 		(tp.projectTypeID,tp.schemaID) = (tpt.id,tpt.schemaID)
 
 		<where>
-		
+
 			<trim prefixOverrides="AND |OR">
-			tp.schemaId = #{schemaId}
-			<if test="customerId != null">
-				and tpc.customerID =#{customerId}
-			</if>
-			<if test="typeId != null">
-				and tp.projectTypeID =#{typeId}
-			</if>
-			<if test="state != null">
-				and tp.state =#{state}
-			</if>
-			<if test="name != null and name !=''">
-				and instr(tp.name,#{name}) >0
-			</if>
-			<if test="keyword != null and keyword !=''">
-				or instr(tp.name,#{keyword}) >0
-			</if>
+				tp.schemaId = #{schemaId}
+				<if test="customerId != null">
+					and tpc.customerID =#{customerId}
+				</if>
+				<if test="typeId != null">
+					and tp.projectTypeID =#{typeId}
+				</if>
+				<if test="state != null">
+					and tp.state =#{state}
+				</if>
+				<if test="name != null and name !=''">
+					and instr(tp.name,#{name}) >0
+				</if>
+				<if test="keyword != null and keyword !=''">
+					or instr(tp.name,#{keyword}) >0
+				</if>
 			</trim>
 		</where>
 
@@ -171,44 +172,56 @@
 		id,`name`,state,startTime
 		isCyc,cyc,amount,detail,schemaID,projectTypeID,createTime
 		from
-		tbl_project  order by createTime desc limit #{page.nextPage} ,#{page.perPageSum} ) tp left join tbl_user_project tup
+		tbl_project
+
+		<where>
+			<trim prefixOverrides="AND |OR">
+				schemaId = #{schemaId}
+				<if test="typeId != null">
+					and projectTypeID =#{typeId}
+				</if>
+				<if test="state != null">
+					and state =#{state}
+				</if>
+				<if test="name != null and name !=''">
+					and instr(name,#{name}) >0
+				</if>
+				<if test="keyword != null and keyword !=''">
+					or instr(name,#{keyword}) >0
+				</if>
+			</trim>
+		</where>
+
+		order by createTime desc limit #{page.nextPage} ,#{page.perPageSum} )
+		tp left join tbl_user_project tup
 		on
-		(tp.id,tp.schemaID) = (tup.projectID,tup.schemaID)
+		(tp.id,tp.schemaID) =
+		(tup.projectID,tup.schemaID)
 
 		left join
 		tbl_organize_project top
-		on (tp.id,tp.schemaID) =
+		on
+		(tp.id,tp.schemaID) =
 		(top.projectID,top.schemaID)
 
-		left join tbl_project_customer tpc
+		left join
+		tbl_project_customer tpc
 		on
-		(tp.id,tp.schemaID) = (tpc.projectID,tpc.schemaID)
+		(tp.id,tp.schemaID) =
+		(tpc.projectID,tpc.schemaID)
 
 		left join
 		tbl_project_type tpt
 
-		on (tp.projectTypeID,tp.schemaID) =
+		on
+		(tp.projectTypeID,tp.schemaID) =
 		(tpt.id,tpt.schemaID)
 		<where>
-			<trim prefixOverrides="AND |OR">
-			tp.schemaId = #{schemaId}
 			<if test="customerId != null">
 				and tpc.customerID =#{customerId}
 			</if>
-			<if test="typeId != null">
-				and tp.projectTypeID =#{typeId}
-			</if>
-			<if test="state != null">
-				and tp.state =#{state}
-			</if>
-			<if test="name != null and name !=''">
-				and instr(tp.name,#{name}) >0
-			</if>
-			<if test="keyword != null and keyword !=''">
-				or instr(tp.name,#{keyword}) >0
-			</if>
-			</trim>
 		</where>
+
 	</select>
 
 
@@ -228,11 +241,9 @@
 		on
 		(tp.id,tp.schemaID) = (tps.projectID,tps.schemaID)
 		where tp.id in (12)
-		<!-- <foreach collection="projectIds" item="id" separator="," open="("
-			close=")">
-			#{id}
-		</foreach> -->
-		order by ifnull(tpts.step,0) 
+		<!-- <foreach collection="projectIds" item="id" separator="," open="(" 
+			close=")"> #{id} </foreach> -->
+		order by ifnull(tpts.step,0)
 
 	</select>
 
