@@ -36,13 +36,13 @@
 				</if>
 
 				<if test="params != null">
-					and
-					<foreach item="key" collection="params.keys" open="("
-						separator="and" close=")">
-						property ->
-						'$.${key}' = #{params[${key}],jdbcType=VARCHAR}
-					</foreach>
-
+					<trim prefix="and">
+						<foreach item="key" collection="params.keys" open="("
+							separator="and" close=")">
+							property ->
+							'$.${key}' = #{params[${key}],jdbcType=VARCHAR}
+						</foreach>
+					</trim>
 				</if>
 				and schemaId = #{customer.schemaId,jdbcType=VARCHAR}
 				and isDelete =
@@ -84,12 +84,13 @@
 					and instr(name,#{keyword}) > 0
 				</if>
 				<if test="paramsMap != null">
-					and 
-					<foreach item="key" collection="paramsMap.keys" open="("
-						separator="and" close=")">
-						property ->
-						'$.${key}' = #{paramsMap[${key}],jdbcType=VARCHAR}
-					</foreach>
+					<trim prefix="and">
+						<foreach item="key" collection="paramsMap.keys" open="("
+							separator="and" close=")">
+							property ->
+							'$.${key}' = #{paramsMap[${key}],jdbcType=VARCHAR}
+						</foreach>
+					</trim>
 				</if>
 				and schemaId = #{customer.schemaId,jdbcType=VARCHAR}
 				and isDelete =
