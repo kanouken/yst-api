@@ -1,12 +1,9 @@
 package org.ost.crm.services.project;
 
-import java.sql.PseudoColumnUsage;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -14,16 +11,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.session.RowBounds;
 import org.common.tools.OperateResult;
 import org.common.tools.db.Page;
 import org.common.tools.exception.ApiException;
-import org.omg.CORBA.PRIVATE_MEMBER;
 import org.ost.crm.client.ContactsServiceClient;
 import org.ost.crm.client.CustomerServiceClient;
 import org.ost.crm.dao.project.CustomerProjectDao;
@@ -43,7 +37,6 @@ import org.ost.entity.contacts.mapper.ContactsEntityMapper;
 import org.ost.entity.customer.CustomerProject;
 import org.ost.entity.customer.dto.CustomerDetailDto;
 import org.ost.entity.customer.dto.CustomerListDto;
-import org.ost.entity.customer.dto.CustomerProjectDto;
 import org.ost.entity.customer.vo.CustomerVo;
 import org.ost.entity.project.Project;
 import org.ost.entity.project.ProjectOrg;
@@ -69,7 +62,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import com.netflix.infix.lang.infix.antlr.EventFilterParser.null_predicate_return;
 
 @Service
 public class ProjectService extends BaseService {
