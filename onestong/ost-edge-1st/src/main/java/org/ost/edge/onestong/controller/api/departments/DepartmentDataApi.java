@@ -97,12 +97,8 @@ public class DepartmentDataApi extends Action {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "childrenOrMembers/{parentId}/{token}", method = RequestMethod.GET)
-	public Object lookForChild(@PathVariable("parentId") Integer parentId, @PathVariable("token") String token) {
-
-		// return
-		// this.departmentService.findAllChildorMembersByParentId(parentId);
-
+	@RequestMapping(value = "childrenOrMembers/{parentId}", method = RequestMethod.GET)
+	public Object lookForChild(@PathVariable("parentId") Integer parentId) {
 		OperateResult op = new OperateResult();
 
 		try {
@@ -110,17 +106,14 @@ public class DepartmentDataApi extends Action {
 			op.setStatusCode(Constants.HTTP_200);
 			op.setDescription("get all childrenOrMembers success");
 			op.setData(this.departmentService.findAllChildorMembersByParentId(parentId));
-
 		} catch (Exception e) {
 			if (logger.isErrorEnabled()) {
-
 				logger.error("获取下级部门 或者 部门成员失败", e);
 			}
 			op.setStatusCode(Constants.SERVER_ERROR);
 			op.setDescription("server has gone away,try again later!");
 			op.setData(null);
 		}
-
 		return op;
 	}
 

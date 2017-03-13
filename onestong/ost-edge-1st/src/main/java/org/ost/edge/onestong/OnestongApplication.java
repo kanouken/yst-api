@@ -48,7 +48,7 @@ public class OnestongApplication extends WebMvcConfigurerAdapter {
 		AuthCheckInterceptor auth = new AuthCheckInterceptor();
 
 		registry.addInterceptor(auth).addPathPatterns("/**").excludePathPatterns("/swagger**", "/configuration/**",
-				"/v2/api**", "/info", "/api/users/login");
+				"/v2/api**", "/info", "/api/users/login","common/auth/**");
 	}
 
 	@Bean

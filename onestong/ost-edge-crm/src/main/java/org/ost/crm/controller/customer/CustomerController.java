@@ -85,6 +85,25 @@ public class CustomerController extends Action {
 		return new OperateResult<String>(this.customerService.deleteCustomer(user, customerId));
 	}
 
+	/**
+	 * FIXME YSTCRM-280 1. 普通员工-客户列表只能显示归属自己的客户。 2. 部门主管可以查看本部门所有客户，以及下级部门所有客户。
+	 * 
+	 * @param curPage
+	 * @param perPageSum
+	 * @param current
+	 * @param belongIndustry
+	 * @param dealFrequency
+	 * @param isPlc
+	 * @param keyword
+	 * @param name
+	 * @param natrue
+	 * @param turnover
+	 * @param type
+	 * @return
+	 * @throws JsonParseException
+	 * @throws JsonMappingException
+	 * @throws IOException
+	 */
 	@RequestMapping(value = "list", method = RequestMethod.GET)
 	public OperateResult<Map<String, Object>> queryCustomers(
 			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
@@ -125,7 +144,7 @@ public class CustomerController extends Action {
 	@PostMapping(value = "batch/managerOwner")
 	public OperateResult<String> updateManagerOwners(@RequestAttribute(value = LOGIN_USER) Users user,
 			@RequestBody List<CustomerListDto> dtos) {
-		return  new OperateResult<String>(customerService.updateMangerOwnersBatch(user,dtos));
+		return new OperateResult<String>(customerService.updateMangerOwnersBatch(user, dtos));
 	}
 
 }
