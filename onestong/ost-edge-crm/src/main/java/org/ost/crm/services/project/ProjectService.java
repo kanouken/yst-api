@@ -69,6 +69,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import com.netflix.infix.lang.infix.antlr.EventFilterParser.null_predicate_return;
 
 @Service
 public class ProjectService extends BaseService {
@@ -99,6 +100,9 @@ public class ProjectService extends BaseService {
 
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
 	public String createProject(Users user, ProjectCreateOrUpdateDto dto) {
+		if(StringUtils.isEmpty(dto.getStartTimeStr())){
+			dto.setStartTimeStr(null);
+		}
 		Project project = ProjectEntityMapper.INSTANCE.createOrUpateDtoToProject(dto);
 		project.setCreateBy(user.getRealname());
 		project.setUpdateBy(user.getRealname());
@@ -189,7 +193,7 @@ public class ProjectService extends BaseService {
 		ppDao.updateByExampleSelective(pp, paymentExample);
 
 		dtos.forEach(ppdto -> {
-			if(StringUtils.isEmpty(ppdto.getTimeStr())){
+			if (StringUtils.isEmpty(ppdto.getTimeStr())) {
 				ppdto.setTimeStr(null);
 			}
 			ProjectPayment _pp = ProjectEntityMapper.INSTANCE.projectPaymentDtoToProjectPayment(ppdto);
@@ -221,6 +225,9 @@ public class ProjectService extends BaseService {
 
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
 	public String updateProject(Users user, Integer projectId, ProjectCreateOrUpdateDto dto) {
+		if (StringUtils.isEmpty(dto.getStartTimeStr())) {
+			dto.setStartTimeStr(null);
+		}
 		Project project = ProjectEntityMapper.INSTANCE.createOrUpateDtoToProject(dto);
 		project.setUpdateTime(new Date());
 		project.setUpdateBy(user.getRealname());
@@ -392,8 +399,10 @@ public class ProjectService extends BaseService {
 		}
 		return detailDto;
 	}
+
 	/**
 	 * ✅ FIXME YSTCRM-272 项目-列表，排序按创建时间倒序
+	 * 
 	 * @param user
 	 * @param customerId
 	 * @param keyword
