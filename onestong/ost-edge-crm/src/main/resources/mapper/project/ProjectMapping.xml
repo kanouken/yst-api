@@ -128,8 +128,9 @@
 		(tp.projectTypeID,tp.schemaID) = (tpt.id,tpt.schemaID)
 
 		<where>
-			tp.schemaId = #{schemaId}
+		
 			<trim prefixOverrides="AND |OR">
+			tp.schemaId = #{schemaId}
 			<if test="customerId != null">
 				and tpc.customerID =#{customerId}
 			</if>
@@ -189,8 +190,8 @@
 		on (tp.projectTypeID,tp.schemaID) =
 		(tpt.id,tpt.schemaID)
 		<where>
-			tp.schemaId = #{schemaId}
 			<trim prefixOverrides="AND |OR">
+			tp.schemaId = #{schemaId}
 			<if test="customerId != null">
 				and tpc.customerID =#{customerId}
 			</if>
