@@ -129,6 +129,7 @@
 
 		<where>
 			tp.schemaId = #{schemaId}
+			<trim prefixOverrides="AND |OR">
 			<if test="customerId != null">
 				and tpc.customerID =#{customerId}
 			</if>
@@ -141,6 +142,10 @@
 			<if test="name != null and name !=''">
 				and instr(tp.name,#{name}) >0
 			</if>
+			<if test="keyword != null and keyword !=''">
+				or instr(tp.name,#{keyword}) >0
+			</if>
+			</trim>
 		</where>
 
 		) t1
@@ -185,6 +190,7 @@
 		(tpt.id,tpt.schemaID)
 		<where>
 			tp.schemaId = #{schemaId}
+			<trim prefixOverrides="AND |OR">
 			<if test="customerId != null">
 				and tpc.customerID =#{customerId}
 			</if>
@@ -197,6 +203,10 @@
 			<if test="name != null and name !=''">
 				and instr(tp.name,#{name}) >0
 			</if>
+			<if test="keyword != null and keyword !=''">
+				or instr(tp.name,#{keyword}) >0
+			</if>
+			</trim>
 		</where>
 	</select>
 
