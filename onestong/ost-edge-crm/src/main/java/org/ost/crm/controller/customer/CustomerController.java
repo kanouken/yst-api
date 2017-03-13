@@ -130,7 +130,7 @@ public class CustomerController extends Action {
 		if (StringUtils.isNotEmpty(name))
 			params.put("name", name);
 		if (StringUtils.isNotEmpty(natrue))
-			params.put("natrue", natrue);
+			params.put("nature", natrue);
 		if (StringUtils.isNotEmpty(turnover))
 			params.put("turnover", turnover);
 		if (StringUtils.isNotEmpty(type))
