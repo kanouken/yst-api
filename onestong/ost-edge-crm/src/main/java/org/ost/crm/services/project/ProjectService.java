@@ -388,7 +388,20 @@ public class ProjectService extends BaseService {
 		}
 		return detailDto;
 	}
-
+	/**
+	 * ✅ FIXME YSTCRM-272 项目-列表，排序按创建时间倒序
+	 * @param user
+	 * @param customerId
+	 * @param keyword
+	 * @param name
+	 * @param state
+	 * @param typeId
+	 * @param curPage
+	 * @param perPageSum
+	 * @return
+	 * @throws InterruptedException
+	 * @throws ExecutionException
+	 */
 	@Transactional(readOnly = true)
 	public Map<String, Object> queryProjects(Users user, Integer customerId, String keyword, String name, String state,
 			String typeId, Integer curPage, Integer perPageSum) throws InterruptedException, ExecutionException {
