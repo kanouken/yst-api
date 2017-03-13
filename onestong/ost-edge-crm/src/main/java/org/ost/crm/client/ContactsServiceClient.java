@@ -46,6 +46,7 @@ public interface ContactsServiceClient extends BaseClient {
 			@RequestParam(value = "email", required = false) String email,
 			@RequestParam(value = "name", required = false) String name,
 			@RequestParam(value = "phone", required = false) String phone,
+			@RequestParam(value= "keyword",required =false) String keyword,
 			@RequestParam(value = "customerID", required = false) Integer customerID);
 
 	@RequestMapping(value = "contacts/project", method = RequestMethod.POST, consumes = "application/json")

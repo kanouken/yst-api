@@ -225,13 +225,15 @@ public class ContactsService {
 
 	@Transactional(readOnly = true)
 	public PageEntity<ContactsListDto> queryContacts(String tenantId, Integer curPage, Integer perPageSum, String email,
-			String name, String phone, Integer customerID) {
+			String name, String phone,String keyword, Integer customerID) {
+		logger.info("调用参数 keyword" + keyword + " name-" + name  );
+		
 		PageEntity<ContactsListDto> pages = new PageEntity<ContactsListDto>();
 		List<ContactsListDto> contacts = new ArrayList<ContactsListDto>();
-		Integer totalRecords = this.contactDao.selectCountContacts(name, phone, email, customerID);
+		Integer totalRecords = this.contactDao.selectCountContacts(name, phone, keyword, email, customerID);
 		RowBounds rb = new RowBounds();
 		if (totalRecords > 0) {
-			contacts = this.contactDao.selectContacts(name, phone, email, customerID, rb);
+			contacts = this.contactDao.selectContacts(name, phone,keyword,  email, customerID, rb);
 		}
 		pages.setCurPage(curPage);
 		pages.setTotalRecord(totalRecords);

@@ -32,9 +32,10 @@
 		t1.customerID,
 		t1.py ,
 		t1.sex ,
-		   CASE WHEN t1.sex = 0 THEN '先生' 
-                 WHEN t1.sex = 1 THEN '女士'
-            ELSE '' END  sexName,
+		CASE WHEN t1.sex = 0 THEN '先生'
+		WHEN t1.sex = 1 THEN '女士'
+		ELSE ''
+		END sexName,
 		t1.headPic ,
 		t1.szm ,
 		t1.dept ,
@@ -48,14 +49,16 @@
 		FROM
 		(
 		SELECT
-		tc.id ,
+		tc.id
+		,
 		tc.schemaID ,
 		tc.py ,
 		tc.sex ,
 		tc.headPic ,
 		tc.szm ,
 		tc.dept ,
-		tc.position ,
+		tc.position
+		,
 		tc.firstName ,
 		tc.lastName ,
 		tci.type ,
@@ -65,36 +68,34 @@
 		tbl_contact tc
 		LEFT
 		JOIN
-		tbl_contact_info tci ON(tc.id , tc.schemaID) =(tci.contactID ,
+		tbl_contact_info tci ON(tc.id , tc.schemaID)
+		=(tci.contactID ,
 		tci.schemaID)
 		and tci.type = 'email'
-		left join tbl_customer_contact tcc
+		left join
+		tbl_customer_contact tcc
 		on (tc.id,tc.schemaID) =
-		(tcc.contactID , tcc.schemaID)
+		(tcc.contactID ,
+		tcc.schemaID)
 		) t
 
-		<where>
-			<trim suffixOverrides="or">
-				<if test="name != null and name != ''">
-
-					INSTR(CONCAT(t.firstName,t.lastName),#{name}) >0
-					or
-				</if>
-				<if test="phone != null and phone != ''">
-					instr(t.val,#{phone}) >0 or
-				</if>
-				<if test="email != null and email != ''">
-					INSTR(t.val,#{email})
-				</if>
-			</trim>
-			<trim suffixOverrides="and">
-
-				<if test="customerId != null ">
-					and t.customerID = #{customerId}
-				</if>
-			</trim>
-
-		</where>
+		<trim prefix="where" prefixOverrides="and | or">
+			<if test="name != null and name != ''">
+				INSTR(CONCAT(t.firstName,t.lastName),#{name}) >0
+			</if>
+			<if test="phone != null and phone != ''">
+				and instr(t.val,#{phone}) >0
+			</if>
+			<if test="email != null and email != ''">
+				and INSTR(t.val,#{email})
+			</if>
+			<if test="keyword != null and keyword !=''">
+				or INSTR(CONCAT(t.firstName,t.lastName),#{keyword}) >0
+			</if>
+			<if test="customerId != null ">
+				and t.customerID = #{customerId}
+			</if>
+		</trim>
 		) t1
 		group by t1.id ,
 		t1.py ,
@@ -130,28 +131,24 @@
 		=
 		(tcc.contactID,tcc.schemaID)
 		) t
-		<where>
-			<trim suffixOverrides="or">
-				<if test="name != null and name != ''">
+		<trim prefix="where" prefixOverrides="and |or">
+			<if test="name != null and name != ''">
+				INSTR(CONCAT(t.firstName,t.lastName),#{name}) >0
+			</if>
+			<if test="phone != null and phone != ''">
+				and instr(t.val,#{phone}) >0
+			</if>
+			<if test="email != null and email != ''">
+				and INSTR(t.val,#{email})
+			</if>
+			<if test="customerId != null ">
+				and t.customerID = #{customerId}
+			</if>
+			<if test="keyword !=null and keyword !='' ">
+				or INSTR(CONCAT(t.firstName,t.lastName),#{keyword}) >0
+			</if>
+		</trim>
 
-					INSTR(CONCAT(t.firstName,t.lastName),#{name}) >0
-					or
-				</if>
-				<if test="phone != null and phone != ''">
-					instr(t.val,#{phone}) >0 or
-				</if>
-				<if test="email != null and email != ''">
-					INSTR(t.val,#{email})
-				</if>
-			</trim>
-			<trim suffixOverrides="and">
-
-				<if test="customerId != null ">
-					and t.customerID = #{customerId}
-				</if>
-			</trim>
-
-		</where>
 	</select>
 
 	<select id="selectByProject" resultType="org.ost.entity.contacts.dto.ContactsListDto">

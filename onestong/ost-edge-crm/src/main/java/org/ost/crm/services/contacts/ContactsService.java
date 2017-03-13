@@ -24,13 +24,17 @@ import org.ost.entity.customer.dto.CustomerDetailDto;
 import org.ost.entity.customer.dto.CustomerListDto;
 import org.ost.entity.customer.vo.CustomerVo;
 import org.ost.entity.user.Users;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import sun.tools.tree.ThisExpression;
+
 @Service
 public class ContactsService {
-
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private ContactsServiceClient contactsServiceClient;
 	@Autowired
@@ -89,8 +93,9 @@ public class ContactsService {
 	 */
 	public Map<String, Object> queryContacts(Integer customerID, String keyword, String name, String phone, Users users,
 			Integer curPage, Integer perPageSum) {
+		logger.info("调用参数 keyword "+keyword +"-name " + name);
 		OperateResult<PageEntity<ContactsListDto>> result = contactsServiceClient.contactList(curPage,
-				users.getSchemaId(), perPageSum, null, name, phone, customerID);
+				users.getSchemaId(), perPageSum, null, name, phone,keyword,customerID);
 		List<ContactsListDto> records = new ArrayList<ContactsListDto>();
 		if (result.success()) {
 			records = result.getData().getObjects();

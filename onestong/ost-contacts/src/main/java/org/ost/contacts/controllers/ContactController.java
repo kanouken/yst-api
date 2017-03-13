@@ -46,9 +46,10 @@ public class ContactController extends Action {
 			@RequestParam(value = "email", required = false) String email,
 			@RequestParam(value = "name", required = false) String name,
 			@RequestParam(value = "phone", required = false) String phone,
+			@RequestParam(value= "keyword",required =false) String keyword,
 			@RequestParam(value = "customerID", required = false) Integer customerID) {
 		return new OperateResult<PageEntity<ContactsListDto>>(
-				this.contactService.queryContacts(schemaID, curPage, perPageSum, email, name, phone, customerID));
+				this.contactService.queryContacts(schemaID, curPage, perPageSum, email, name, phone,keyword, customerID));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
