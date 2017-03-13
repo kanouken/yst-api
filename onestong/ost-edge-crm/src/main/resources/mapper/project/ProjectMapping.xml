@@ -145,7 +145,7 @@
 					and instr(tp.name,#{name}) >0
 				</if>
 				<if test="keyword != null and keyword !=''">
-					or instr(tp.name,#{keyword}) >0
+					and instr(tp.name,#{keyword}) >0
 				</if>
 			</trim>
 		</where>
@@ -187,7 +187,7 @@
 					and instr(name,#{name}) >0
 				</if>
 				<if test="keyword != null and keyword !=''">
-					or instr(name,#{keyword}) >0
+					and instr(name,#{keyword}) >0
 				</if>
 			</trim>
 		</where>
