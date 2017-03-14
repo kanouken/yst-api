@@ -5,32 +5,42 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
-import org.apache.poi.hssf.record.UseSelFSRecord;
 import org.common.tools.db.Page;
-import org.mapstruct.MapperConfig;
+import org.openxmlformats.schemas.drawingml.x2006.chart.STTickLblPos;
+import org.ost.edge.onestong.client.NotificationServiceClient;
 import org.ost.edge.onestong.dao.event.approval.ApprovalDao;
 import org.ost.edge.onestong.dao.event.approval.ApprovalUsersDao;
 import org.ost.edge.onestong.dao.event.approval.ApprovalUsersExample;
 import org.ost.edge.onestong.dao.user.UserMapper;
 import org.ost.edge.onestong.model.user.User;
-import org.ost.entity.base.PageEntity;
+import org.ost.edge.onestong.services.web.user.UsersService;
 import org.ost.entity.event.approval.ApprovalEvent;
 import org.ost.entity.event.approval.ApprovalUsers;
 import org.ost.entity.event.approval.dto.ApprovalEventDto;
 import org.ost.entity.event.approval.dto.ApprovalListDto;
 import org.ost.entity.event.mapper.ApprovalEventEntityMapper;
+import org.ost.entity.notification.PushBody;
 import org.ost.entity.user.dto.UserListDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.integration.IntegrationAutoConfiguration;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ApprovalService {
+
+	@Autowired
+	private UsersService userService;
+	@Autowired
+	private NotificationServiceClient notificationServiceClient;
+
+	private final static String NEW_APPLY = "您有一条新的approvalType审批，请及时审批";
 
 	public enum ApprovalType {
 		请假, 出差
@@ -118,6 +128,21 @@ public class ApprovalService {
 			approvalUser.setUserId(Integer.parseInt(approver.getId()));
 			approvalUsersDao.insertSelective(approvalUser);
 		});
+		//send notification
+		CompletableFuture.runAsync(() -> {
+			List<Integer> approverIds = dto.getAppprovers().stream().map(u -> Integer.valueOf(u.getId()))
+					.collect(Collectors.toList());
+			List<User> approveruers = userService.findUsersByIds(approverIds);
+			if (CollectionUtils.isNotEmpty(approveruers)) {
+				PushBody pb = new PushBody();
+				pb.setApplication("onestong-crm");
+				pb.setCids(approveruers.stream().map(u -> u.getcId()).collect(Collectors.toList()));
+				pb.setContent("");
+				String payLoad = NEW_APPLY.replaceFirst("approvalType", aEvent.getApprovalType());
+				pb.setPayLoadBody(payLoad);
+				notificationServiceClient.pushBatch(pb);
+			}
+		});
 		return dto;
 	}
 
@@ -146,7 +171,7 @@ public class ApprovalService {
 			aEvent.setState(ApprovalState.PASSED.getState());
 			aEvent.setAeId(eventId);
 			approvalDao.updateByPrimaryKeySelective(aEvent);
-		}else{
+		} else {
 			ApprovalEvent aEvent = new ApprovalEvent();
 			aEvent.setUpdateTime(new Date());
 			aEvent.setUpdateBy(users.getRealname());

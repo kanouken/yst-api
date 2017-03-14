@@ -6,11 +6,8 @@ import org.common.tools.OperateResult;
 import org.ost.edge.onestong.controller.base.Action;
 import org.ost.edge.onestong.model.user.User;
 import org.ost.edge.onestong.services.api.event.ApprovalService;
-import org.ost.edge.onestong.services.api.event.ApprovalService.ApprovalState;
 import org.ost.entity.event.approval.dto.ApprovalEventDto;
-import org.ost.entity.event.approval.dto.ApprovalListDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -29,6 +26,7 @@ public class ApplyController extends Action {
 	@Autowired
 	private ApprovalService approvalService;
 
+	
 	/**
 	 * 
 	 * 新增审批

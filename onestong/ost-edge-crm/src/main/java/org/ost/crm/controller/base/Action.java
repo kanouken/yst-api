@@ -1,12 +1,14 @@
 package org.ost.crm.controller.base;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.common.tools.db.Page;
@@ -155,5 +157,23 @@ public class Action {
 		u.setSchemaId("sss");
 		u.setRealname("test");
 		return u;
+	}
+
+	public Map<String, Object> getRequestParam(HttpServletRequest request){
+		Map<String, Object> params = new HashMap<>();
+		Map<String, String[]> map = request.getParameterMap();
+		Iterator<Map.Entry<String, String[]>> it = map.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<String, String[]> entry = it.next();
+			String key = (String) entry.getKey();
+			String[] valueObj = entry.getValue();
+			String value = "";
+			if (valueObj != null && valueObj.length > 0)
+				value = valueObj[0];
+			if (StringUtils.isNotEmpty(value)){
+				params.put(key, value);
+			}
+		}
+		return params;
 	}
 }

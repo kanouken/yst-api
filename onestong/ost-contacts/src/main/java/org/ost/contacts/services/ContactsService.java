@@ -261,15 +261,16 @@ public class ContactsService {
 
 		ContactsDto dto = ContactsEntityMapper.INSTANCE.contactsToContactsDto(contacts);
 		dto.setLocations(ContactsEntityMapper.INSTANCE.contactsAddressToContactsAddressDto(cas));
+		List<ContactsInfo> _tmp = null;
 		if(CollectionUtils.isNotEmpty(infos)){
-			infos =  infos.stream().filter(i-> !i.getType().equals("email")).collect(Collectors.toList());
+			_tmp =  infos.stream().filter(i-> !i.getType().equals("email")).collect(Collectors.toList());
 		}
-		dto.setPhone(ContactsEntityMapper.INSTANCE.contactsInfoToContactsInfoDto(infos));
+		dto.setPhone(ContactsEntityMapper.INSTANCE.contactsInfoToContactsInfoDto(_tmp));
 		dto.setPhoto(ContactsEntityMapper.INSTANCE.contactsFileToContactsFileDto(cFiles));
 
 		List<String> emails = new ArrayList<String>();
 		if (CollectionUtils.isNotEmpty(dto.getPhone())) {
-			emails = dto.getPhone().stream().filter(ci -> ci.getType().equals("email")).map(ci -> ci.getVal())
+			emails = infos.stream().filter(ci -> ci.getType().equals("email")).map(ci -> ci.getVal())
 					.collect(Collectors.toList());
 		}
 		dto.setEmail(emails);

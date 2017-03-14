@@ -106,7 +106,7 @@ public class ProjectService extends BaseService {
 		} else {
 			project.setState(ProjectState.NORMAL.getState());
 		}
-		projectDao.insert(project);
+		projectDao.insertSelective(project);
 		if (CollectionUtils.isNotEmpty(dto.getContacts())) {
 			ProjectContactsDto projectContactsDto = new ProjectContactsDto();
 			projectContactsDto.setProject(new ProjectVo(project.getId(), project.getName()));
