@@ -2,6 +2,7 @@ package org.ost.customers.services;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -12,6 +13,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.common.tools.db.Page;
 import org.common.tools.exception.ApiException;
 import org.common.tools.pinyin.Chinese2PY;
+import org.json.JSONObject;
 import org.ost.customers.dao.CustomerDao;
 import org.ost.customers.dao.CustomerOrgDao;
 import org.ost.customers.dao.CustomerProjectDao;
@@ -32,11 +34,13 @@ import org.ost.entity.customer.mapper.CustomerEntityMapper;
 import org.ost.entity.customer.org.CustomerOrg;
 import org.ost.entity.customer.user.UserCustomers;
 import org.ost.entity.customer.vo.CustomerCreateVo;
+import org.ost.entity.customer.vo.CustomerRepot;
 import org.ost.entity.customer.vo.CustomerVo;
 import org.ost.entity.user.Users;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -153,11 +157,11 @@ public class CustomerService {
 		String keyword = null;
 		if (customer.getProperty() != null) {
 			params = (Map<String, String>) customer.getProperty();
-			keyword = MapUtils.getString(params,"keyword");
+			keyword = MapUtils.getString(params, "keyword");
 		}
-		Integer totalRecord = this.customerDao.selectCustomerCount(params, customer,keyword);
+		Integer totalRecord = this.customerDao.selectCustomerCount(params, customer, keyword);
 		if (totalRecord > 0) {
-			List<Customer> customers = this.customerDao.selectCustomers(params, customer,keyword, rb);
+			List<Customer> customers = this.customerDao.selectCustomers(params, customer, keyword, rb);
 			records = CustomerEntityMapper.INSTANCE.customersToCustomerListDtos(customers);
 
 			int[] customerIds = customers.stream().mapToInt(c -> c.getId()).toArray();
@@ -389,6 +393,26 @@ public class CustomerService {
 		cProject.setUpdateTime(new Date());
 		this.customerDao.updateCustomerProject(cProject);
 		return HttpStatus.OK.name();
+	}
+
+	// 客户报表
+	@Transactional(readOnly = true)
+	public List<CustomerRepot> queryCustomerByParam(Integer userID, Integer id) {		
+		UserCustomers user = new UserCustomers();
+		user.setUserId(userID);
+		List<CustomerRepot> customers = this.customerDao.selectCustomerByParam(userID);
+		customers.forEach(c -> {
+			c.getName();
+			c.getType();
+			c.getBelongIndustry();
+			c.getCreateTime();
+			c.getDealFrequency();
+			c.getNature();
+			c.getSource();
+			c.getTurnover();
+			c = new CustomerRepot();
+		});
+		return customers;
 	}
 
 }

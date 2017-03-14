@@ -11,6 +11,7 @@ import org.ost.entity.customer.dto.CustomerDetailDto;
 import org.ost.entity.customer.dto.CustomerListDto;
 import org.ost.entity.customer.dto.CustomerProjectDto;
 import org.ost.entity.customer.vo.CustomerCreateVo;
+import org.ost.entity.customer.vo.CustomerRepot;
 import org.ost.entity.customer.vo.CustomerVo;
 import org.ost.entity.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +26,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import io.swagger.annotations.ApiOperation;
+
 @RestController
 @RequestMapping(value = "customer")
 public class CustomerController extends Action {
 	@Autowired
 	private CustomerService customerService;
 
-	@RequestMapping(value = "/{id}",method = RequestMethod.GET)
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public OperateResult<CustomerDetailDto> detail(@PathVariable(value = "id") Integer id,
 			@RequestHeader(value = TENANT_ID, required = false) String schemaId) {
 		return new OperateResult<CustomerDetailDto>(customerService.queryDetail(id, schemaId));
@@ -54,14 +57,14 @@ public class CustomerController extends Action {
 	@RequestMapping(value = "", method = RequestMethod.POST)
 	public OperateResult<CustomerCreateVo> createCustomer(
 			@RequestHeader(value = TENANT_ID, required = true) String schemaId, @RequestBody CustomerCreateVo customer)
-			throws JsonProcessingException {
+					throws JsonProcessingException {
 		return new OperateResult<CustomerCreateVo>(customerService.createCustomer(schemaId, customer));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public OperateResult<String> updateCustomer(@PathVariable(value = "id") Integer customerId,
 			@RequestHeader(value = TENANT_ID) String schemaId, @RequestBody CustomerCreateVo updateDto)
-			throws JsonProcessingException {
+					throws JsonProcessingException {
 		return new OperateResult<String>(customerService.updateCustomer(customerId, schemaId, updateDto));
 	}
 
@@ -88,22 +91,30 @@ public class CustomerController extends Action {
 			@RequestParam(value = "ids") Integer[] ids) {
 		return new OperateResult<List<CustomerListDto>>(customerService.queryByIds(schemaID, ids));
 	}
+
 	@Deprecated
 	@RequestMapping(value = "/project", method = RequestMethod.POST)
 	public OperateResult<String> createCustomerProject(@RequestHeader(value = TENANT_ID) String schemaID,
 			@RequestBody CustomerProjectDto dto) {
 		return new OperateResult<String>(this.customerService.createCustomerProject(schemaID, dto));
 	}
-	
+
 	@RequestMapping(value = "/project", method = RequestMethod.PUT)
 	public OperateResult<String> updateCustomerProject(@RequestHeader(value = TENANT_ID) String schemaID,
 			@RequestBody CustomerProjectDto dto) {
 		return new OperateResult<String>(this.customerService.updateCustomerProject(schemaID, dto));
 	}
-	
-	@GetMapping(value="/queryByProject")
+
+	@GetMapping(value = "/queryByProject")
 	public OperateResult<CustomerVo> queryByProject(@RequestHeader(value = TENANT_ID) String schemaID,
-			@RequestParam(value="projectId") Integer projectId){
-		return new OperateResult<CustomerVo>(this.customerService.queryByProject(schemaID,projectId));
+			@RequestParam(value = "projectId") Integer projectId) {
+		return new OperateResult<CustomerVo>(this.customerService.queryByProject(schemaID, projectId));
+	}
+
+	@ApiOperation(value = "客户报表列表", notes = "客户报表列表")
+	@GetMapping(value = "/paramlist")
+	public OperateResult<List<CustomerRepot>> queryCustomerByParam(@RequestHeader(value = "userID") Integer userID,
+			@RequestParam(value="id") Integer id) {
+				return new OperateResult<List<CustomerRepot>>(this.customerService.queryCustomerByParam(userID, id));
 	}
 }
