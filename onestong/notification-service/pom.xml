@@ -197,7 +197,7 @@
 			</resource>
 			<resource>
 				<directory>lib</directory>
-				<targetPath>lib</targetPath>
+				<targetPath>BOOT-INF/lib/</targetPath>
 				<includes>
 					<include>**/*.jar</include>
 				</includes>
