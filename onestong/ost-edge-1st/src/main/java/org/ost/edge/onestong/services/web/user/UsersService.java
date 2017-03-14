@@ -765,9 +765,17 @@ public class UsersService {
 	 * @return
 	 */
 	@Transactional(readOnly = true)
-	public List<Map<String,Object>> findUsersByDeptIds(User user, String deptids) {
-		List<String> deptIds = Arrays.asList( deptids.split(","));
-		 
-		return this.userMapper.selectByDepartmentIds(deptIds,user);
+	public List<Map<String, Object>> findUsersByDeptIds(User user, String deptids) {
+		List<String> deptIds = Arrays.asList(deptids.split(","));
+
+		return this.userMapper.selectByDepartmentIds(deptIds, user);
+	}
+
+	@Transactional(readOnly = true)
+	public List<User> findUsersByIds(List<Integer> userIds) {
+		UserExample uExample = new UserExample();
+		uExample.createCriteria().andValidEqualTo(Byte.parseByte("0")).andUserIdIn(userIds);
+		List<User> users = this.userMapper.selectByExample(uExample);
+		return users;
 	}
 }

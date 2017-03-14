@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.common.tools.db.Page;
 import org.common.tools.exception.ApiException;
@@ -154,6 +155,9 @@ public class CustomerService {
 		if (customer.getProperty() != null) {
 			params = (Map<String, String>) customer.getProperty();
 			keyword = MapUtils.getString(params,"keyword");
+			if(StringUtils.isNotEmpty(keyword)){
+				params.remove("keyword");
+			}
 		}
 		Integer totalRecord = this.customerDao.selectCustomerCount(params, customer,keyword);
 		if (totalRecord > 0) {
