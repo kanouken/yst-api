@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="gexin-rp-sdk-base-4.0.0.3">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/onestong/notification-service/lib/gexin-rp-sdk-base-4.0.0.3.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
