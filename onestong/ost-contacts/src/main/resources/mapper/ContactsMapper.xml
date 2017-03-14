@@ -158,6 +158,8 @@
 	<select id="selectByProject" resultType="org.ost.entity.contacts.dto.ContactsListDto">
 		select
 		tc.id,
+		tc.sex,
+		case tc.sex when 0 then '男士' when 1 then '女士'  else '' end sexName,  
 		CONCAT(tc.firstName,tc.lastName) name,
 		tc.position,
 		tc.dept,
