@@ -22,6 +22,14 @@
         order by organizeName,userName
     </select>
 
+    <select id="searchListTotalCount" resultType="org.ost.entity.report.dto.XiaoShouReportDto">
+        select
+        sum(tbl_project.amount) as totalProjectAmount
+        ,sum(ifnull((select sum(ifnull(rate,'0')) from tbl_project_payment where projectID = tbl_project.id and state = '1'),'0')) as projectPaymentRate
+        ,count(1) as projectCount
+        <include refid="searchListSQL"></include>
+    </select>
+
     <select id="searchListCount" resultType="java.lang.Integer">
         SELECT
         count(1)
@@ -33,13 +41,14 @@
         select
         tbl_project.id
         ,tbl_project_customer.customerID
-        ,tbl_project.name
+        ,tbl_project.name as projectName
         ,tbl_project.projectTypeID
-        ,tbl_project_type.name as projetTypeName
+        ,tbl_project_type.name as projectType
         ,tbl_project.state
         ,tbl_project.startTime
-        ,tbl_project.amount
-        ,ifnull((select sum(ifnull(rate,'0')) from tbl_project_payment where projectID = tbl_project.id and state = '1'),'0') as rate
+        ,tbl_project.amount as projectAmount
+        ,date_format(tbl_project.createTime, '%Y-%m-%d') as createTimeStr
+        ,ifnull((select sum(ifnull(rate,'0')) from tbl_project_payment where projectID = tbl_project.id and state = '1'),'0') as projectPaymentRate
         <include refid="searchListSQL"></include>
         order by tbl_project.startTime,tbl_project.name desc
         limit #{params.page.nextPage} ,#{params.page.perPageSum}
@@ -72,7 +81,7 @@
         <if test='params.startDate != null and params.startDate != ""'>
             and tbl_project.startTime >= #{params.startDate}
         </if>
-        <if test='params.startDate != null and params.startDate != ""'>
+        <if test='params.endDate != null and params.endDate != ""'>
             and tbl_project.startTime &lt;= #{params.endDate}
         </if>
     </sql>

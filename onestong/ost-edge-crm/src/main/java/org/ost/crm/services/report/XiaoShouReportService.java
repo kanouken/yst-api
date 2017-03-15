@@ -34,9 +34,22 @@ public class XiaoShouReportService extends BaseService {
     @Autowired
     private XiaoShouReportDao _XiaoShouReportDao;
 
+    @Transactional(readOnly = true)
+    public Object count(Users user,
+                                    Map<String, Object> params,
+                                    Integer curPage,
+                                    Integer perPageSum
+    ) throws InterruptedException, ExecutionException {
+        XiaoShouReportDto result = new XiaoShouReportDto();
+        params.put("schemaID", user.getSchemaId());
+
+        result = _XiaoShouReportDao.searchListTotalCount(params);
+        result.setTotalProjectPaymentRate(result.getProjectPaymentRate() / result.getProjectCount());
+        return result;
+    }
 
     @Transactional(readOnly = true)
-    public Map<String, Object> queryProjects(Users user,
+    public Map<String, Object> list(Users user,
                                              Map<String, Object> params,
                                              Integer curPage,
                                              Integer perPageSum
@@ -90,14 +103,6 @@ public class XiaoShouReportService extends BaseService {
                 }
             }
         }
-
-//        for (ProjectContactsDto projectUser:projectUsers) {
-//            Optional<XiaoShouReportDto> project =  result.stream().filter(p -> p.getId().equals(projectUser.getProjectID())).findFirst();
-//            if (project.isPresent() && !StringUtil.isNullOrEmpty(project.get())){
-//                if (StringUtil.isNullOrEmpty(project.get().getManagerOwner())) project.get().setManagerOwner(new ArrayList<ProjectContactsDto>());
-//                project.get().getManagerOwner().add(projectUser);
-//            }
-//        }
 
         return OperateResult.renderPage(page, result);
     }
