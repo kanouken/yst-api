@@ -1,32 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
-<mapper namespace="org.ost.crm.dao.report.XiaoShouReportDao">
-
-    <select id="selectProjectUser" resultType="org.ost.entity.project.dto.ProjectContactsDto">
-        select
-        userID as id
-        ,projectID
-        ,userName as name
-        ,organizeID as deptID
-        ,organizeName as deptName
-        from tbl_user_project
-        where
-        1 = 1
-        and isDelete = '0'
-        and schemaID = #{params.schemaID}
-        and projectID in
-          <foreach collection="params.projects" item="project" open="(" close=")" separator=",">
-            #{project.id}
-          </foreach>
-        order by organizeName,userName
-    </select>
+<mapper namespace="org.ost.crm.dao.report.XiangMuReportDao">
 
     <select id="searchListChart" resultType="org.ost.entity.report.dto.XiaoShouReportDto">
         select
         sum(tbl_project.amount) as totalProjectAmount
         ,round(sum(ifnull((select sum(ifnull(rate,'0')) from tbl_project_payment where projectID = tbl_project.id and state = '1'),'0')) / count(1),0) as totalProjectPaymentRate
-        ,date_format(tbl_project.startTime, '%Y年%m月') as createTimeStr
+        ,date_format(tbl_project.createTime, '%Y年%m月') as createTimeStr
         <include refid="searchListSQL"></include>
         group by createTimeStr
     </select>
@@ -53,10 +34,25 @@
         ,tbl_project.projectTypeID
         ,tbl_project_type.name as projectType
         ,tbl_project.state
-        ,tbl_project.startTime
-        ,tbl_project.amount as projectAmount
+        ,case tbl_project.state
+        when 0 then '正常进展项目'
+        when 1 then '长期跟进项目'
+        when 2 then '不确定性项目'
+        when 3 then '失败项目'
+        end as projectState
         ,date_format(tbl_project.startTime, '%Y-%m-%d') as createTimeStr
-        ,ifnull((select sum(ifnull(rate,'0')) from tbl_project_payment where projectID = tbl_project.id and state = '1'),'0') as projectPaymentRate
+        ,(
+            select
+            tbl_project_type_step.memo
+            from tbl_project_steps
+            left join tbl_project_type_step
+            on tbl_project_type_step.id = tbl_project_steps.projectTypeStepID
+            where
+            tbl_project_steps.projectID = tbl_project.id
+            order by tbl_project_type_step.step desc
+            limit 0,1
+        ) as projectStep
+
         <include refid="searchListSQL"></include>
         order by tbl_project.startTime,tbl_project.name desc
         limit #{params.page.nextPage} ,#{params.page.perPageSum}
@@ -80,7 +76,18 @@
 
         <if test='params.managerOwnerName != null and params.managerOwnerName != ""'>
             and tbl_project.id in (
-              select projectID from tbl_user_project where userName like CONCAT('%','${params.managerOwnerName}','%') and isDelete = '0' and schemaID = #{params.schemaID}
+            select projectID from tbl_user_project where userName like CONCAT('%','${params.managerOwnerName}','%') and isDelete = '0' and schemaID = #{params.schemaID}
+            )
+        </if>
+        <if test='params.projectStep != null and params.projectStep != ""'>
+            and tbl_project.id in (
+                select
+                tbl_project_steps.projectID
+                from tbl_project_steps
+                where
+                tbl_project_steps.projectTypeStepID = #{params.projectStep}
+                and tbl_project_steps.isDelete = '0'
+                and tbl_project_steps.schemaID = #{params.schemaID}
             )
         </if>
         <if test='params.projectType != null and params.projectType != ""'>
@@ -91,6 +98,9 @@
         </if>
         <if test='params.endDate != null and params.endDate != ""'>
             and tbl_project.startTime &lt;= #{params.endDate}
+        </if>
+        <if test='params.projectState != null and params.projectState != ""'>
+            and tbl_project.state = #{params.projectState}
         </if>
     </sql>
 </mapper>

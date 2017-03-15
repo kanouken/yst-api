@@ -21,10 +21,28 @@ public class XiaoShouReportDto {
     private BigDecimal projectAmount;
     private Integer projectPaymentRate;
     private String createTimeStr;
+    private String projectStep;
+    private String projectState;
     private List<ProjectContactsDto> managerOwner;
 
     private Integer totalProjectAmount;
     private Integer totalProjectPaymentRate;
+
+    public String getProjectStep() {
+        return projectStep;
+    }
+
+    public void setProjectStep(String projectStep) {
+        this.projectStep = projectStep;
+    }
+
+    public String getProjectState() {
+        return projectState;
+    }
+
+    public void setProjectState(String projectState) {
+        this.projectState = projectState;
+    }
 
     public Integer getTotalProjectAmount() {
         return totalProjectAmount;
