@@ -11,6 +11,8 @@ import org.ost.entity.customer.Customer;
 import org.ost.entity.customer.CustomerProject;
 import org.ost.entity.customer.org.CustomerOrg;
 import org.ost.entity.customer.user.UserCustomers;
+import org.ost.entity.customer.vo.CustomerCreateVo;
+import org.ost.entity.customer.vo.CustomerRepot;
 import org.ost.entity.customer.vo.CustomerVo;
 import org.springframework.stereotype.Repository;
 
@@ -49,4 +51,7 @@ public interface CustomerDao extends Mapper<Customer> {
 	@Update("update tbl_project_customer set customerID = #{customerID} ,updateBy = #{updateBy},updateTime=#{updateTime}  where projectID = #{projectID} and schemaID =#{schemaId} ")
 	Integer updateCustomerProject(CustomerProject cProject);
 
+	//客户报表
+	List<CustomerRepot> selectCustomerByParam(@Param("userID") Integer userID);
+	
 }

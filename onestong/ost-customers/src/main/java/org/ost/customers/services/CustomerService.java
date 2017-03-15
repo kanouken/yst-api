@@ -11,7 +11,6 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.common.tools.db.Page;
-import org.common.tools.exception.ApiException;
 import org.common.tools.pinyin.Chinese2PY;
 import org.ost.customers.dao.CustomerDao;
 import org.ost.customers.dao.CustomerOrgDao;
@@ -33,6 +32,7 @@ import org.ost.entity.customer.mapper.CustomerEntityMapper;
 import org.ost.entity.customer.org.CustomerOrg;
 import org.ost.entity.customer.user.UserCustomers;
 import org.ost.entity.customer.vo.CustomerCreateVo;
+import org.ost.entity.customer.vo.CustomerRepot;
 import org.ost.entity.customer.vo.CustomerVo;
 import org.ost.entity.user.Users;
 import org.slf4j.Logger;
@@ -159,9 +159,9 @@ public class CustomerService {
 				params.remove("keyword");
 			}
 		}
-		Integer totalRecord = this.customerDao.selectCustomerCount(params, customer,keyword);
+		Integer totalRecord = this.customerDao.selectCustomerCount(params, customer, keyword);
 		if (totalRecord > 0) {
-			List<Customer> customers = this.customerDao.selectCustomers(params, customer,keyword, rb);
+			List<Customer> customers = this.customerDao.selectCustomers(params, customer, keyword, rb);
 			records = CustomerEntityMapper.INSTANCE.customersToCustomerListDtos(customers);
 
 			int[] customerIds = customers.stream().mapToInt(c -> c.getId()).toArray();
@@ -393,6 +393,27 @@ public class CustomerService {
 		cProject.setUpdateTime(new Date());
 		this.customerDao.updateCustomerProject(cProject);
 		return HttpStatus.OK.name();
+	}
+
+	// 客户报表
+	@Transactional(readOnly = true)
+	public List<CustomerRepot> queryCustomerByParam(Integer userID, Integer id) {		
+		UserCustomers user = new UserCustomers();
+		user.setUserId(userID);
+		List<CustomerRepot> customers = this.customerDao.selectCustomerByParam(userID);
+		customers.forEach(c -> {
+			c.getId();
+			c.getName();
+			c.getType();
+			c.getBelongIndustry();
+			c.getCreateTime();
+			c.getDealFrequency();
+			c.getNature();
+			c.getSource();
+			c.getTurnover();
+			c = new CustomerRepot();
+		});
+		return customers;
 	}
 
 }

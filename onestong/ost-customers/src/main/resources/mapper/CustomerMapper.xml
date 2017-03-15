@@ -40,7 +40,8 @@
 						<foreach item="key" collection="params.keys" open="("
 							separator="and" close=")">
 							property ->
-							'$.${key}' = #{params[${key}],jdbcType=VARCHAR}
+							'$.${key}' =
+							#{params[${key}],jdbcType=VARCHAR}
 						</foreach>
 					</trim>
 				</if>
@@ -88,7 +89,8 @@
 						<foreach item="key" collection="paramsMap.keys" open="("
 							separator="and" close=")">
 							property ->
-							'$.${key}' = #{paramsMap[${key}],jdbcType=VARCHAR}
+							'$.${key}' =
+							#{paramsMap[${key}],jdbcType=VARCHAR}
 						</foreach>
 					</trim>
 				</if>
@@ -159,5 +161,15 @@
 		</where>
 	</select>
 
+	<select id="selectCustomerByParam" resultType="org.ost.entity.customer.vo.CustomerRepot">
+
+		SELECT
+		c.`name`,c.property->'$.type' as type ,c.property->'$.dealFrequency' as dealFrequency
+		,c.property->'$.turnover' as turnover,c.property->'$.nature' as nature,
+		c.property->'$.source' as source ,c.property->'$.belongIndustry' as belongIndustry,c.createTime
+		from tbl_user_customer u , tbl_customer c WHERE u.customerID=c.id and
+		u.userID=#{userID}
+	</select>
+	
 
 </mapper>

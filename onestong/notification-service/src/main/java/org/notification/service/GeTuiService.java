@@ -100,6 +100,7 @@ public class GeTuiService extends BaseService {
 			throw new IllegalArgumentException("push target id can not be null!");
 		}
 		List<String> retResults = new ArrayList<String>();
+		log.info("start push with params :[" + JSONObject.fromObject(body) + "]");
 		for (String cid : body.getCids()) {
 			Target target1 = new Target();
 			target1.setAppId(property.getString("appid"));
@@ -107,6 +108,7 @@ public class GeTuiService extends BaseService {
 			IPushResult ret = push.pushMessageToSingle(message, target1);
 			retResults.add(ret.getResponse().toString());
 		}
+		log.info("end push with result :[" + retResults);
 		return retResults;
 	}
 
