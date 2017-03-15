@@ -13,14 +13,34 @@ public class XiaoShouReportDto {
     private Integer id;
     private Integer customerID;
     private String customerName;
-    private String name;
+    private String projectName;
     private String projectTypeID;
-    private String projetTypeName;
+    private String projectType;
     private String state;
     private Date startTime;
-    private BigDecimal amount;
-    private Integer rate;
+    private BigDecimal projectAmount;
+    private Integer projectPaymentRate;
+    private String createTimeStr;
     private List<ProjectContactsDto> managerOwner;
+
+    private Integer totalProjectAmount;
+    private Integer totalProjectPaymentRate;
+
+    public Integer getTotalProjectAmount() {
+        return totalProjectAmount;
+    }
+
+    public void setTotalProjectAmount(Integer totalProjectAmount) {
+        this.totalProjectAmount = totalProjectAmount;
+    }
+
+    public Integer getTotalProjectPaymentRate() {
+        return totalProjectPaymentRate;
+    }
+
+    public void setTotalProjectPaymentRate(Integer totalProjectPaymentRate) {
+        this.totalProjectPaymentRate = totalProjectPaymentRate;
+    }
 
     public List<ProjectContactsDto> getManagerOwner() {
         return managerOwner;
@@ -38,28 +58,12 @@ public class XiaoShouReportDto {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getProjectTypeID() {
         return projectTypeID;
     }
 
     public void setProjectTypeID(String projectTypeID) {
         this.projectTypeID = projectTypeID;
-    }
-
-    public String getProjetTypeName() {
-        return projetTypeName;
-    }
-
-    public void setProjetTypeName(String projetTypeName) {
-        this.projetTypeName = projetTypeName;
     }
 
     public String getState() {
@@ -78,22 +82,6 @@ public class XiaoShouReportDto {
         this.startTime = startTime;
     }
 
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    public Integer getRate() {
-        return rate;
-    }
-
-    public void setRate(Integer rate) {
-        this.rate = rate;
-    }
-
     public Integer getCustomerID() {
         return customerID;
     }
@@ -108,5 +96,45 @@ public class XiaoShouReportDto {
 
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
+    public String getProjectType() {
+        return projectType;
+    }
+
+    public void setProjectType(String projectType) {
+        this.projectType = projectType;
+    }
+
+    public BigDecimal getProjectAmount() {
+        return projectAmount;
+    }
+
+    public void setProjectAmount(BigDecimal projectAmount) {
+        this.projectAmount = projectAmount;
+    }
+
+    public Integer getProjectPaymentRate() {
+        return projectPaymentRate;
+    }
+
+    public void setProjectPaymentRate(Integer projectPaymentRate) {
+        this.projectPaymentRate = projectPaymentRate;
+    }
+
+    public String getCreateTimeStr() {
+        return createTimeStr;
+    }
+
+    public void setCreateTimeStr(String createTimeStr) {
+        this.createTimeStr = createTimeStr;
     }
 }

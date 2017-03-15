@@ -23,15 +23,11 @@ public class XiaoShouReportController extends Action {
     private XiaoShouReportService sXiaoShouReportService;
 
     /**
-     * 项目列表
+     * 销售（金额）报表 获取列表数据
      *
-     * @param projectId
-     * @return
-     * @throws ExecutionException
-     * @throws InterruptedException
      */
     @GetMapping(value = "list")
-    public OperateResult<Map<String, Object>> queryProjects(
+    public OperateResult<Map<String, Object>> list(
             @RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
             @RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
             @RequestAttribute(value = LOGIN_USER) Users user,
@@ -44,6 +40,46 @@ public class XiaoShouReportController extends Action {
             throws InterruptedException, ExecutionException {
         Map<String, Object> params = this.getRequestParam(request);
         return new OperateResult<Map<String, Object>>(
-                sXiaoShouReportService.queryProjects(user, params, curPage, perPageSum));
+                sXiaoShouReportService.list(user, params, curPage, perPageSum));
+    }
+
+    /**
+     * 销售（金额）报表 获取统计数据
+     *
+     */
+    @GetMapping(value = "count")
+    public OperateResult<Object> count(
+            @RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
+            @RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
+            @RequestAttribute(value = LOGIN_USER) Users user,
+            @RequestParam(value = "managerOwnerName", required = false) String managerOwnerName,
+            @RequestParam(value = "projectType", required = false) String projectType,
+            @RequestParam(value = "startDate", required = false) String startDate,
+            @RequestParam(value = "endDate", required = false) String endDate,
+            HttpServletRequest request
+    )
+            throws InterruptedException, ExecutionException {
+        Map<String, Object> params = this.getRequestParam(request);
+        return new OperateResult<Object>(sXiaoShouReportService.count(user, params, curPage, perPageSum));
+    }
+
+    /**
+     * 销售（金额）报表 获取图表数据
+     *
+     */
+    @GetMapping(value = "chart")
+    public OperateResult<Object> chart(
+            @RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
+            @RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
+            @RequestAttribute(value = LOGIN_USER) Users user,
+            @RequestParam(value = "managerOwnerName", required = false) String managerOwnerName,
+            @RequestParam(value = "projectType", required = false) String projectType,
+            @RequestParam(value = "startDate", required = false) String startDate,
+            @RequestParam(value = "endDate", required = false) String endDate,
+            HttpServletRequest request
+    )
+            throws InterruptedException, ExecutionException {
+        Map<String, Object> params = this.getRequestParam(request);
+        return new OperateResult<Object>(sXiaoShouReportService.chart(user, params, curPage, perPageSum));
     }
 }

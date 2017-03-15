@@ -18,4 +18,8 @@ public interface XiaoShouReportDao extends Mapper<Project> {
     List<XiaoShouReportDto> searchList(@Param("params") Map<String, Object> params);
 
     List<ProjectContactsDto> selectProjectUser(@Param("params") Map<String, Object> params);
+
+    XiaoShouReportDto searchListTotalCount(@Param("params") Map<String, Object> params);
+
+    List<XiaoShouReportDto> searchListChart(@Param("params") Map<String, Object> params);
 }
