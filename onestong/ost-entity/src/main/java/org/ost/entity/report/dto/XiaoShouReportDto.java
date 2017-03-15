@@ -1,13 +1,18 @@
 package org.ost.entity.report.dto;
 
+import org.ost.entity.project.dto.ProjectContactsDto;
+
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by lugia on 2017/3/14.
  */
 public class XiaoShouReportDto {
     private Integer id;
+    private Integer customerID;
+    private String customerName;
     private String name;
     private String projectTypeID;
     private String projetTypeName;
@@ -15,6 +20,15 @@ public class XiaoShouReportDto {
     private Date startTime;
     private BigDecimal amount;
     private Integer rate;
+    private List<ProjectContactsDto> managerOwner;
+
+    public List<ProjectContactsDto> getManagerOwner() {
+        return managerOwner;
+    }
+
+    public void setManagerOwner(List<ProjectContactsDto> managerOwner) {
+        this.managerOwner = managerOwner;
+    }
 
     public Integer getId() {
         return id;
@@ -78,5 +92,21 @@ public class XiaoShouReportDto {
 
     public void setRate(Integer rate) {
         this.rate = rate;
+    }
+
+    public Integer getCustomerID() {
+        return customerID;
+    }
+
+    public void setCustomerID(Integer customerID) {
+        this.customerID = customerID;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 }
