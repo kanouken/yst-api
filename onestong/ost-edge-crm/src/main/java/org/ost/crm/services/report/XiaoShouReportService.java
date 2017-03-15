@@ -34,6 +34,10 @@ public class XiaoShouReportService extends BaseService {
     @Autowired
     private XiaoShouReportDao _XiaoShouReportDao;
 
+    /**
+     * 销售（金额）报表 获取统计数据
+     *
+     */
     @Transactional(readOnly = true)
     public Object count(Users user,
                                     Map<String, Object> params,
@@ -44,10 +48,31 @@ public class XiaoShouReportService extends BaseService {
         params.put("schemaID", user.getSchemaId());
 
         result = _XiaoShouReportDao.searchListTotalCount(params);
-        result.setTotalProjectPaymentRate(result.getProjectPaymentRate() / result.getProjectCount());
         return result;
     }
 
+    /**
+     * 销售（金额）报表 获取图表数据
+     *
+     */
+    @Transactional(readOnly = true)
+    public Object chart(Users user,
+                        Map<String, Object> params,
+                        Integer curPage,
+                        Integer perPageSum
+    ) throws InterruptedException, ExecutionException {
+        List<XiaoShouReportDto> result = new ArrayList<XiaoShouReportDto>();
+
+        params.put("schemaID", user.getSchemaId());
+
+        result = _XiaoShouReportDao.searchListChart(params);
+        return result;
+    }
+
+    /**
+     * 销售（金额）报表 获取列表数据
+     *
+     */
     @Transactional(readOnly = true)
     public Map<String, Object> list(Users user,
                                              Map<String, Object> params,

@@ -23,17 +23,8 @@ public class XiaoShouReportDto {
     private String createTimeStr;
     private List<ProjectContactsDto> managerOwner;
 
-    private Integer projectCount;
     private Integer totalProjectAmount;
     private Integer totalProjectPaymentRate;
-
-    public Integer getProjectCount() {
-        return projectCount;
-    }
-
-    public void setProjectCount(Integer projectCount) {
-        this.projectCount = projectCount;
-    }
 
     public Integer getTotalProjectAmount() {
         return totalProjectAmount;

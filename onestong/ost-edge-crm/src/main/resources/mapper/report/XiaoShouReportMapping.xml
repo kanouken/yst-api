@@ -22,11 +22,19 @@
         order by organizeName,userName
     </select>
 
+    <select id="searchListChart" resultType="org.ost.entity.report.dto.XiaoShouReportDto">
+        select
+        sum(tbl_project.amount) as totalProjectAmount
+        ,round(sum(ifnull((select sum(ifnull(rate,'0')) from tbl_project_payment where projectID = tbl_project.id and state = '1'),'0')) / count(1),0) as totalProjectPaymentRate
+        ,date_format(tbl_project.createTime, '%Y年%m月') as createTimeStr
+        <include refid="searchListSQL"></include>
+        group by createTimeStr
+    </select>
+
     <select id="searchListTotalCount" resultType="org.ost.entity.report.dto.XiaoShouReportDto">
         select
         sum(tbl_project.amount) as totalProjectAmount
-        ,sum(ifnull((select sum(ifnull(rate,'0')) from tbl_project_payment where projectID = tbl_project.id and state = '1'),'0')) as projectPaymentRate
-        ,count(1) as projectCount
+        ,round(sum(ifnull((select sum(ifnull(rate,'0')) from tbl_project_payment where projectID = tbl_project.id and state = '1'),'0')) / count(1),0) as totalProjectPaymentRate
         <include refid="searchListSQL"></include>
     </select>
 
