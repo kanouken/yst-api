@@ -12,18 +12,10 @@
         group by createTimeStr
     </select>
 
-    <select id="searchListTotalCount" resultType="org.ost.entity.report.dto.XiaoShouReportDto">
-        select
-        sum(tbl_project.amount) as totalProjectAmount
-        ,round(sum(ifnull((select sum(ifnull(rate,'0')) from tbl_project_payment where projectID = tbl_project.id and state = '1'),'0')) / count(1),0) as totalProjectPaymentRate
-        <include refid="searchListSQL"></include>
-    </select>
-
     <select id="searchListCount" resultType="java.lang.Integer">
         SELECT
         count(1)
         <include refid="searchListSQL"></include>
-        limit #{params.page.nextPage} ,#{params.page.perPageSum}
     </select>
 
     <select id="searchList" resultType="org.ost.entity.report.dto.XiaoShouReportDto">

@@ -48,7 +48,15 @@ public class XiangMuReportService extends BaseService {
         XiaoShouReportDto result = new XiaoShouReportDto();
         params.put("schemaID", user.getSchemaId());
 
-        result = _XiangMuReportDao.searchListTotalCount(params);
+        // 总筛选数量
+        Integer totalRecords = _XiangMuReportDao.searchListCount(params);
+        // 其中失败的项目数量
+        params.put("projectState", "3");
+        Integer totalFailRecords = _XiangMuReportDao.searchListCount(params);
+
+        result.setTotalCount(totalRecords);
+        Integer totalConversionRate = Math.round((Float.valueOf(totalRecords) - Float.valueOf(totalFailRecords)) / Float.valueOf(totalRecords) * 100);
+        result.setTotalConversionRate(totalConversionRate);
         return result;
     }
 

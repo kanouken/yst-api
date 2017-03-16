@@ -58,6 +58,8 @@ public class XiangMuReportController extends Action {
             @RequestParam(value = "projectType", required = false) String projectType,
             @RequestParam(value = "startDate", required = false) String startDate,
             @RequestParam(value = "endDate", required = false) String endDate,
+            @RequestParam(value = "projectState", required = false) String projectState,
+            @RequestParam(value = "projectStep", required = false) String projectStep,
             HttpServletRequest request
     )
             throws InterruptedException, ExecutionException {
@@ -78,6 +80,8 @@ public class XiangMuReportController extends Action {
             @RequestParam(value = "projectType", required = false) String projectType,
             @RequestParam(value = "startDate", required = false) String startDate,
             @RequestParam(value = "endDate", required = false) String endDate,
+            @RequestParam(value = "projectState", required = false) String projectState,
+            @RequestParam(value = "projectStep", required = false) String projectStep,
             HttpServletRequest request
     )
             throws InterruptedException, ExecutionException {

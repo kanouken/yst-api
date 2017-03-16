@@ -27,6 +27,24 @@ public class XiaoShouReportDto {
 
     private Integer totalProjectAmount;
     private Integer totalProjectPaymentRate;
+    private Integer totalConversionRate;
+    private Integer totalCount;
+
+    public Integer getTotalConversionRate() {
+        return totalConversionRate;
+    }
+
+    public void setTotalConversionRate(Integer totalConversionRate) {
+        this.totalConversionRate = totalConversionRate;
+    }
+
+    public Integer getTotalCount() {
+        return totalCount;
+    }
+
+    public void setTotalCount(Integer totalCount) {
+        this.totalCount = totalCount;
+    }
 
     public String getProjectStep() {
         return projectStep;

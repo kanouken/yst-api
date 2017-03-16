@@ -42,7 +42,6 @@
         SELECT
         count(1)
         <include refid="searchListSQL"></include>
-        limit #{params.page.nextPage} ,#{params.page.perPageSum}
     </select>
 
     <select id="searchList" resultType="org.ost.entity.report.dto.XiaoShouReportDto">
