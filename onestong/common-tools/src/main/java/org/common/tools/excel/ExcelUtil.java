@@ -158,8 +158,18 @@ public class ExcelUtil<T> {
 			for(int j=0;j<head.size();j++)
 			{
 				String key = head.get(j)[1];
-				Method m = d.getClass().getMethod("get" + key);
-				Object value = m.invoke(d);
+				Object value = null;
+				String className = d.getClass().getName();
+
+				if ("java.util.HashMap".equals(className)){
+					value = ((Map<Object, Object>)d).get(key);
+				}
+
+				if (!"java.util.HashMap".equals(className)){
+					Method m = d.getClass().getMethod("get" + key);
+					value = m.invoke(d);
+				}
+
 				row.createCell(j).setCellValue(StringUtil.isNullOrEmpty(value) ? "" : value.toString());
 			}
 			rowIndex++;

@@ -2,6 +2,7 @@ package org.ost.crm.services.report;
 
 import org.common.tools.OperateResult;
 import org.common.tools.db.Page;
+import org.common.tools.excel.ExcelUtil;
 import org.common.tools.exception.ApiException;
 import org.common.tools.string.StringUtil;
 import org.ost.crm.client.CustomerServiceClient;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -79,6 +81,45 @@ public class XiangMuReportService extends BaseService {
     }
 
     /**
+     * 项目报表 导出数据
+     *
+     */
+    @Transactional(readOnly = true)
+    public ByteArrayOutputStream export(
+            Map<String, Object> params,
+            Integer curPage,
+            Integer perPageSum
+    ) throws Exception {
+        ByteArrayOutputStream xlsOutput = null;
+        // 检索数据
+        List<XiaoShouReportDto> result = new ArrayList<XiaoShouReportDto>();
+        Page page = new Page();
+        page.setCurPage(curPage);
+        page.setPerPageSum(perPageSum);
+        params.put("page", page);
+        params.put("schemaID", params.get("schemaID"));
+        result = searchData(params);
+
+        //定义表头
+        //表头每列有2个字段
+        //1 表头中文名
+        //2 表头对应字段名
+        //注意：表头对应字段名字首字母要大写，因为反射方法需要拼接get来获取值
+        List<String[]> head = new ArrayList<>();
+        head.add("客户名称,CustomerName".split(","));
+        head.add("项目名称,ProjectName".split(","));
+        head.add("项目分类,ProjectType".split(","));
+        head.add("项目状态,ProjectState".split(","));
+        head.add("项目阶段,ProjectStep".split(","));
+        head.add("项目时间,CreateTimeStr".split(","));
+
+        //获取excel文件二进制流
+        ExcelUtil excelUtil = new ExcelUtil<XiaoShouReportDto>();
+        xlsOutput = excelUtil.exportToExcel("项目报表", head, result);
+        return xlsOutput;
+    }
+
+    /**
      * 项目报表 获取列表数据
      *
      */
@@ -100,13 +141,22 @@ public class XiangMuReportService extends BaseService {
         if (totalRecords <= 0) {
             return OperateResult.renderPage(page, result);
         }
+
+
+        return OperateResult.renderPage(page, searchData(params));
+    }
+
+    private List<XiaoShouReportDto> searchData(Map<String, Object> params)
+            throws InterruptedException, ExecutionException {
+        List<XiaoShouReportDto> result = new ArrayList<XiaoShouReportDto>();
+
         // 查询项目销售数据
         result = _XiangMuReportDao.searchList(params);
 
         //查询项目客户信息 并发查询
         int[] customerIds = result.stream().filter(p -> !StringUtil.isNullOrEmpty(p.getCustomerID())).mapToInt(p -> p.getCustomerID()).toArray();
         CompletableFuture<OperateResult<List<CustomerListDto>>> customerFuture = CompletableFuture.supplyAsync(() ->
-                this._CustomerServiceClient.queryByIds(user.getSchemaId(), customerIds)
+                this._CustomerServiceClient.queryByIds(params.get("schemaID").toString(), customerIds)
         );
 
         //填充客户信息
@@ -125,6 +175,6 @@ public class XiangMuReportService extends BaseService {
             }
         }
 
-        return OperateResult.renderPage(page, result);
+        return result;
     }
 }

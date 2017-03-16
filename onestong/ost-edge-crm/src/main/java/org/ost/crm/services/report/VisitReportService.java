@@ -1,5 +1,6 @@
 package org.ost.crm.services.report;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.annotation.Retention;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -20,8 +21,11 @@ import org.apache.ibatis.session.RowBounds;
 import org.common.tools.OperateResult;
 import org.common.tools.date.DateUtil;
 import org.common.tools.db.Page;
+import org.common.tools.excel.ExcelUtil;
 import org.ost.crm.dao.project.ProjectPaymentExample;
 import org.ost.crm.dao.report.VisitReportDao;
+import org.ost.entity.project.dto.ProjectContactsDto;
+import org.ost.entity.report.dto.XiaoShouReportDto;
 import org.ost.entity.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -76,6 +80,62 @@ public class VisitReportService {
 		}
 		page.setTotalRecords(totalRecords);
 		return OperateResult.renderPage(page, records);
+	}
+
+	/**
+	 * 联系活动报表 导出数据
+	 *
+	 */
+	@Transactional(readOnly = true)
+	public ByteArrayOutputStream export(
+			String schemaID,
+			String hasBus,
+			String managerOwnerName,
+			String contactType,
+			String startDate,
+			String endDate,
+			Integer curPage,
+			Integer perPageSum
+	) throws Exception {
+		ByteArrayOutputStream xlsOutput = null;
+		// 检索数据
+		Date start = null, end = null;
+		List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
+		if (StringUtils.isNotEmpty(startDate)) {
+			start = DateUtil.setDayMinTime(DateUtils.parseDate(startDate, "yyyy/MM/dd"));
+		}
+		if (StringUtils.isNotEmpty(endDate)) {
+			end = DateUtil.setDayMaxTime(DateUtils.parseDate(endDate, "yyyy/MM/dd"));
+		}
+
+		Page page = new Page();
+		page.setCurPage(curPage);
+		page.setPerPageSum(perPageSum);
+		RowBounds rBounds = new RowBounds(page.getNextPage(), page.getPerPageSum());
+		result = reportDao.selectBy(
+				hasBus,
+				managerOwnerName,
+				contactType,
+				start,
+				end,
+				rBounds);
+
+		//定义表头
+		//表头每列有2个字段
+		//1 表头中文名
+		//2 表头对应字段名
+		//注意：因为数据源是HashMap格式，所以表头对应字段为HashMap中key值
+		List<String[]> head = new ArrayList<>();
+		head.add("客户名称,name".split(","));
+		head.add("联系类型,contactType".split(","));
+		head.add("联系人,contact".split(","));
+		head.add("商机转化,hasBusStr".split(","));
+		head.add("联系时间,createTimeStr".split(","));
+
+		//获取excel文件二进制流
+		ExcelUtil excelUtil = new ExcelUtil<Map<String, Object>>();
+		xlsOutput = excelUtil.exportToExcel("联系活动报表", head, result);
+		return xlsOutput;
 	}
 
 	/**

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -87,5 +88,30 @@ public class XiangMuReportController extends Action {
             throws InterruptedException, ExecutionException {
         Map<String, Object> params = this.getRequestParam(request);
         return new OperateResult<Object>(sXiangMuReportService.chart(user, params, curPage, perPageSum));
+    }
+
+    /**
+     * 项目报表 导出数据
+     *
+     */
+    @GetMapping(value = "export")
+    public void export(
+            @RequestParam(value = "schemaID", required = false) String schemaID,
+            @RequestParam(value = "managerOwnerName", required = false) String managerOwnerName,
+            @RequestParam(value = "projectType", required = false) String projectType,
+            @RequestParam(value = "startDate", required = false) String startDate,
+            @RequestParam(value = "endDate", required = false) String endDate,
+            @RequestParam(value = "projectState", required = false) String projectState,
+            @RequestParam(value = "projectStep", required = false) String projectStep,
+            HttpServletRequest request,
+            HttpServletResponse response
+    )
+            throws Exception {
+        Map<String, Object> params = this.getRequestParam(request);
+        this.responseWriteFile(
+                response,
+                sXiangMuReportService.export(params, 1, 100000),
+                "项目报表.xlsx"
+        );
     }
 }

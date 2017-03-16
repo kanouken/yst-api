@@ -74,7 +74,7 @@ public class XiaoShouReportService extends BaseService {
     }
 
     /**
-     * 销售（金额）报表 获取图表数据
+     * 销售（金额）报表 导出数据
      *
      */
     @Transactional(readOnly = true)

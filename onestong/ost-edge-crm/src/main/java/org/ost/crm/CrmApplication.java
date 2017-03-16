@@ -71,7 +71,7 @@ public class CrmApplication extends WebMvcConfigurerAdapter {
 				"/configuration/**",
 				"/v2/api**",
 				"/info",
-				"/report/cXiaoShouReport/export",
+				"/report/*/export",
 				"/api/users/login");
 	}
 
