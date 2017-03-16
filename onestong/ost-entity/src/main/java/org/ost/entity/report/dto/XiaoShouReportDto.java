@@ -24,11 +24,20 @@ public class XiaoShouReportDto {
     private String projectStep;
     private String projectState;
     private List<ProjectContactsDto> managerOwner;
+    private String managerOwnerName;
 
     private Integer totalProjectAmount;
     private Integer totalProjectPaymentRate;
     private Integer totalConversionRate;
     private Integer totalCount;
+
+    public String getManagerOwnerName() {
+        return managerOwnerName;
+    }
+
+    public void setManagerOwnerName(String managerOwnerName) {
+        this.managerOwnerName = managerOwnerName;
+    }
 
     public Integer getTotalConversionRate() {
         return totalConversionRate;

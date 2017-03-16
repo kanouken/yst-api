@@ -1,11 +1,14 @@
 package org.ost.crm.controller.base;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
@@ -175,5 +178,24 @@ public class Action {
 			}
 		}
 		return params;
+	}
+
+	public void responseWriteFile(HttpServletResponse response, ByteArrayOutputStream file, String fileName)
+	throws Exception {
+		OutputStream resOutput = null;
+		try {
+			fileName = new String((fileName).getBytes("GBK"), "ISO8859_1");
+			resOutput = response.getOutputStream();
+			response.setContentType("application/octet-stream;charset=UTF-8");
+			response.addHeader(
+					"Content-Disposition",
+					"attachment;filename=" + fileName
+			);
+			file.writeTo(resOutput);
+			resOutput.flush();
+		} finally {
+			if (file != null) file.close();
+			if (resOutput != null) resOutput.close();
+		}
 	}
 }
