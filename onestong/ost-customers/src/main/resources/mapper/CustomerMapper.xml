@@ -189,7 +189,7 @@
 		WHERE
 		1=1
 		<if test='managerOwnerName!=null and managerOwnerName!=""'>
-		and	tbl_customer.id in (
+			and tbl_customer.id in (
 			select
 			customerID
 			from

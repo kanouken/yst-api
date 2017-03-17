@@ -2,14 +2,13 @@ package org.ost.crm.controller.report;
 
 import org.common.tools.OperateResult;
 import org.ost.crm.controller.base.Action;
-import org.ost.crm.services.project.ProjectService;
+import org.ost.crm.services.report.XiangMuReportService;
 import org.ost.crm.services.report.XiaoShouReportService;
 import org.ost.entity.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -18,13 +17,13 @@ import java.util.concurrent.ExecutionException;
  * 后台网站报表
  */
 @RestController
-@RequestMapping("report/cXiaoShouReport")
-public class XiaoShouReportController extends Action {
+@RequestMapping("report/cXiangMuReport")
+public class XiangMuReportController extends Action {
     @Autowired
-    private XiaoShouReportService sXiaoShouReportService;
+    private XiangMuReportService sXiangMuReportService;
 
     /**
-     * 销售（金额）报表 获取列表数据
+     * 项目报表 获取列表数据
      *
      */
     @GetMapping(value = "list")
@@ -36,16 +35,18 @@ public class XiaoShouReportController extends Action {
             @RequestParam(value = "projectType", required = false) String projectType,
             @RequestParam(value = "startDate", required = false) String startDate,
             @RequestParam(value = "endDate", required = false) String endDate,
+            @RequestParam(value = "projectState", required = false) String projectState,
+            @RequestParam(value = "projectStep", required = false) String projectStep,
             HttpServletRequest request
-            )
+    )
             throws InterruptedException, ExecutionException {
         Map<String, Object> params = this.getRequestParam(request);
         return new OperateResult<Map<String, Object>>(
-                sXiaoShouReportService.list(user, params, curPage, perPageSum));
+                sXiangMuReportService.list(user, params, curPage, perPageSum));
     }
 
     /**
-     * 销售（金额）报表 获取统计数据
+     * 项目报表 获取统计数据
      *
      */
     @GetMapping(value = "count")
@@ -57,15 +58,17 @@ public class XiaoShouReportController extends Action {
             @RequestParam(value = "projectType", required = false) String projectType,
             @RequestParam(value = "startDate", required = false) String startDate,
             @RequestParam(value = "endDate", required = false) String endDate,
+            @RequestParam(value = "projectState", required = false) String projectState,
+            @RequestParam(value = "projectStep", required = false) String projectStep,
             HttpServletRequest request
     )
             throws InterruptedException, ExecutionException {
         Map<String, Object> params = this.getRequestParam(request);
-        return new OperateResult<Object>(sXiaoShouReportService.count(user, params, curPage, perPageSum));
+        return new OperateResult<Object>(sXiangMuReportService.count(user, params, curPage, perPageSum));
     }
 
     /**
-     * 销售（金额）报表 获取图表数据
+     * 项目报表 获取图表数据
      *
      */
     @GetMapping(value = "chart")
@@ -77,33 +80,12 @@ public class XiaoShouReportController extends Action {
             @RequestParam(value = "projectType", required = false) String projectType,
             @RequestParam(value = "startDate", required = false) String startDate,
             @RequestParam(value = "endDate", required = false) String endDate,
+            @RequestParam(value = "projectState", required = false) String projectState,
+            @RequestParam(value = "projectStep", required = false) String projectStep,
             HttpServletRequest request
     )
             throws InterruptedException, ExecutionException {
         Map<String, Object> params = this.getRequestParam(request);
-        return new OperateResult<Object>(sXiaoShouReportService.chart(user, params, curPage, perPageSum));
-    }
-
-    /**
-     * 销售（金额）报表 导出数据
-     *
-     */
-    @GetMapping(value = "export")
-    public void export(
-            @RequestParam(value = "schemaID", required = false) String schemaID,
-            @RequestParam(value = "managerOwnerName", required = false) String managerOwnerName,
-            @RequestParam(value = "projectType", required = false) String projectType,
-            @RequestParam(value = "startDate", required = false) String startDate,
-            @RequestParam(value = "endDate", required = false) String endDate,
-            HttpServletRequest request,
-            HttpServletResponse response
-    )
-            throws Exception {
-        Map<String, Object> params = this.getRequestParam(request);
-        this.responseWriteFile(
-                response,
-                sXiaoShouReportService.export(params, 1, 100000),
-                "销售（金额）报表.xlsx"
-        );
+        return new OperateResult<Object>(sXiangMuReportService.chart(user, params, curPage, perPageSum));
     }
 }

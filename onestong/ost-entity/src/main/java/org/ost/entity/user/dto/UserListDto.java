@@ -6,7 +6,6 @@ public class UserListDto {
 	private String deptName;
 	private String email;
 	private String headPhoto;
-
 	private String deptID;
 
 	public UserListDto() {

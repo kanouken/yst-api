@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="org.ost.crm.dao.report.VisitReportDao">
+
+	<sql id="whereCriteria">
+		<where>
+			<trim prefixOverrides="AND |OR">
+				<if test="managerOwnerName != null and managerOwnerName !=''">
+					and ve.creator = #{managerOwnerName}
+				</if>
+				<if test="contactType != null and contactType !=''">
+					and ve.contact_type = #{contactType}
+				</if>
+				<if test="start != null">
+					and ve.create_time >= #{start,jdbcType=TIMESTAMP}
+				</if>
+				<if test="end != null">
+				<![CDATA[ and ve.create_time <= #{end,jdbcType=TIMESTAMP}]]>
+				</if>
+				<if test="hasBus != null">
+					and
+					<choose>
+						<when test="hasBus == 0  ">
+							ve.bus_change is null
+						</when>
+						<when test="hasBus ==1 ">
+							ve.bus_change is not null and ve.bus_change != ''
+						</when>
+						<otherwise>
+						</otherwise>
+					</choose>
+				</if>
+			</trim>
+		</where>
+
+	</sql>
+
+	<select id="selectBy" resultType="java.util.HashMap">
+		select
+		ve.contacts_name contact,
+		ve.contact_type contactType ,
+		ve.create_time createTime,
+		DATE_FORMAT(ve.create_time,'%Y-%m-%d %H:%i')
+		createTimeStr,
+		ve.ve_id id,
+		ve.customer_name name,
+		case
+		ve.bus_change
+		when
+		null then '无' when '' then
+		'无' else '有' end hasBusStr,
+		ve.bus_change
+		busChange
+		from
+		visit_events ve
+		<include refid="whereCriteria"></include>
+
+		order by ve.create_time
+		desc
+
+	</select>
+
+
+	<select id="selectSummary" resultType="java.util.HashMap">
+		select
+		sum(
+		case when ifnull(ve.bus_change,'') = '' then 0 else 1 end
+		)
+		hasBusChance,count(1) totalRecords,
+		(
+		length(replace(GROUP_CONCAT(DISTINCT ve.customer_id),',','--')) -
+		length(
+		GROUP_CONCAT(DISTINCT ve.customer_id)) )+1 totalCustomer
+		from
+		visit_events ve
+		<include refid="whereCriteria"></include>
+	</select>
+
+
+	<select id="selectByMonth" resultType="java.util.HashMap">
+		SELECT
+		t.totalRecords total,
+		ifnull(t.totalCustomer , 0)
+		count ,
+		ROUND(
+		t.hasBusChance / t.totalRecords ,
+		2
+		)
+		rate ,
+		t.dateStr createTimeStr
+		FROM
+		(
+		SELECT
+		DATE_FORMAT(ve.create_time ,
+		'%Y年%m月') dateStr ,
+		sum(
+		CASE
+		WHEN
+		ifnull(ve.bus_change , '') = '' THEN
+		0
+		ELSE
+		1
+		END
+		) hasBusChance ,
+		count(1)
+		totalRecords ,
+		(
+		length(
+		REPLACE(
+		GROUP_CONCAT(DISTINCT ve.customer_id) ,
+		',' ,
+		'--'
+		)
+		) - length(
+		GROUP_CONCAT(DISTINCT ve.customer_id)
+		)
+		) + 1
+		totalCustomer
+		FROM
+		visit_events ve
+		WHERE
+		DATE_FORMAT(ve.create_time ,
+		'%Y') =
+		DATE_FORMAT(now() , '%Y')
+		<trim prefixOverrides="where" prefix="and">
+			<include refid="whereCriteria"></include>
+		</trim>
+		GROUP BY
+		DATE_FORMAT(ve.create_time , '%Y年%m月')
+		) t
+		ORDER BY
+		t.dateStr
+	</select>
+
+</mapper>

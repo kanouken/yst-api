@@ -66,8 +66,13 @@ public class CrmApplication extends WebMvcConfigurerAdapter {
 		registry.addInterceptor(cd).addPathPatterns("/**");
 		AuthCheckInterceptor auth = new AuthCheckInterceptor();
 
-		registry.addInterceptor(auth).addPathPatterns("/**").excludePathPatterns("/swagger**", "/configuration/**",
-				"/v2/api**", "/info", "/api/users/login");
+		registry.addInterceptor(auth).addPathPatterns("/**").excludePathPatterns(
+				"/swagger**",
+				"/configuration/**",
+				"/v2/api**",
+				"/info",
+				"/report/cXiaoShouReport/export",
+				"/api/users/login");
 	}
 
 	@Bean
