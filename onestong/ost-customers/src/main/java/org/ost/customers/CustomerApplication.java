@@ -16,14 +16,16 @@ import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
 /**
  * test
+ * 
  * @author xnq
  *
  */
 @SpringBootApplication
 @EnableSwagger2
-//@EnableEurekaClient
+@EnableEurekaClient
 public class CustomerApplication extends WebMvcConfigurerAdapter {
 
 	public static void main(String[] args) {

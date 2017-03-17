@@ -15,6 +15,7 @@ import org.ost.entity.customer.dto.CustomerUpdateDto;
 import org.ost.entity.customer.org.CustomerOrg;
 import org.ost.entity.customer.user.UserCustomers;
 import org.ost.entity.org.department.dto.DepartmentListDto;
+import org.ost.entity.report.dto.KeHuReportDto;
 import org.ost.entity.user.dto.UserListDto;
 
 @Mapper

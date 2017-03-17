@@ -161,15 +161,78 @@
 		</where>
 	</select>
 
-	<select id="selectCustomerByParam" resultType="org.ost.entity.customer.vo.CustomerRepot">
-
+	<!-- 客户报表 -->
+	<select id="selectReportByParam" resultType="org.ost.entity.report.dto.KeHuReportDto">
 		SELECT
-		c.`name`,c.property->'$.type' as type ,c.property->'$.dealFrequency' as dealFrequency
-		,c.property->'$.turnover' as turnover,c.property->'$.nature' as nature,
-		c.property->'$.source' as source ,c.property->'$.belongIndustry' as belongIndustry,c.createTime
-		from tbl_user_customer u , tbl_customer c WHERE u.customerID=c.id and
-		u.userID=#{userID}
+		tbl_customer.id
+		,tbl_customer.`name`
+		,tbl_customer.property->'$.type' as type
+		,tbl_customer.property->'$.dealFrequency' as dealFrequency
+		,tbl_customer.property->'$.turnover' as turnover
+		,tbl_customer.property->'$.isPlc' as isPlc
+		,tbl_customer.property->'$.nature' as nature
+		,tbl_customer.property->'$.source' as source
+		,tbl_customer.property->'$.belongIndustry' as belongIndustry
+		,tbl_customer.createTime
+		<include refid="searchListSQL"></include>
+		order by
+		tbl_customer.createTime desc
 	</select>
-	
+
+	<select id="selectReportCount" resultType="java.lang.Integer">
+		SELECT count(1)
+		<include refid="searchListSQL"></include>
+	</select>
+
+	<sql id="searchListSQL">
+		FROM tbl_customer
+		WHERE
+		1=1
+		<if test='managerOwnerName!=null and managerOwnerName!=""'>
+		and	tbl_customer.id in (
+			select
+			customerID
+			from
+			tbl_user_customer
+			where
+			userName like CONCAT('%','${managerOwnerName}', '%')
+			)
+		</if>
+		<if test='params.type !=null and params.type !=""'>
+			and property ->
+			'$.type' =#{params.type}
+		</if>
+		<if test='params.dealFrequency !=null and params.dealFrequency !=""'>
+			and property ->
+			'$.dealFrequency' =#{params.dealFrequency}
+		</if>
+		<if test='params.turnover !=null and params.turnover !=""'>
+			and property ->
+			'$.turnover' =#{params.turnover}
+		</if>
+		<if test='params.isPlc !=null and params.isPlc !=""'>
+			and property ->
+			'$.isPlc' =#{params.isPlc}
+		</if>
+		<if test='params.nature !=null and params.nature !=""'>
+			and property ->
+			'$.nature' =#{params.nature}
+		</if>
+		<if test='params.source !=null and params.source !=""'>
+			and property ->
+			'$.source' =#{params.source}
+		</if>
+		<if test='params.belongIndustry !=null and params.belongIndustry !=""'>
+			and property ->
+			'$.belongIndustry'
+			=#{params.belongIndustry}
+		</if>
+		<if test='params.startDate != null and params.startDate != ""'>
+			and tbl_customer.createTime >= #{params.startDate}
+		</if>
+		<if test='params.startDate != null and params.startDate != ""'>
+			and tbl_customer.createTime &lt;= #{params.endDate}
+		</if>
+	</sql>
 
 </mapper>

@@ -1,22 +1,25 @@
 package org.ost.customers.controllers.customer;
 
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.common.tools.OperateResult;
 import org.ost.customers.services.CustomerService;
 import org.ost.entity.base.PageEntity;
 import org.ost.entity.customer.Customer;
-import org.ost.entity.customer.CustomerProject;
 import org.ost.entity.customer.dto.CustomerDetailDto;
 import org.ost.entity.customer.dto.CustomerListDto;
 import org.ost.entity.customer.dto.CustomerProjectDto;
 import org.ost.entity.customer.vo.CustomerCreateVo;
-import org.ost.entity.customer.vo.CustomerRepot;
 import org.ost.entity.customer.vo.CustomerVo;
+import org.ost.entity.report.dto.KeHuReportDto;
 import org.ost.entity.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -112,9 +115,13 @@ public class CustomerController extends Action {
 	}
 
 	@ApiOperation(value = "客户报表列表", notes = "客户报表列表")
-	@GetMapping(value = "/paramlist")
-	public OperateResult<List<CustomerRepot>> queryCustomerByParam(@RequestHeader(value = "userID") Integer userID,
-			@RequestParam(value="id") Integer id) {
-				return new OperateResult<List<CustomerRepot>>(this.customerService.queryCustomerByParam(userID, id));
+	@PostMapping(value = "/KehuReportList")
+	public OperateResult<Map<String, Object>> queryCustomerByParam(
+			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
+			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
+			@RequestParam(value = "managerOwnerName", required = false) String managerOwnerName,
+			@RequestBody KeHuReportDto kh) {
+		return new OperateResult<>(
+				this.customerService.queryCustomerByReport(managerOwnerName, kh, curPage, perPageSum));
 	}
 }
