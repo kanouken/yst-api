@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<toolbox>
+	<tool>
+		<key>date</key>
+		<scope>application</scope>
+		<class>org.apache.velocity.tools.generic.DateTool</class>
+		<parameter name="format" value="yyyy-MM-dd HH:mm:ss"/>
+	</tool>
+	 <tool>
+		<key>pageTool</key>
+		<scope>application</scope>
+		<class>com.oz.onestong.tools.PageTools</class>
+	</tool>
+	<!-- 
+		<tool>
+		<key>search</key>
+		<scope>application</scope>
+		<class>com.angel.front.utils.SearchResultTools</class>
+	</tool> -->
+	<!-- 	
+	
+		<tool>
+		<key>dic</key>
+		<scope>application</scope>
+		<class>com.onezero.util.Dic</class>
+	</tool>
+	
+	
+	<tool>
+		<key>menu</key>
+		<scope>application</scope>
+		<class>com.onezero.util.MenuToos</class>
+	</tool>
+	
+	<tool>
+		<key>tmh</key>
+		<scope>application</scope>
+		<class>com.onezero.util.TransportModelHelp</class>
+	</tool> -->
+	
+</toolbox>

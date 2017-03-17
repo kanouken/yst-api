@@ -1,0 +1,167 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>ONESTONG | 授权用户编辑</title>
+<meta name="description" content="这是一个 table 页面">
+<meta name="keywords" content="table">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png"
+	href="$!basePath/resources/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="$!basePath/resources/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="$!basePath/resources/css/amazeui.min.css" />
+<link rel="stylesheet" href="$!basePath/resources/css/admin.css">
+<link rel="stylesheet" href="$!basePath/resources/css/datepicker.css">
+
+<link href="$!basePath/resources/js/plugs/select2.css" />
+<link href="$!basePath/resources/js/plugs/bootstrap.min.css" />
+</head>
+<body>
+	<!--[if lte IE 9]>
+<p class="browsehappy">你正在使用<strong>过时</strong>的浏览器，Amaze UI 暂不支持。 请 <a href="http://browsehappy.com/" target="_blank">升级浏览器</a>
+  以获得更好的体验！</p>
+<![endif]-->
+
+	#parse('/common/header_admin.htm')
+
+	<div class="am-cf admin-main">
+
+		#parse('/common/sidebar_admin.htm')
+		<!-- content start -->
+		<div class="admin-content" >
+
+			<div class="am-cf am-padding">
+				<div class="am-fl am-cf">
+					<strong class="am-text-primary am-text-lg">域用户</strong> / <small>编辑</small>
+				</div>
+			</div>
+
+
+
+
+			<div class="am-g am-padding">
+				<form class="am-form am-form-horizontal" id="domain_update_form" method="post"
+					action="$!basePath/ost/domainUser/doUpdate"data-am-validator>
+					<fieldset>
+
+					<input type="hidden" name="domainId" value="$!domain.domainId" />
+					<input type="hidden" name="doId" value="$!domainOrder.doId" />
+
+
+						<div class="am-form-group">
+							<label for="domainName">域用户名</label> <input name="domainName"
+								type="text" class=""  value="$!domain.domainName" id="domainName" placeholder="输入域用户名" required>
+						</div>
+
+						<div class="am-form-group">
+							<label for="email">邮箱</label> <input name="email" type="text"
+								class="js-pattern-email" id="email" value="$!domain.email" placeholder="输入用来发送激活码的邮箱" required="required">
+						</div>
+						<div class="am-form-group">
+							<label for="loginName">账户</label> <input name="loginName"
+								type="text" class="" id="loginName"  value="$!domain.loginName" placeholder="输入账户" required="required">
+						</div>
+						<div class="am-form-group">
+							<label for="password">密码</label> <input name="loginPassword"
+								type="password" class="" id="password" placeholder="如不需修改密码，请不要填写此项" >
+						</div>
+						
+						<div class="am-form-group">
+							<label for="optional1">确认密码</label> <input name="optional1"
+								type="password" class="" id="optional1" placeholder="如不需修改密码，请不要填写此项" >
+						</div>
+						<div class="am-form-group">
+							<label for="sum">激活码数量</label> <input name="doSum"
+								type="text" class="js-pattern-number" value="$!domainOrder.doSum" id="sum" placeholder="输入激活码数量" readonly="readonly">
+						</div>
+						
+						<div class="am-form-group">
+						<label for="sum">激活码有效期</label> 
+						<div class="am-alert am-alert-danger" id="my-alert" style="display: none">
+  <p>开始日期应小于结束日期！</p>
+</div>
+<div class="am-g">
+  <div class="am-u-sm-6">
+    <button type="button" class="am-btn am-btn-default am-margin-right" id="my-start">开始日期</button><input name="startTime" value="$date.format('yyyy/MM/dd',$!domainOrder.startTime)" style="background: transparent;border: 0" id="my-startDate" size="10" required="required" />
+  </div>
+  <div class="am-u-sm-6">
+    <button type="button"   class="am-btn am-btn-default am-margin-right" id="my-end">结束日期</button><input  name="endTime"  id="my-endDate" value="$date.format('yyyy/MM/dd',$!domainOrder.endTime)" style="background: transparent;border: 0" size="10" required="required"/>
+  </div>
+</div>
+
+					</div>	
+						
+						
+						
+						<p class="am-u-sm-6 am-u-md-3 am-u-sm-centered">
+						<button  id="backTolist"  type="submit"  class="am-btn am-btn-primary am-btn-xs">返回列表页</button>
+							<button type="submit"  id="domain_update_btn" class="am-btn am-btn-primary am-btn-xs">提交</button>
+						</p>
+					</fieldset>
+				</form>
+
+			</div>
+		</div>
+		<!-- content end -->
+	</div>
+
+	#include('/common/footer.htm')
+
+	<!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="$!basePath/resources/js/polyfill/rem.min.js"></script>
+<script src="$!basePath/resources/js/polyfill/respond.min.js"></script>
+<script src="$!basePath/resources/js/amazeui.legacy.js"></script>
+<![endif]-->
+
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="$!basePath/resources/js/jquery.min.js"></script>
+	<script src="$!basePath/resources/js/amazeui.min.js"></script>
+
+	<!--<![endif]-->
+	<script src="$!basePath/resources/js/app.js"></script>
+	<script src="$!basePath/resources/js/admin/domainUser.js"></script>
+	
+
+	<script>
+  $(function() {
+	domain.init();
+    var startDate = new Date();
+    var endDate = new Date();
+    endDate.setFullYear(endDate.getFullYear()+5);
+    console.log(endDate);
+    var $alert = $('#my-alert');
+    $('#my-start').datepicker({format: 'yyyy/mm/dd'}).
+      on('changeDate.datepicker.amui', function(event) {
+        if (event.date.valueOf() > endDate.valueOf()) {
+          $alert.find('p').text('开始日期应小于结束日期！').end().show();
+        } else {
+          $alert.hide();
+          startDate = new Date(event.date);
+          $('#my-startDate').val($('#my-start').data('date'));
+        }
+        $(this).datepicker('close');
+      });
+
+    $('#my-end').datepicker({format: 'yyyy/mm/dd'}).
+      on('changeDate.datepicker.amui', function(event) {
+        if (event.date.valueOf() < startDate.valueOf()) {
+          $alert.find('p').text('结束日期应大于开始日期！').end().show();
+        } else {
+          $alert.hide();
+          endDate = new Date(event.date);
+          $('#my-endDate').val($('#my-end').data('date'));
+        }
+        $(this).datepicker('close');
+      });
+  });
+</script>
+</body>
+</html>

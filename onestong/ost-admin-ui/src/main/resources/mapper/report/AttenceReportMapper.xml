@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.oz.onestong.dao.report.AttenceReportMapper" >
+  
+  <resultMap type="com.oz.onestong.model.report.AttenceReport" id="attenceReportMap">
+  	<result  column="address"  property="address" javaType="[Ljava.lang.String;" jdbcType="VARCHAR" />
+  	  	<result  column="times" property="times" javaType="[Ljava.lang.String;" jdbcType="VARCHAR" />
+  	  	<result  column="creator"  property="creator"  javaType="java.lang.String" jdbcType="VARCHAR" />
+  	  	<result  column="days"  property="days" javaType="[Ljava.lang.String;" jdbcType="VARCHAR" />
+  	  	 <result  column="on_not_times"  property="notOnTimes" javaType="[Ljava.lang.String;" jdbcType="VARCHAR" />
+  	  	 <result  column="attence_offset"  property="attenceOffset" javaType="java.lang.String" jdbcType="VARCHAR" />
+  	  	 <result  column="attence_notice"  property="attenceNotice" javaType="java.lang.String" jdbcType="VARCHAR" />
+  	
+  
+  </resultMap>
+ 
+  
+  
+  <select id="selectAttenceReportFliterByDepartmentAndDate"  parameterType="map" resultMap="attenceReportMap" >
+ <!--  
+  
+  SELECT
+	d.`name`,
+	u.realname,
+	ae.signed_time,
+	ae.signed_address,
+	ae.signout_time,
+	ae.signout_address,
+	ae.lated_for_time,
+	ae.le_for_time
+FROM
+	attence_events ae,
+	users u,
+	departments d
+WHERE
+	ae.user_id = u.user_id
+AND u.dept_id = d.dept_id
+AND u.domain_id = #{domainId,jdbcType=INTEGER}
+
+<if test="deptId != 0">
+
+and d.dept_id = #{deptId,jdbcType=INTEGER}
+</if>
+
+and      
+
+ae.update_time BETWEEN #{start,jdbcType=TIMESTAMP}
+AND #{end,jdbcType=TIMESTAMP}
+order by ae.user_id
+-->
+	
+	SELECT
+	ae.creator,
+	cast(
+	GROUP_CONCAT(
+
+		IF(
+			ae.signed_address IS NULL,
+			'null',
+			ae.signed_address
+		),
+		'-',
+
+	IF(
+		ae.signout_address IS NULL,
+		'null',
+		ae.signout_address
+	)
+	ORDER BY
+		ae.update_time ASC SEPARATOR ','
+	)
+	as BINARY)
+	
+	address,
+	GROUP_CONCAT(
+
+		IF(
+			ae.signed_time IS NULL,
+			'null',
+			DATE_FORMAT(ae.signed_time, '%H:%i')
+		),
+		'-',
+
+	IF(
+		ae.signout_time IS NULL,
+		'null',
+		DATE_FORMAT(ae.signout_time, '%H:%i')
+	)
+	ORDER BY
+		ae.update_time ASC SEPARATOR ','
+	)times,
+	GROUP_CONCAT(
+		DISTINCT DATE_FORMAT(ae.update_time, '%m/%d')
+		ORDER BY
+			ae.update_time ASC SEPARATOR ','
+	) days,
+	
+		GROUP_CONCAT(
+
+		IF(
+			ae.lated_for_time IS NULL,
+			'null',
+			ae.lated_for_time
+		),
+		'-',
+
+	IF(
+		ae.le_for_time IS NULL,
+		'null',
+		ae.le_for_time
+	)
+	ORDER BY
+		ae.update_time ASC SEPARATOR ','
+	) on_not_times,
+	
+	
+	GROUP_CONCAT(
+		IF(
+		ae.optional1 IS NULL or ae.optional1 = '',
+		'null',
+		ae.optional1
+	)
+		ORDER BY
+			ae.update_time ASC SEPARATOR '_'
+	)attence_notice,
+GROUP_CONCAT(
+		IF(
+		ae.optional2 IS NULL or ae.optional2 = '',
+		'null',
+		ae.optional2
+	)
+		ORDER BY
+			ae.update_time ASC SEPARATOR '_'
+	)attence_offset
+	
+	
+	
+	
+FROM
+	(
+		SELECT
+			aee.*
+		FROM
+			attence_events aee,
+			users u,
+			departments d
+		WHERE
+			aee.user_id = u.user_id
+		AND u.dept_id = d.dept_id
+		AND u.domain_id = #{domainId,jdbcType=INTEGER}
+		
+		<if test="deptId != 0">
+
+		and d.dept_id = #{deptId,jdbcType=INTEGER}
+		</if>
+		and u.valid = 0
+		and      
+
+		aee.update_time BETWEEN #{start,jdbcType=TIMESTAMP}
+		AND #{end,jdbcType=TIMESTAMP}
+		order by aee.user_id
+		
+	) ae
+GROUP BY
+	ae.user_id
+	
+
+
+
+  
+   </select>
+   
+   
+   
+    <select id="selectAttenceReportBasicFliterByDepartmentAndDate"  parameterType="map" resultType="map" >
+		select 
+		u.user_id,
+		u.realname, 
+		u.department_name,  
+		ae.create_time,
+		ae.signed_time,
+		ae.signout_time, 
+		ae.lated_for_time,
+		ae.le_for_time,
+		ae.signed_address,
+		ae.signout_address
+		from attence_events ae ,users u  where 
+		ae.user_id = u.user_id and
+		u.domain_id =#{domainId,jdbcType=INTEGER} 
+		<!-- and u.valid = 0   -->
+		<if test="deptId != 0">
+		and u.dept_id = #{deptId,jdbcType=INTEGER}
+		</if>
+		and 
+		ae.create_time BETWEEN #{start,jdbcType=TIMESTAMP}  and  #{end,jdbcType=TIMESTAMP}  order by u.user_id ,ae.create_time
+   	</select>
+   
+   
+   
+  <select id="selectVisitReportFliterByDepartmentAndDate"  parameterType="map" resultType="java.util.HashMap" >
+   
+   
+   
+     SELECT
+	d.`name`,
+	u.realname,
+	ve.title,
+	ve.content,
+ve.visited_time,
+	ve.visted_address,
+	ve.visitout_time,
+ve.visitout_address
+	
+FROM
+	visit_events ve,
+	users u,
+	departments d
+WHERE
+	ve.user_id = u.user_id
+AND u.dept_id = d.dept_id
+AND u.domain_id = #{domainId,jdbcType=INTEGER}
+
+ <if test="deptId != 0">   
+ and d.dept_id = #{deptId,jdbcType=INTEGER}
+ </if>
+ AND u.valid = 0
+ and      
+ 
+ ve.update_time BETWEEN #{start,jdbcType=TIMESTAMP}
+ AND #{end,jdbcType=TIMESTAMP}
+ order by ve.user_id
+   
+   
+   
+   
+   
+   </select>
+   
+   
+   
+  
+</mapper>

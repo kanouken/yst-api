@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.oz.onestong.dao.authority.RolesMoudlesPermsMapper">
+
+
+	<select id="selectPermsByRoleAndType"  parameterType="map" resultType="java.util.HashMap">
+		select p.method_name as authTag,p.perm_name as
+		authDesc from roles_moudles_perms rmp ,moudles m ,perms p where
+		rmp.moudle_id = m.moudle_id and rmp.perm_id = p.perm_id
+		and m.type =#{permType,jdbcType=INTEGER}  and rmp.role_id =#{roleId,jdbcType=INTEGER}
+
+
+	</select>
+
+	<delete id="deleteRoleMoudlePerm" parameterType="map">
+		delete
+		from roles_moudles_perms where role_id = #{roleId,jdbcType=INTEGER}
+
+
+	</delete>
+	<select id="selectPermsByMethodName" parameterType="map"
+		resultType="java.util.HashMap">
+
+		select p.perm_moudle_id as moudleId ,p.perm_id as permId from perms p
+		where p.method_name in (
+
+		<foreach collection="methodNames" item="item" index="index"
+			separator=",">
+			#{item,jdbcType=VARCHAR}
+		</foreach>
+		)
+	</select>
+	<insert id="insertRoleMoudlePerm" parameterType="map">
+
+		insert into roles_moudles_perms(role_id,moudle_id,perm_id) values
+		<foreach collection="perms" item="item" index="index"
+			separator=",">
+			(#{roleId,jdbcType=INTEGER},#{item.moudleId,jdbcType=INTEGER},#{item.permId,jdbcType=INTEGER})
+		</foreach>
+	</insert>
+
+	<select id="selectMoudlesByRole" parameterType="map"
+		resultType="java.util.HashMap">
+
+		select DISTINCT m.moudle_id as moudleId ,m.moudle_name as
+		moudleName,m.moudle_uri as moudleUri,
+		m.moudle_tag as
+		moudleTag,m.moudle_ico as moudleIco
+		from roles_moudles_perms rmp
+		,moudles m where rmp.moudle_id = m.moudle_id
+		and rmp.role_id =
+		#{roleId,jdbcType=INTEGER} and m.type=#{moudleType,jdbcType=TINYINT}
+		order
+		by sort asc
+
+
+	</select>
+
+	<select id="selectPermsByRole" parameterType="map" resultType="java.util.HashMap">
+
+		select p.perm_moudle_id as pmId, p.method_name as
+		methodName,p.perm_name as
+		permName from roles_moudles_perms rmp,perms p
+		where rmp.perm_id =
+		p.perm_id and rmp.role_id =
+		#{roleId,jdbcType=INTEGER}
+
+
+
+	</select>
+
+
+
+
+</mapper>
