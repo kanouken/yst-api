@@ -11,7 +11,6 @@ import org.ost.entity.customer.Customer;
 import org.ost.entity.customer.CustomerProject;
 import org.ost.entity.customer.org.CustomerOrg;
 import org.ost.entity.customer.user.UserCustomers;
-import org.ost.entity.customer.vo.CustomerCreateVo;
 import org.ost.entity.customer.vo.CustomerVo;
 import org.ost.entity.report.dto.KeHuReportDto;
 import org.springframework.stereotype.Repository;
@@ -54,8 +53,11 @@ public interface CustomerDao extends Mapper<Customer> {
 
 	// 客户报表
 	List<KeHuReportDto> selectReportByParam(@Param("params") Map<String, Object> params,
-			@Param("managerOwnerName") String managerOwnerName,  RowBounds rb);
+			@Param("managerOwnerName") String managerOwnerName, RowBounds rb);
 
 	Integer selectReportCount(@Param("params") Map<String, Object> params,
 			@Param("managerOwnerName") String managerOwnerName);
+
+	List<KeHuReportDto> selectReportChart(@Param("params") Map<String, Object> params,@Param("managerOwnerName") String managerOwnerName);
+	
 }

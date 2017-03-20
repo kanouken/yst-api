@@ -1,7 +1,9 @@
 package org.ost.customers.controllers.customer;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -114,8 +116,8 @@ public class CustomerController extends Action {
 		return new OperateResult<CustomerVo>(this.customerService.queryByProject(schemaID, projectId));
 	}
 
-	@ApiOperation(value = "客户报表列表", notes = "客户报表列表")
-	@PostMapping(value = "/KehuReportList")
+	@ApiOperation(value = "客户报表-获取列表数据", notes = "客户报表-获取列表数据")
+	@GetMapping(value = "/KehuReportList")
 	public OperateResult<Map<String, Object>> queryCustomerByParam(
 			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
 			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
@@ -123,5 +125,28 @@ public class CustomerController extends Action {
 			@RequestBody KeHuReportDto kh) {
 		return new OperateResult<>(
 				this.customerService.queryCustomerByReport(managerOwnerName, kh, curPage, perPageSum));
+	}
+
+	@ApiOperation(value = "客户报表-获取图表数据", notes = "客户报表-获取图表数据")
+	@GetMapping(value = "/KehuReportChart")
+	public OperateResult<Object> queryReportChart(
+			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
+			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
+			@RequestParam(value = "managerOwnerName", required = false) String managerOwnerName,
+			@RequestParam(value = "startDate", required = false) String startDate,
+			@RequestParam(value = "endDate", required = false) String endDate, HttpServletRequest request)
+					throws InterruptedException, ExecutionException, ParseException {
+		Map<String, Object> params = this.getRequestParam(request);
+		return new OperateResult<>(this.customerService.reportChart(params, managerOwnerName, curPage, perPageSum));
+	}
+
+	@ApiOperation(value = "客户报表-获取统计数据", notes = "客户报表-获取统计数据")
+	@GetMapping(value = "/KehuReportCount")
+	public OperateResult<Object> queryReportCount(
+			@RequestParam(value = "managerOwnerName", required = false) String managerOwnerName,
+			@RequestParam(value = "startDate", required = false) String startDate,
+			@RequestParam(value = "endDate", required = false) String endDate, HttpServletRequest request) {
+		Map<String, Object> params = this.getRequestParam(request);
+		return new OperateResult<>(this.customerService.reportCount(params, managerOwnerName));
 	}
 }

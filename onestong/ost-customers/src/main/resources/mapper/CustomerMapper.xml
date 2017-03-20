@@ -173,15 +173,22 @@
 		,tbl_customer.property->'$.nature' as nature
 		,tbl_customer.property->'$.source' as source
 		,tbl_customer.property->'$.belongIndustry' as belongIndustry
-		,tbl_customer.createTime
+		,tbl_customer.createTime as createTimeStr
 		<include refid="searchListSQL"></include>
 		order by
 		tbl_customer.createTime desc
 	</select>
 
 	<select id="selectReportCount" resultType="java.lang.Integer">
-		SELECT count(1)
+		SELECT count(1) as totalCustomerCount
 		<include refid="searchListSQL"></include>
+	</select>
+
+	<select id="selectReportChart" resultType="org.ost.entity.report.dto.KeHuReportDto">
+		select count(1) as newCustomerCount
+		,DATE_FORMAT(tbl_customer.createTime,'%Y-%m-%d')
+		<include refid="searchListSQL"></include>
+		group by tbl_customer.createTime
 	</select>
 
 	<sql id="searchListSQL">
@@ -195,7 +202,8 @@
 			from
 			tbl_user_customer
 			where
-			userName like CONCAT('%','${managerOwnerName}', '%')
+			userName like CONCAT('%','${managerOwnerName}',
+			'%')
 			)
 		</if>
 		<if test='params.type !=null and params.type !=""'>
