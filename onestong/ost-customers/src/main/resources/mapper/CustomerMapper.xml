@@ -184,7 +184,7 @@
 		<include refid="searchListSQL"></include>
 	</select>
 
-	<select id="selectReportChart" resultType="org.ost.entity.report.dto.KeHuReportDto">
+	<select id="selectReportChart" resultType="org.ost.entity.report.dto.KeHuReportVo">
 		select DATE_FORMAT(tbl_customer.createTime,'%Y-%m-%d') as createTimeStr
 		<include refid="searchListSQL"></include>
 		<if test='params.startDate != null and params.startDate != ""'>

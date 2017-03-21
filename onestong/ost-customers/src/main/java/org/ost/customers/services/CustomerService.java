@@ -37,6 +37,7 @@ import org.ost.entity.customer.user.UserCustomers;
 import org.ost.entity.customer.vo.CustomerCreateVo;
 import org.ost.entity.customer.vo.CustomerVo;
 import org.ost.entity.report.dto.KeHuReportDto;
+import org.ost.entity.report.dto.KeHuReportVo;
 import org.ost.entity.user.Users;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -444,7 +445,7 @@ public class CustomerService {
 	 */
 	public Object reportChart(Map<String, Object> params, String managerOwnerName, Integer curPage, Integer perPageSum)
 			throws InterruptedException, ExecutionException {
-		List<KeHuReportDto> kh = this.customerDao.selectReportChart(params, managerOwnerName);
+		List<KeHuReportVo> kh = this.customerDao.selectReportChart(params, managerOwnerName);
 		Integer newCustomerCount=this.customerDao.selectNewCount(params, managerOwnerName);
 		Integer totalCustomerCount = this.customerDao.selectReportCount(params, managerOwnerName);
 		params.clear();
