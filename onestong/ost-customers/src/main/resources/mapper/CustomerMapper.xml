@@ -185,11 +185,28 @@
 	</select>
 
 	<select id="selectReportChart" resultType="org.ost.entity.report.dto.KeHuReportDto">
-		select count(1) as newCustomerCount
-		,DATE_FORMAT(tbl_customer.createTime,'%Y-%m-%d')
+		select DATE_FORMAT(tbl_customer.createTime,'%Y-%m-%d') as createTimeStr
 		<include refid="searchListSQL"></include>
+		<if test='params.startDate != null and params.startDate != ""'>
+			and tbl_customer.createTime >= #{params.startDate}
+		</if>
+		<if test='params.startDate != null and params.startDate != ""'>
+			and tbl_customer.createTime &lt;= #{params.endDate}
+		</if>
 		group by tbl_customer.createTime
 	</select>
+
+	<select id="selectNewCount" resultType="java.lang.Integer">
+		select count(1) as newCustomerCount
+		<include refid="searchListSQL"></include>
+		<if test='params.startDate != null and params.startDate != ""'>
+			and tbl_customer.createTime >= #{params.startDate}
+		</if>
+		<if test='params.startDate != null and params.startDate != ""'>
+			and tbl_customer.createTime &lt;= #{params.endDate}
+		</if>
+	</select>
+
 
 	<sql id="searchListSQL">
 		FROM tbl_customer
@@ -235,12 +252,10 @@
 			'$.belongIndustry'
 			=#{params.belongIndustry}
 		</if>
-		<if test='params.startDate != null and params.startDate != ""'>
-			and tbl_customer.createTime >= #{params.startDate}
-		</if>
-		<if test='params.startDate != null and params.startDate != ""'>
-			and tbl_customer.createTime &lt;= #{params.endDate}
-		</if>
+		<!-- <if test='params.startDate != null and params.startDate != ""'> and 
+			tbl_customer.createTime >= #{params.startDate} </if> <if test='params.startDate 
+			!= null and params.startDate != ""'> and tbl_customer.createTime &lt;= #{params.endDate} 
+			</if> -->
 	</sql>
 
 </mapper>

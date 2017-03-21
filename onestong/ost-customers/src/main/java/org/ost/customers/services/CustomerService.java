@@ -1,7 +1,5 @@
 package org.ost.customers.services;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -13,10 +11,8 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.common.tools.OperateResult;
-import org.common.tools.date.DateUtil;
 import org.common.tools.db.Page;
 import org.common.tools.pinyin.Chinese2PY;
 import org.ost.customers.dao.CustomerDao;
@@ -428,7 +424,7 @@ public class CustomerService {
 		params.put("belongIndustry", kh.getBelongIndustry());
 		params.put("startDate", kh.getCreateTimeStr());
 		params.put("endDate", kh.getCreateTimeStr());
-		Integer totalRecord = this.customerDao.selectReportCount(params, managerOwnerName);
+		Integer totalRecord = this.customerDao.selectNewCount(params, managerOwnerName);
 		List<KeHuReportDto> khDto = this.customerDao.selectReportByParam(params, managerOwnerName, rb);
 		if (totalRecord > 0) {
 			khDto = this.customerDao.selectReportByParam(params, managerOwnerName, rb);
@@ -436,24 +432,47 @@ public class CustomerService {
 		return OperateResult.renderPage(page, khDto);
 	}
 
+	/**
+	 * 客户报表-获取图表数据
+	 * @param params
+	 * @param managerOwnerName
+	 * @param curPage
+	 * @param perPageSum
+	 * @return
+	 * @throws InterruptedException
+	 * @throws ExecutionException
+	 */
 	public Object reportChart(Map<String, Object> params, String managerOwnerName, Integer curPage, Integer perPageSum)
 			throws InterruptedException, ExecutionException {
-
-		List<KeHuReportDto> newCustomerCount = this.customerDao.selectReportChart(params, managerOwnerName);
+		List<KeHuReportDto> kh = this.customerDao.selectReportChart(params, managerOwnerName);
+		Integer newCustomerCount=this.customerDao.selectNewCount(params, managerOwnerName);
 		Integer totalCustomerCount = this.customerDao.selectReportCount(params, managerOwnerName);
-		if (totalCustomerCount > 0) {
-			newCustomerCount = this.customerDao.selectReportChart(params, managerOwnerName);
-		}
-		return newCustomerCount;
+		params.clear();
+		params.put("newCustomerCount", newCustomerCount);
+		params.put("totalCustomerCount", totalCustomerCount);
+		kh.forEach(k->{
+			k.setNewCustomerCount(newCustomerCount);
+			k.setTotalCustomerCount(totalCustomerCount);
+			params.put("createTimeStr", k);
+		});
+		return kh;
 	}
 
-	public Object reportCount(Map<String, Object> params, String managerOwnerName) {
-		List<KeHuReportDto> newCustomerCount = this.customerDao.selectReportChart(params, managerOwnerName);
+	/**
+	 * 客户报表-获取统计数据
+	 * 
+	 * @param params
+	 * @param managerOwnerName
+	 * @return
+	 */
+	public Object reportCount(Map<String, Object> params, String managerOwnerName, Integer curPage,
+			Integer perPageSum) {
+		Integer newCustomerCount = this.customerDao.selectNewCount(params, managerOwnerName);
 		Integer totalCustomerCount = this.customerDao.selectReportCount(params, managerOwnerName);
-		if (totalCustomerCount > 0) {
-			newCustomerCount = this.customerDao.selectReportChart(params, managerOwnerName);
-		}
-		return newCustomerCount;
+		params.clear();
+		params.put("newCustomerCount", newCustomerCount);
+		params.put("totalCustomerCount", totalCustomerCount);
+		return params;
 	}
 
 }

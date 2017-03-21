@@ -40,6 +40,7 @@ public class KeHuReportService {
 		kh.setNature(MapUtils.getString(params, "nature"));
 		kh.setSource(MapUtils.getString(params, "source"));
 		kh.setBelongIndustry(MapUtils.getString(params, "belongIndustry"));
+
 		OperateResult<PageEntity<KeHuReportDto>> result = this.customerServiceClient
 				.queryCustomerByParam(page.getCurPage(), page.getPerPageSum(), managerOwnerName, kh);
 		List<KeHuReportDto> ke = new ArrayList<KeHuReportDto>();
@@ -49,16 +50,27 @@ public class KeHuReportService {
 		return OperateResult.renderPage(page, ke);
 	}
 
+
+	/**
+	 * 客户报表-获取图表数据
+	 * @param managerOwnerName
+	 * @param params
+	 * @return
+	 */
 	@Transactional(readOnly = true)
-	public Object reportChart(String managerOwnerName,Map<String, Object> params){
-		KeHuReportDto kh = new KeHuReportDto();
-		kh.setDealFrequency(MapUtils.getString(params, "dealFrequency"));
-		kh.setType(MapUtils.getString(params, "type"));
-		kh.setTurnover(MapUtils.getString(params, "turnover"));
-		kh.setIsPlc(MapUtils.getString(params, "isPlc"));
-		kh.setNature(MapUtils.getString(params, "nature"));
-		kh.setSource(MapUtils.getString(params, "source"));
-		kh.setBelongIndustry(MapUtils.getString(params, "belongIndustry"));
+	public Object reportChart(String managerOwnerName, Map<String, Object> params) {
+		OperateResult<Object> result = this.customerServiceClient.queryReportChart(managerOwnerName);
+		return result;
+	}
+
+	/**
+	 * 客户报表-获取统计数据
+	 * @param managerOwnerName
+	 * @param params
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	public Object reportCount(String managerOwnerName, Map<String, Object> params) {
 		OperateResult<Object> result=this.customerServiceClient.queryReportCount(managerOwnerName);
 		return result;
 	}

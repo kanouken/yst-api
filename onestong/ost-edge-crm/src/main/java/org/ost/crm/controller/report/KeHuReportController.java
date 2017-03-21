@@ -17,6 +17,7 @@ import org.ost.entity.report.dto.KeHuReportDto;
 import org.ost.entity.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -78,7 +79,7 @@ public class KeHuReportController extends Action {
 
 	@ApiOperation(value = "客户报表-获取图表数据", notes = "客户报表-获取图表数据")
 	@GetMapping(value = "chart")
-	public OperateResult<Object> reportChart(
+	public Object reportChart(
 			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
 			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
 			@RequestAttribute(value = LOGIN_USER) Users user,
@@ -94,12 +95,12 @@ public class KeHuReportController extends Action {
 			@RequestParam(value = "turnover", required = false) String turnover, HttpServletRequest request)
 					throws InterruptedException, ExecutionException {
 		Map<String, Object> params = this.getRequestParam(request);
-		return new OperateResult<Object>(keHuReportService.reportChart(managerOwnerName, params));
+		return keHuReportService.reportChart(managerOwnerName, params);
 	}
 
 	@ApiOperation(value = "客户报表-获取统计数据", notes = "客户报表-获取统计数据")
 	@GetMapping(value = "count")
-	public OperateResult<Object> reportCount(
+	public Object reportCount(
 			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
 			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
 			@RequestAttribute(value = LOGIN_USER) Users user,
@@ -114,7 +115,7 @@ public class KeHuReportController extends Action {
 			@RequestParam(value = "type", required = false) String type,
 			@RequestParam(value = "turnover", required = false) String turnover, HttpServletRequest request) {
 		Map<String, Object> params = this.getRequestParam(request);
-		return new OperateResult<Object>(keHuReportService.reportChart(managerOwnerName, params));
+		return keHuReportService.reportCount(managerOwnerName, params);
 	}
 
 }

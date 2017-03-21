@@ -117,7 +117,7 @@ public class CustomerController extends Action {
 	}
 
 	@ApiOperation(value = "客户报表-获取列表数据", notes = "客户报表-获取列表数据")
-	@GetMapping(value = "/KehuReportList")
+	@PostMapping(value = "/KehuReportList")
 	public OperateResult<Map<String, Object>> queryCustomerByParam(
 			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
 			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
@@ -128,7 +128,7 @@ public class CustomerController extends Action {
 	}
 
 	@ApiOperation(value = "客户报表-获取图表数据", notes = "客户报表-获取图表数据")
-	@GetMapping(value = "/KehuReportChart")
+	@PostMapping(value = "/KehuReportChart")
 	public OperateResult<Object> queryReportChart(
 			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
 			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
@@ -141,12 +141,14 @@ public class CustomerController extends Action {
 	}
 
 	@ApiOperation(value = "客户报表-获取统计数据", notes = "客户报表-获取统计数据")
-	@GetMapping(value = "/KehuReportCount")
+	@PostMapping(value = "/KehuReportCount")
 	public OperateResult<Object> queryReportCount(
+			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
+			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
 			@RequestParam(value = "managerOwnerName", required = false) String managerOwnerName,
 			@RequestParam(value = "startDate", required = false) String startDate,
 			@RequestParam(value = "endDate", required = false) String endDate, HttpServletRequest request) {
 		Map<String, Object> params = this.getRequestParam(request);
-		return new OperateResult<>(this.customerService.reportCount(params, managerOwnerName));
+		return new OperateResult<>(this.customerService.reportCount(params, managerOwnerName, curPage, perPageSum));
 	}
 }

@@ -3,6 +3,8 @@ package org.ost.crm.client;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.common.tools.OperateResult;
 import org.ost.entity.base.PageEntity;
 import org.ost.entity.customer.Customer;
@@ -78,9 +80,12 @@ public interface CustomerServiceClient extends BaseClient {
 			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
 			@RequestParam(value = "managerOwnerName", required = false) String managerOwnerName,
 			@RequestBody KeHuReportDto kh);
-	
+
 	@RequestMapping(value = "customer/KehuReportChart", method = RequestMethod.POST, consumes = "application/json")
+	public OperateResult<Object> queryReportChart(
+			@RequestParam(value = "managerOwnerName", required = false) String managerOwnerName);
+
+	@RequestMapping(value = "customer/KehuReportCount", method = RequestMethod.POST, consumes = "application/json")
 	public OperateResult<Object> queryReportCount(
 			@RequestParam(value = "managerOwnerName", required = false) String managerOwnerName);
-	
 }

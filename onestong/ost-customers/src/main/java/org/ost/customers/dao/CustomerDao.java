@@ -58,6 +58,9 @@ public interface CustomerDao extends Mapper<Customer> {
 	Integer selectReportCount(@Param("params") Map<String, Object> params,
 			@Param("managerOwnerName") String managerOwnerName);
 
-	List<KeHuReportDto> selectReportChart(@Param("params") Map<String, Object> params,@Param("managerOwnerName") String managerOwnerName);
-	
+	List<KeHuReportDto> selectReportChart(@Param("params") Map<String, Object> params,
+			@Param("managerOwnerName") String managerOwnerName);
+
+	Integer selectNewCount(@Param("params") Map<String, Object> params,
+			@Param("managerOwnerName") String managerOwnerName);
 }
