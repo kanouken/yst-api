@@ -2,7 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="org.ost.customers.dao.CustomerDao">
 
-
 	<select id="selectByIds" resultType="org.ost.entity.customer.Customer">
 
 		select id,name from tbl_customer tc
@@ -175,6 +174,13 @@
 		,tbl_customer.property->'$.belongIndustry' as belongIndustry
 		,tbl_customer.createTime as createTimeStr
 		<include refid="searchListSQL"></include>
+		<if test='params.startDate != null and params.startDate != ""'>
+			and tbl_customer.createTime >= #{params.startDate}
+		</if>
+		<if test='params.startDate != null and params.startDate != ""'>
+			and tbl_customer.createTime &lt;= #{params.endDate}
+		</if>
+		and tbl_customer.isDelete=0
 		order by
 		tbl_customer.createTime desc
 	</select>
@@ -185,7 +191,8 @@
 	</select>
 
 	<select id="selectReportChart" resultType="org.ost.entity.report.dto.KeHuReportVo">
-		select DATE_FORMAT(tbl_customer.createTime,'%Y-%m-%d') as createTimeStr
+		select DATE_FORMAT(tbl_customer.createTime,'%Y-%m-%d') as
+		createTimeStr
 		<include refid="searchListSQL"></include>
 		<if test='params.startDate != null and params.startDate != ""'>
 			and tbl_customer.createTime >= #{params.startDate}

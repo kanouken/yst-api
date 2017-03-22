@@ -9,6 +9,7 @@ import org.ost.crm.dao.project.ProjectTypeStepDao;
 import org.ost.entity.project.ProjectType;
 import org.ost.entity.project.ProjectTypeStep;
 import org.ost.entity.project.dto.ProjectStepsDetailDto;
+import org.ost.entity.project.vo.ProjectTypeVo;
 import org.ost.entity.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ public class ProjectTypeStepService {
 	public ProjectTypeStepDao projectTypeStepDao;
 
 	/**
-	 * 添加项目类型阶段
+	 * 添加和编辑项目类型阶段
 	 * 
 	 * @param projectTypeID
 	 * @param users
