@@ -1,0 +1,94 @@
+ <!-- sidebar start -->
+ 
+ 
+ <!-- 
+ position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1010
+ 
+  -->
+  <div class="admin-sidebar"  >
+   <!--  <ul class="am-list admin-sidebar-list">
+      <li><a href="index.do"><span class="am-icon-home"></span> 首页<span class="am-icon-angle-right am-fr am-margin-right"></span></a></li>
+      <li><a href="$!basePath/user/list"><span class="am-icon-user"></span> 用户管理</a></li>
+      <li><a href="$!basePath/department/list"><span class="am-icon-group"></span> 部门管理</a></li>
+      <li><a href="admin-index.html"><span class="am-icon-cogs"></span> 权限管理</a></li>
+      <li><a href="admin-index.html"><span class="am-icon-rocket"></span> 事件</a></li>
+      <li><a href="admin-index.html"><span class="am-icon-bar-chart"></span> 报表</a></li>
+      
+    </ul> -->
+	#if(!$entity.accountType)	
+	$pageTool.generalMoudles($!entity.moudles,$!basePath)
+	#else
+		
+		
+	 <ul class="am-list admin-sidebar-list">
+<!--       <li><a href="index.do"><span class="am-icon-home"></span> 首页<span class="am-icon-angle-right am-fr am-margin-right"></span></a></li>
+ -->     
+ 		 <li><a href="$!basePath/user/list"><span class="am-icon-user"></span>  用户管理</a></li>
+      <li><a href="$!basePath/department/list"><span class="am-icon-group"></span>部门管理</a></li>
+      <li><a href="$!basePath/role/list"><span class="am-icon-cogs"></span> 权限管理</a></li>
+        <li><a href="$!basePath/setting/worktime/initUpdate"><span class="am-icon-cogs"></span> 工作时间</a></li>
+                <li><a href="$!basePath/report/init"><span class="am-icon-cogs"></span> 考勤报表</a></li>
+        
+    </ul>
+		
+	#end
+	
+	<!--  <div class="am-panel am-panel-default admin-sidebar-panel">
+      <div class="am-panel-bd">
+        <p><span class="am-icon-bookmark"></span> 公告</p>
+        <p>开发日志点击这里查看</p>
+      </div>
+    </div>
+	
+	<div class="am-panel am-panel-default admin-sidebar-panel">
+      <div class="am-panel-bd">
+        <p><span class="am-icon-bookmark"></span> 公告</p>
+        <p>开发日志点击这里查看</p>
+      </div>
+    </div>
+    
+    
+    <div class="am-panel am-panel-default admin-sidebar-panel">
+      <div class="am-panel-bd">
+        <p><span class="am-icon-bookmark"></span> 公告</p>
+        <p>开发日志点击这里查看</p>
+      </div>
+    </div>
+	
+    <div class="am-panel am-panel-default admin-sidebar-panel">
+      <div class="am-panel-bd">
+        <p><span class="am-icon-bookmark"></span> 公告</p>
+        <p>时光静好，与君语；细水流年，与君同。—— Amaze UI</p>
+      </div>
+    </div> -->
+
+  
+  </div>
+  <div class="am-modal am-modal-confirm" tabindex="-1" id="alert">
+  <div class="am-modal-dialog">
+    <div class="am-modal-hd"><span id="title"></span></div>
+    <div class="am-modal-bd" id="content">
+     
+    </div>
+    <div class="am-modal-footer">
+      <span class="am-modal-btn" data-am-modal-confirm>确定</span>
+    </div>
+  </div>
+</div>
+  
+  <!-- 等待遮罩 -->
+  <div class="am-modal am-modal-loading am-modal-no-btn" tabindex="-1" id="modal-loading">
+  <div class="am-modal-dialog">
+    <div class="am-modal-hd">正在载入...</div>
+    <div class="am-modal-bd">
+      <span class="am-icon-spinner am-icon-spin"></span>
+    </div>
+  </div>
+</div>
+  
+  <!-- sidebar end -->

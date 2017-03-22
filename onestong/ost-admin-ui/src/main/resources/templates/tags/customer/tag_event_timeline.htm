@@ -1,0 +1,229 @@
+<!doctype html>
+<html class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>ONSTONG 易事通|客户事件列表</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="onestong">
+  <meta name="keywords" content="易事通">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <link rel="icon" type="image/png" href="$!basePath/resources/i/favicon.png">
+  <link rel="apple-touch-icon-precomposed" href="$!basePath/resources/i/app-icon72x72@2x.png">
+  <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+  <link rel="stylesheet" href="$!basePath/resources/css/amazeui.min.css"/>
+  <link rel="stylesheet" href="$!basePath/resources/css/admin.css">
+
+	<link href="$!basePath/resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+
+	<link href="$!basePath/resources/css/timeline.css" rel="stylesheet" type="text/css">
+
+</head>
+<body >
+<!--[if lte IE 9]>
+<p class="browsehappy">你正在使用<strong>过时</strong>的浏览器，Amaze UI 暂不支持。 请 <a href="http://browsehappy.com/" target="_blank">升级浏览器</a>
+  以获得更好的体验！</p>
+<![endif]-->
+
+	#parse('/common/header.htm')
+
+<div class="am-cf admin-main">
+
+ 	#parse('/common/sidebar.htm')
+
+  <!-- content start -->
+  <div class="admin-content" >
+	<input  type="hidden"  name="tagId" value="$!ctag.cTId"/>
+    <div class="am-cf am-padding">	
+      <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">$!ctag.cTName</strong> / <small>列表</small></div>
+    </div>
+
+    <div class="am-g"  >
+      <div class="am-u-md-6 am-cf">
+        <div class="am-fl am-cf">
+          <div class="am-btn-toolbar am-fl">
+            <div class="am-btn-group am-btn-group-xs">
+               <button class="am-btn am-btn-default backToList"><span class="am-icon-plus"></span>返回至标签列表</button>
+                <button type="button"  id="toggleToList" class="am-btn am-btn-default"><span class="am-icon-save"></span> 切换至列表展示</button>
+           <!--   <button type="button" class="am-btn am-btn-default"><span class="am-icon-archive"></span> 审核</button>
+              <button type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> 批量删除</button> -->
+            </div>
+           <!--  <div class="am-form-group am-margin-left am-fl">
+              <select>
+                <option value="option1">所有事件</option>
+                <option value="option2">外访</option>
+              </select>
+            </div>  -->
+          </div>
+        </div>
+      </div>
+      <!-- <div class="am-u-md-3 am-cf">
+        <div class="am-fr">
+          <div class="am-input-group am-input-group-sm">
+            <input type="text" class="am-form-field"  id="pTName" value="$!page.pageAttrs.pTName" >
+                <span class="am-input-group-btn">
+                  <button class="am-btn am-btn-default" id="btn_pTag_search" type="button">搜索</button>
+                </span>
+          </div>
+        </div>
+      </div> -->
+    </div>
+
+    <div class="am-g am-padding">
+    
+	<ul class="timeline">
+	
+		#foreach($event in $!events)
+        <li class="timeline-yellow">
+            <div class="timeline-time">
+                <span class="date">$date.format('yyyy/MM/dd',$!event.create_time)</span>
+                <span class="time">$date.format('HH:mm',$!event.create_time)</span>
+            </div>
+            <div class="timeline-icon"><img alt="" src="$!basePath/resources/i/event/event_visit.png"></div>
+            <div class="timeline-body">
+                <h2>$!event.title</h2>
+                <div class="timeline-content">
+                    <img class="timeline-img pull-left" src="$!basePath/resources/i/examples/2.jpg" alt="">
+                    $!event.content
+                        </div>
+                <div class="timeline-footer">
+                    <a href="#" class="nav-link pull-right">
+                      $!event.creator <i class="m-icon-swapright m-icon-white"></i>
+                    </a>
+                </div>
+            </div>
+        </li>
+        #end
+        
+        
+       <!--  <li class="timeline-blue">
+            <div class="timeline-time">
+                <span class="date">4/11/13</span>
+                <span class="time">12:04</span>
+            </div>
+            <div class="timeline-icon"><i class="fa fa-video-camera"></i></div>
+            <div class="timeline-body">
+                <h2>Management Meeting</h2>
+                <div class="timeline-content">
+                    <img class="timeline-img pull-right" src="./Metronic   Pages - Timeline_files/1.jpg" alt="">
+                        Caulie dandelion maize lentil collard greens radish arugula sweet pepper water spinach kombu courgette lettuce. Celery coriander bitterleaf epazote radicchio shallot winter collard greens spring onion squash lentil. Artichoke salad bamboo shoot black-eyed pea brussels sprout garlic kohlrabi purslane collard greens spring onion squash lentil. Artichoke salad bamboo shoot black-eyed pea brussels sprout garlic kohlrabi..
+                        </div>
+                <div class="timeline-footer">
+                    <a href="file:///Users/mac/Downloads/1.5.4me/fd.zip%20Folder/back/admin/template_content/page_timeline.html#" class="nav-link">
+                        Read more <i class="m-icon-swapright m-icon-white"></i>
+                    </a>
+                </div>
+            </div>
+        </li>
+        <li class="timeline-green">
+            <div class="timeline-time">
+                <span class="date">4/13/13</span>
+                <span class="time">05:36</span>
+            </div>
+            <div class="timeline-icon"><i class="fa fa-comments"></i></div>
+            <div class="timeline-body">
+                <h2>New Project Launch</h2>
+                <div class="timeline-content">
+                    <img class="timeline-img pull-left" src="./Metronic   Pages - Timeline_files/3.jpg" alt="">
+                        Winter purslane courgette pumpkin quandong komatsuna fennel green bean cucumber watercress. Pea sprouts wattle seed rutabaga okra yarrow cress avocado grape radish bush tomato ricebean. Pea sprouts wattle seed rutabaga okra yarrow cress avocado grape radish bush tomato ricebean.
+                        </div>
+                <div class="timeline-footer">
+                    <a href="file:///Users/mac/Downloads/1.5.4me/fd.zip%20Folder/back/admin/template_content/page_timeline.html#" class="nav-link">
+                        Read more <i class="m-icon-swapright m-icon-white"></i>
+                    </a>
+                </div>
+            </div>
+        </li>
+        <li class="timeline-purple">
+            <div class="timeline-time">
+                <span class="date">4/15/13</span>
+                <span class="time">13:15</span>
+            </div>
+            <div class="timeline-icon"><i class="fa fa-music"></i></div>
+            <div class="timeline-body">
+                <h2>Promotion Day</h2>
+                <div class="timeline-content">
+                    <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 175px;"><div class="scroller" data-height="175px" data-always-visible="1" data-rail-visible1="1" style="overflow: hidden; width: auto; height: 175px;">
+                        <p>
+                        <img class="timeline-img pull-right" src="./Metronic   Pages - Timeline_files/4.jpg" alt="">
+                            Caulie dandelion maize lentil collard greens radish arugula sweet pepper water spinach kombu courgette lettuce. Celery coriander bitterleaf epazote radicchio shallot winter purslane collard greens spring onion squash lentil. Artichoke salad bamboo shoot black-eyed pea brussels sprout garlic kohlrabi. coriander bitterleaf epazote radicchio shallot winter purslane collard.
+                            </p>
+                            <p>
+                            Coriander bitterleaf epazote radicchio shallot winter purslane collard.
+                            Caulie dandelion maize lentil collard greens radish arugula sweet pepper water spinach kombu courgette lettuce. Celery coriander bitterleaf epazote radicchio shallot winter purslane collard greens spring onion squash lentil. Artichoke salad bamboo shoot black-eyed pea brussels sprout garlic kohlrabi.
+                            </p>
+                            <p>
+                            <img class="timeline-img pull-left" src="./Metronic   Pages - Timeline_files/6.jpg" alt="">
+                                Caulie dandelion maize lentil collard greens radish arugula sweet pepper water spinach kombu courgette lettuce. Celery coriander bitterleaf epazote radicchio shallot winter purslane collard greens spring onion squash lentil. Artichoke salad bamboo shoot black-eyed pea brussels sprout garlic kohlrabi radicchio shallot winter purslane collard greens spring onion squash lentil.
+                                </p>
+                                <p>
+                                Coriander bitterleaf epazote radicchio shallot winter purslane collard.
+                                Caulie dandelion maize lentil collard greens radish arugula sweet pepper water spinach kombu courgette lettuce. Celery coriander bitterleaf epazote radicchio shallot winter purslane collard greens spring onion squash lentil. Artichoke salad bamboo shoot black-eyed pea brussels sprout garlic kohlrabi.
+                                </p>
+                                </div><div class="slimScrollBar" style="width: 7px; position: absolute; top: 105px; opacity: 0.4; display: block; border-radius: 7px; z-index: 99; right: 1px; height: 69.6022727272727px; background: rgb(161, 178, 189);"></div><div class="slimScrollRail" style="width: 7px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; opacity: 0.2; z-index: 90; right: 1px; background: rgb(51, 51, 51);"></div></div>
+                </div>
+                <div class="timeline-footer">
+                    <a href="file:///Users/mac/Downloads/1.5.4me/fd.zip%20Folder/back/admin/template_content/page_timeline.html#" class="btn blue">
+                        Read more <i class="m-icon-swapright m-icon-white"></i>
+                    </a>
+                </div>
+            </div>
+        </li>
+        <li class="timeline-red">
+            <div class="timeline-time">
+                <span class="date">4/16/13</span>
+                <span class="time">21:30</span>
+            </div>
+            <div class="timeline-icon"><i class="fa fa-rss"></i></div>
+            <div class="timeline-body">
+                <h2>Daily Feeds</h2>
+                <div class="timeline-content">
+                    <img class="timeline-img pull-left" src="./Metronic   Pages - Timeline_files/5.jpg" alt="">
+                        Parsley amaranth tigernut silver beet maize fennel spinach. Ricebean black-eyed pea maize scallion green bean spinach cabbage jicama bell pepper carrot onion corn plantain garbanzo. Sierra leone bologi komatsuna celery peanut swiss chard silver beet squash dandelion maize chicory burdock tatsoi dulse radish wakame beetroot.
+                        </div>
+                <div class="timeline-footer">
+                    <a href="file:///Users/mac/Downloads/1.5.4me/fd.zip%20Folder/back/admin/template_content/page_timeline.html#" class="btn green pull-right">
+                        Read more <i class="m-icon-swapright m-icon-white"></i>
+                    </a>
+                </div>
+            </div>
+        </li> -->
+
+           </ul>
+
+    </div>
+    
+  </div>
+  <!-- content end -->
+</div>
+
+ 	#include('/common/footer.htm')
+
+<!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="$!basePath/resources/js/polyfill/rem.min.js"></script>
+<script src="$!basePath/resources/js/polyfill/respond.min.js"></script>
+<script src="$!basePath/resources/js/amazeui.legacy.js"></script>
+<![endif]-->
+
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script src="$!basePath/resources/js/jquery.min.js"></script>
+<script src="$!basePath/resources/js/amazeui.min.js"></script>
+<!--<![endif]-->
+<script src="$!basePath/resources/js/app.js"></script>
+<script src="$!basePath/resources/js/plugs/page.js"></script>
+<script src="$!basePath/resources/js/tags/customerTag.js"></script>
+<script>
+	$(function(){
+		page.init();
+		customerTag.init();
+	})
+</script>
+</body>
+
+</html>

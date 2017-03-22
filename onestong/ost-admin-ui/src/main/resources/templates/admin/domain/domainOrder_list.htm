@@ -1,0 +1,185 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>ONESTONG | 授权历史</title>
+<meta name="description" content="这是一个 table 页面">
+<meta name="keywords" content="table">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png"
+	href="$!basePath/resources/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="$!basePath/resources/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="$!basePath/resources/css/amazeui.min.css" />
+<link rel="stylesheet" href="$!basePath/resources/css/admin.css">
+<link rel="stylesheet" href="$!basePath/resources/css/datepicker.css">
+
+<link href="$!basePath/resources/js/plugs/select2.css" />
+<link href="$!basePath/resources/js/plugs/bootstrap.min.css" />
+</head>
+<body>
+	<!--[if lte IE 9]>
+<p class="browsehappy">你正在使用<strong>过时</strong>的浏览器，Amaze UI 暂不支持。 请 <a href="http://browsehappy.com/" target="_blank">升级浏览器</a>
+  以获得更好的体验！</p>
+<![endif]-->
+
+	#parse('/common/header_admin.htm')
+
+	<div class="am-cf admin-main ">
+
+		#parse('/common/sidebar_admin.htm')
+		<!-- content start -->
+		<div class="admin-content">
+
+			<div class="am-cf am-padding">
+				<div class="am-fl am-cf">
+					<strong class="am-text-primary am-text-lg">域用户</strong> / <small>购买历史</small>
+				</div>
+			</div>
+
+			<div class="am-g  am-padding">
+				<div class="am-panel am-panel-default">
+					<div class="am-panel-hd">账户详情</div>
+					<div class="am-panel-bd">
+						<div class="am-g">
+							<div class="am-u-lg-4">用户</div>
+							<div class="am-u-lg-8">$!domain.domainName</div>
+						</div>
+						<div class="am-g">
+							<div class="am-u-lg-4">激活码数量</div>
+							<div class="am-u-lg-8">$!domainOrder.doSum个</div>
+						</div>
+						<div class="am-g">
+							<div class="am-u-lg-4">有效期</div>
+							<div class="am-u-lg-8">$date.format('yyyy年MM月dd日',$!domainOrder.startTime) 至 $date.format('yyyy年MM月dd日',$!domainOrder.endTime)</div>
+						</div>
+
+
+
+
+
+					</div>
+				</div>
+
+			</div>
+
+
+			<div class="am-g am-padding">
+				<div class="am-panel am-panel-default">
+					<div class="am-panel-hd">
+						<h3 class="am-panel-title">购买历史</h3>
+					</div>
+					<div class="am-panel-bd">
+					
+					<table class="am-table am-table-striped am-table-hover table-main">
+            <thead>
+              <tr>
+                <th class="table-check"><input type="checkbox" /></th><th class="table-id">ID</th>
+                <th class="table-title">数量</th>
+                <th class="table-type">最后修改人</th>
+                <th class="table-date">购买时间</th>
+              </tr>
+          </thead>
+          <tbody>
+       
+           #foreach($detail in $!domainOrder.details)
+            <tr>
+              <td><input type="checkbox" /></td>
+              <td>$velocityCount</td>
+              <td>$!detail.odSum</td>
+             <td>$!domainOrder.updator</td>
+             <td>$date.format($!detail.updateTime)</td>
+                        </tr>
+            #end
+            
+            
+          </tbody>
+        </table>
+        
+                  <div class="am-cf">
+  共 $!page.totalRecords 条记录
+  
+  <!-- 分页 -->
+  <div class="am-fr">
+	$pageTool.pages($!page)
+  </div>
+</div>
+					</div>
+					  
+					<div class="am-panel-footer">...</div>
+				</div>
+
+
+			</div>
+
+		</div>
+
+
+
+		<!-- content end -->
+	</div>
+
+#include('/common/footer.htm')
+
+	<!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="$!basePath/resources/js/polyfill/rem.min.js"></script>
+<script src="$!basePath/resources/js/polyfill/respond.min.js"></script>
+<script src="$!basePath/resources/js/amazeui.legacy.js"></script>
+<![endif]-->
+
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="$!basePath/resources/js/jquery.min.js"></script>
+	<script src="$!basePath/resources/js/amazeui.min.js"></script>
+
+	<!--<![endif]-->
+	<script src="$!basePath/resources/js/app.js"></script>
+	<script src="$!basePath/resources/js/plugs/page.js"></script>
+	
+	<script src="$!basePath/resources/js/admin/domainUser.js"></script>
+
+
+	<script>
+		$(function() {
+			page.init();
+			domain.init();
+			var startDate = new Date();
+			var endDate = new Date();
+			endDate.setFullYear(endDate.getFullYear() + 5);
+			console.log(endDate);
+			var $alert = $('#my-alert');
+			$('#my-start').datepicker({
+				format : 'yyyy/mm/dd'
+			}).on('changeDate.datepicker.amui', function(event) {
+				if (event.date.valueOf() > endDate.valueOf()) {
+					$alert.find('p').text('开始日期应小于结束日期！').end().show();
+				} else {
+					$alert.hide();
+					startDate = new Date(event.date);
+					$('#my-startDate').val($('#my-start').data('date'));
+				}
+				$(this).datepicker('close');
+			});
+
+			$('#my-end').datepicker({
+				format : 'yyyy/mm/dd'
+			}).on('changeDate.datepicker.amui', function(event) {
+				if (event.date.valueOf() < startDate.valueOf()) {
+					$alert.find('p').text('结束日期应大于开始日期！').end().show();
+				} else {
+					$alert.hide();
+					endDate = new Date(event.date);
+					$('#my-endDate').val($('#my-end').data('date'));
+				}
+				$(this).datepicker('close');
+			});
+		});
+	</script>
+</body>
+</html>

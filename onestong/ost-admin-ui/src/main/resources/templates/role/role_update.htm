@@ -1,0 +1,273 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>ONESTONG | 角色编辑</title>
+<meta name="description" content="这是一个 table 页面">
+<meta name="keywords" content="table">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png"
+	href="$!basePath/resources/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="$!basePath/resources/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="$!basePath/resources/css/amazeui.min.css" />
+<link rel="stylesheet" href="$!basePath/resources/css/admin.css">
+<link rel="stylesheet" href="$!basePath/resources/css/datepicker.css">
+
+<link href="$!basePath/resources/js/plugs/select2.css" />
+<link href="$!basePath/resources/js/plugs/bootstrap.min.css" />
+</head>
+<body>
+	<!--[if lte IE 9]>
+<p class="browsehappy">你正在使用<strong>过时</strong>的浏览器，Amaze UI 暂不支持。 请 <a href="http://browsehappy.com/" target="_blank">升级浏览器</a>
+  以获得更好的体验！</p>
+<![endif]-->
+
+	#parse('/common/header.htm')
+
+	<div class="am-cf admin-main">
+
+		#parse('/common/sidebar.htm')
+		<!-- content start -->
+		<div class="admin-content">
+
+			<div class="am-cf am-padding">
+				<div class="am-fl am-cf">
+					<strong class="am-text-primary am-text-lg">角色</strong> / <small>编辑</small>
+				</div>
+			</div>
+
+			<div class="am-g am-padding">
+ 			<form class="am-form" method="POST" action="$!basePath/role/update">
+				<fieldset>
+					<input type="hidden" name="roleId" value="$!role.roleId" />
+					<div class="am-form-group">
+						<label for="doc-ipt-doc-1">角色名</label> <input name="roleName" type="text" class=""
+							id="" value="$!role.roleName" placeholder="输入角色名称">
+					</div>
+					
+					<div class="am-form-group">
+						<label for="doc-ipt-doc-1">级别</label> <input name="level" type="text" class=""
+							id="" value="$!role.level" placeholder="输入角色名称">
+					</div>
+					<h6 class="am-u-md-3 am-u-sm-3 am-u-sm-centered">后台权限</h6>
+					<hr>
+					<label>用户管理</label>
+					<div class="am-form-group">
+						<label class="am-checkbox-inline"> <input type="checkbox"
+							value="addUser" name="ost_moudle_users" #if($pageTool.perm($!perms,'addUser')) checked="checked" #end> 添加
+						</label> <label class="am-checkbox-inline"> <input type="checkbox"
+							value="updateUser"   name="ost_moudle_users" #if($pageTool.perm($!perms,'updateUser')) checked="checked" #end  > 更新
+						</label> <label class="am-checkbox-inline"> <input type="checkbox"
+							value="unBindUser"  name="ost_moudle_users" #if($pageTool.perm($!perms,'unBindUser')) checked="checked" #end > 解绑设备
+						</label>
+						<label class="am-checkbox-inline"> <input type="checkbox"
+							value="userListOwn"  name="ost_moudle_users" #if($pageTool.perm($!perms,'userListOwn')) checked="checked" #end> 查看(本部门成员)
+						</label>
+						
+						<label class="am-checkbox-inline"> <input type="checkbox"
+							value="userListAll"  name="ost_moudle_users" #if($pageTool.perm($!perms,'userListAll')) checked="checked" #end> 查看(所有部门成员)
+						</label>
+						<label class="am-checkbox-inline"> <input type="checkbox"
+							value="deleteUser"  name="ost_moudle_users" #if($pageTool.perm($!perms,'deleteUser')) checked="checked" #end> 删除
+						</label>
+					</div>
+					<hr>
+					<label>部门管理</label>
+
+
+					<div class="am-form-group">
+						<label class="am-checkbox-inline"> <input name="ost_moudle_depts" type="checkbox"
+							value="addDepartment" #if($pageTool.perm($!perms,'addDepartment')) checked="checked" #end> 添加
+						</label> <label class="am-checkbox-inline"> <input name="ost_moudle_depts" type="checkbox"
+							value="updateDepartment" #if($pageTool.perm($!perms,'updateDepartment')) checked="checked" #end> 更新
+						</label> <label class="am-checkbox-inline"> <input name="ost_moudle_depts" type="checkbox"
+							value="deleteDepartment" #if($pageTool.perm($!perms,'deleteDepartment')) checked="checked" #end> 删除
+						</label>
+						<label class="am-checkbox-inline"> <input  name="ost_moudle_depts" type="checkbox"
+							value="departmentList"#if($pageTool.perm($!perms,'departmentList')) checked="checked" #end> 查看
+						</label>
+					</div>
+					
+					<hr>
+					<label>角色管理</label>
+
+
+					<div class="am-form-group">
+						<label class="am-checkbox-inline"> <input  name="ost_moulde_roles" type="checkbox"
+							value="addRole" #if($pageTool.perm($!perms,'addRole')) checked="checked" #end> 添加
+						</label> <label class="am-checkbox-inline"> <input  name="ost_moulde_roles"  type="checkbox"
+							value="updateRole" #if($pageTool.perm($!perms,'updateRole')) checked="checked" #end> 更新
+						</label> <label class="am-checkbox-inline"> <input   name="ost_moulde_roles" type="checkbox"
+							value="deleteRole" #if($pageTool.perm($!perms,'deleteRole')) checked="checked" #end> 删除
+						</label>
+						<label class="am-checkbox-inline"> <input   name="ost_moulde_roles" type="checkbox"
+							value="roleList" #if($pageTool.perm($!perms,'roleList')) checked="checked" #end> 查看
+						</label>
+					</div>
+					
+					<hr>
+					<label>报表</label>
+
+
+					<div class="am-form-group">
+						<label class="am-checkbox-inline"> <input type="checkbox"
+							value="listChartOwn" name="ost_moudle_chart" #if($pageTool.perm($!perms,'listChartOwn')) checked="checked" #end >查看（本部门的成员）
+						</label>
+						
+						<label class="am-checkbox-inline"> <input type="checkbox"
+							value="listChartAll" name="ost_moudle_chart" #if($pageTool.perm($!perms,'listChartAll')) checked="checked" #end >查看（所有部门的成员）
+						</label>
+					</div>
+
+					<hr>
+					<label>项目标签</label>
+
+
+					<div class="am-form-group">
+						<label class="am-checkbox-inline"> <input name="ost_moudle_p_tags" type="checkbox"
+							value="pTagList" #if($pageTool.perm($!perms,'pTagList')) checked="checked" #end> 查看
+						</label>
+					</div>
+					
+					<hr>
+					<label>客户标签</label>
+
+
+					<div class="am-form-group">
+						<label class="am-checkbox-inline"> <input  name="ost_moudle_c_tags" type="checkbox"
+							value="cTagList" #if($pageTool.perm($!perms,'cTagList')) checked="checked" #end> 查看
+						</label>
+					</div>
+					<hr>
+					<label>工作时间</label>
+
+
+						<div class="am-form-group">
+							<label class="am-checkbox-inline"> <input
+								name="ost_moudle_worktime" type="checkbox" value="updateWorktime"  #if($pageTool.perm($!perms,'updateWorktime')) checked="checked" #end>
+								修改
+							</label>
+						</div>
+						<hr>
+					
+					
+					
+					
+					
+					
+					<h6 class="am-u-md-3 am-u-sm-3 am-u-sm-centered">客户端权限</h6>
+					
+					<label>事件</label>
+
+
+					<div class="am-form-group">
+						<label class="am-checkbox-inline"> <input  name="ost_app_moudle_events" type="checkbox"
+							value="self_below_events"  #if($pageTool.perm($!perms,'self_below_events')) checked="checked" #end> 接收来自部门其他成员的事件推送
+						</label>
+						<label class="am-checkbox-inline"> <input  name="ost_app_moudle_events" type="checkbox"
+							value="all_events"  #if($pageTool.perm($!perms,'all_events')) checked="checked" #end> 接收来自所有其他成员的事件推送
+						</label>
+						<label class="am-checkbox-inline"> <input  name="ost_app_moudle_events" type="checkbox"
+							value="create_attence"  #if($pageTool.perm($!perms,'create_attence')) checked="checked" #end> 创建考勤事件
+						</label>
+						<label class="am-checkbox-inline"> <input  name="ost_app_moudle_events" type="checkbox"
+							value="create_visit"  #if($pageTool.perm($!perms,'create_visit')) checked="checked" #end> 创建外访事件
+						</label>
+						
+					</div>
+					
+					<hr>
+					
+					<label>发现</label>
+
+
+						<div class="am-form-group">
+							<label class="am-checkbox-inline"> <input
+								name="ost_app_moudle_find" type="checkbox"
+								value="project_tags_read" #if($pageTool.perm($!perms,'project_tags_read')) checked="checked" #end> 查看项目标签
+							</label>
+							<label class="am-checkbox-inline"> <input
+								name="ost_app_moudle_find" type="checkbox"
+								value="customer_tags_read" #if($pageTool.perm($!perms,'customer_tags_read')) checked="checked" #end> 查看客户标签
+							</label> 
+							
+							<label class="am-checkbox-inline"> <input
+								name="ost_app_moudle_find" type="checkbox"
+								value="self_below_reports" #if($pageTool.perm($!perms,'self_below_reports')) checked="checked" #end> 查看事件简报(包括快捷报表、事件轨迹等)
+							</label>
+							
+							</div>
+
+						<hr>
+						
+					
+					
+					
+					
+					
+					<label>我的</label>
+
+
+					<!-- <div class="am-form-group">
+						<label class="am-checkbox-inline"> <input  name="ost_app_moudle_my" type="checkbox"
+							value="self_below_reports" #if($pageTool.perm($!perms,'self_below_reports')) checked="checked" #end>  查看事件简报
+						</label>
+						
+						
+					</div> -->
+
+					<p class="am-u-sm-6 am-u-md-3 am-u-sm-centered">
+						<button id="backTolist" type="button"
+							class="am-btn am-btn-primary am-btn-xs">返回列表页</button>
+						<button type="button" id="role_update_btn"
+							class="am-btn am-btn-primary am-btn-xs">提交</button>
+					</p>
+				</fieldset>
+			</form>
+
+
+
+</div>
+
+
+		</div>
+
+
+
+		<!-- content end -->
+	</div>
+
+ 	#include('/common/footer.htm')
+
+
+	<!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="$!basePath/resources/js/polyfill/rem.min.js"></script>
+<script src="$!basePath/resources/js/polyfill/respond.min.js"></script>
+<script src="$!basePath/resources/js/amazeui.legacy.js"></script>
+<![endif]-->
+
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="$!basePath/resources/js/jquery.min.js"></script>
+	<script src="$!basePath/resources/js/amazeui.min.js"></script>
+
+	<!--<![endif]-->
+	<script src="$!basePath/resources/js/app.js"></script>
+	<script src="$!basePath/resources/js/role/role.js"></script>
+
+
+	<script>
+		$(function() {
+
+			role.init();
+		})
+	</script>
+</body>
+</html>

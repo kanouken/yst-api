@@ -11,9 +11,9 @@ import org.ost.entity.customer.Customer;
 import org.ost.entity.customer.CustomerProject;
 import org.ost.entity.customer.org.CustomerOrg;
 import org.ost.entity.customer.user.UserCustomers;
-import org.ost.entity.customer.vo.CustomerCreateVo;
-import org.ost.entity.customer.vo.CustomerRepot;
 import org.ost.entity.customer.vo.CustomerVo;
+import org.ost.entity.report.dto.KeHuReportDto;
+import org.ost.entity.report.dto.KeHuReportVo;
 import org.springframework.stereotype.Repository;
 
 import tk.mybatis.mapper.common.Mapper;
@@ -26,7 +26,8 @@ public interface CustomerDao extends Mapper<Customer> {
 
 	int updateCustomerSelective(@Param("customer") Customer customer);
 
-	Integer selectCustomerCount(@Param("params") Map<String, String> params, @Param("customer") Customer customer, @Param("keyword") String keyword);
+	Integer selectCustomerCount(@Param("params") Map<String, String> params, @Param("customer") Customer customer,
+			@Param("keyword") String keyword);
 
 	List<Customer> selectByIds(@Param("ids") Integer[] ids);
 
@@ -51,7 +52,16 @@ public interface CustomerDao extends Mapper<Customer> {
 	@Update("update tbl_project_customer set customerID = #{customerID} ,updateBy = #{updateBy},updateTime=#{updateTime}  where projectID = #{projectID} and schemaID =#{schemaId} ")
 	Integer updateCustomerProject(CustomerProject cProject);
 
-	//客户报表
-	List<CustomerRepot> selectCustomerByParam(@Param("userID") Integer userID);
-	
+	// 客户报表
+	List<KeHuReportDto> selectReportByParam(@Param("params") Map<String, Object> params,
+			@Param("managerOwnerName") String managerOwnerName, RowBounds rb);
+
+	Integer selectReportCount(@Param("params") Map<String, Object> params,
+			@Param("managerOwnerName") String managerOwnerName);
+
+	List<KeHuReportVo> selectReportChart(@Param("params") Map<String, Object> params,
+			@Param("managerOwnerName") String managerOwnerName);
+
+	Integer selectNewCount(@Param("params") Map<String, Object> params,
+			@Param("managerOwnerName") String managerOwnerName);
 }

@@ -2,14 +2,17 @@ package org.ost.customers.services;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
+import org.common.tools.OperateResult;
 import org.common.tools.db.Page;
 import org.common.tools.pinyin.Chinese2PY;
 import org.ost.customers.dao.CustomerDao;
@@ -32,8 +35,9 @@ import org.ost.entity.customer.mapper.CustomerEntityMapper;
 import org.ost.entity.customer.org.CustomerOrg;
 import org.ost.entity.customer.user.UserCustomers;
 import org.ost.entity.customer.vo.CustomerCreateVo;
-import org.ost.entity.customer.vo.CustomerRepot;
 import org.ost.entity.customer.vo.CustomerVo;
+import org.ost.entity.report.dto.KeHuReportDto;
+import org.ost.entity.report.dto.KeHuReportVo;
 import org.ost.entity.user.Users;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -154,8 +158,8 @@ public class CustomerService {
 		String keyword = null;
 		if (customer.getProperty() != null) {
 			params = (Map<String, String>) customer.getProperty();
-			keyword = MapUtils.getString(params,"keyword");
-			if(StringUtils.isNotEmpty(keyword)){
+			keyword = MapUtils.getString(params, "keyword");
+			if (StringUtils.isNotEmpty(keyword)) {
 				params.remove("keyword");
 			}
 		}
@@ -395,25 +399,81 @@ public class CustomerService {
 		return HttpStatus.OK.name();
 	}
 
-	// 客户报表
+	/**
+	 * 客户报表-获取列表数据
+	 * 
+	 * @param managerOwnerName
+	 * @param kh
+	 * @param curPage
+	 * @param perPageSum
+	 * @return
+	 */
 	@Transactional(readOnly = true)
-	public List<CustomerRepot> queryCustomerByParam(Integer userID, Integer id) {		
-		UserCustomers user = new UserCustomers();
-		user.setUserId(userID);
-		List<CustomerRepot> customers = this.customerDao.selectCustomerByParam(userID);
-		customers.forEach(c -> {
-			c.getId();
-			c.getName();
-			c.getType();
-			c.getBelongIndustry();
-			c.getCreateTime();
-			c.getDealFrequency();
-			c.getNature();
-			c.getSource();
-			c.getTurnover();
-			c = new CustomerRepot();
+	public Map<String, Object> queryCustomerByReport(String managerOwnerName, KeHuReportDto kh, Integer curPage,
+			Integer perPageSum) {
+		Page page = new Page();
+		page.setCurPage(curPage.intValue());
+		page.setPerPageSum(perPageSum.intValue());
+		RowBounds rb = new RowBounds(page.getNextPage(), page.getPerPageSum());
+		Map<String, Object> params = new HashMap<>();
+		params.put("dealFrequency", kh.getDealFrequency());
+		params.put("type", kh.getType());
+		params.put("turnover", kh.getTurnover());
+		params.put("isPlc", kh.getIsPlc());
+		params.put("nature", kh.getNature());
+		params.put("source", kh.getSource());
+		params.put("belongIndustry", kh.getBelongIndustry());
+		params.put("startDate", kh.getCreateTimeStr());
+		params.put("endDate", kh.getCreateTimeStr());
+		Integer totalRecord = this.customerDao.selectNewCount(params, managerOwnerName);
+		List<KeHuReportDto> khDto = this.customerDao.selectReportByParam(params, managerOwnerName, rb);
+		if (totalRecord > 0) {
+			khDto = this.customerDao.selectReportByParam(params, managerOwnerName, rb);
+		}
+		return OperateResult.renderPage(page, khDto);
+	}
+
+	/**
+	 * 客户报表-获取图表数据
+	 * @param params
+	 * @param managerOwnerName
+	 * @param curPage
+	 * @param perPageSum
+	 * @return
+	 * @throws InterruptedException
+	 * @throws ExecutionException
+	 */
+	public Object reportChart(Map<String, Object> params, String managerOwnerName, Integer curPage, Integer perPageSum)
+			throws InterruptedException, ExecutionException {
+		List<KeHuReportVo> kh = this.customerDao.selectReportChart(params, managerOwnerName);
+		Integer newCustomerCount=this.customerDao.selectNewCount(params, managerOwnerName);
+		Integer totalCustomerCount = this.customerDao.selectReportCount(params, managerOwnerName);
+		params.clear();
+		params.put("newCustomerCount", newCustomerCount);
+		params.put("totalCustomerCount", totalCustomerCount);
+		kh.forEach(k->{
+			k.setNewCustomerCount(newCustomerCount);
+			k.setTotalCustomerCount(totalCustomerCount);
+			params.put("createTimeStr", k);
 		});
-		return customers;
+		return kh;
+	}
+
+	/**
+	 * 客户报表-获取统计数据
+	 * 
+	 * @param params
+	 * @param managerOwnerName
+	 * @return
+	 */
+	public Object reportCount(Map<String, Object> params, String managerOwnerName, Integer curPage,
+			Integer perPageSum) {
+		Integer newCustomerCount = this.customerDao.selectNewCount(params, managerOwnerName);
+		Integer totalCustomerCount = this.customerDao.selectReportCount(params, managerOwnerName);
+		params.clear();
+		params.put("newCustomerCount", newCustomerCount);
+		params.put("totalCustomerCount", totalCustomerCount);
+		return params;
 	}
 
 }

@@ -1,0 +1,201 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>Amaze UI Admin table Examples</title>
+<meta name="description" content="这是一个 table 页面">
+<meta name="keywords" content="table">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png"
+	href="$!basePath/resources/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="$!basePath/resources/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="$!basePath/resources/css/amazeui.min.css" />
+<link rel="stylesheet" href="$!basePath/resources/css/admin.css">
+<link rel="stylesheet" href="$!basePath/resources/css/datepicker.css">
+
+<link href="$!basePath/resources/js/plugs/select2.css" />
+<link href="$!basePath/resources/js/plugs/bootstrap.min.css" />
+</head>
+<body>
+	<!--[if lte IE 9]>
+<p class="browsehappy">你正在使用<strong>过时</strong>的浏览器，Amaze UI 暂不支持。 请 <a href="http://browsehappy.com/" target="_blank">升级浏览器</a>
+  以获得更好的体验！</p>
+<![endif]-->
+
+	#parse('/common/header_admin.htm')
+
+	<div class="am-cf admin-main ">
+
+		#parse('/common/sidebar_admin.htm')
+		<!-- content start -->
+		<div class="admin-content">
+
+			<div class="am-cf am-padding">
+				<div class="am-fl am-cf">
+					<strong class="am-text-primary am-text-lg">域用户</strong> / <small>添加</small>
+				</div>
+			</div>
+
+			<div class="am-g  am-padding">
+				<div class="am-panel am-panel-default">
+					<div class="am-panel-hd">域用户</div>
+					<div class="am-panel-bd">
+						<div class="am-g">
+							<div class="am-u-lg-4">用户</div>
+							<div class="am-u-lg-8">xxxxx</div>
+						</div>
+						<div class="am-g">
+							<div class="am-u-lg-4">账户</div>
+							<div class="am-u-lg-8">xxx</div>
+						</div>
+						<div class="am-g">
+							<div class="am-u-lg-4">密码</div>
+							<div class="am-u-lg-8">xxxx</div>
+						</div>
+
+
+						<div class="am-g">
+							<div class="am-u-lg-4">激活码数量</div>
+							<div class="am-u-lg-8">8个</div>
+						</div>
+
+						<div class="am-g">
+							<div class="am-u-lg-4">有效期</div>
+							<div class="am-u-lg-8">2012年 12 月 1日 至 2015年12月 1日</div>
+						</div>
+
+
+
+
+
+					</div>
+				</div>
+
+			</div>
+
+
+			<div class="am-g am-padding">
+				<div class="am-panel am-panel-default">
+					<div class="am-panel-hd">
+						<h3 class="am-panel-title">购买历史</h3>
+					</div>
+					<div class="am-panel-bd">
+					
+					<table class="am-table am-table-striped am-table-hover table-main">
+            <thead>
+              <tr>
+                <th class="table-check"><input type="checkbox" /></th><th class="table-id">ID</th>
+                <th class="table-title">用户名</th>
+                <th class="table-type">邮箱</th>
+                <th class="table-author">状态</th>
+                <th class="table-date">修改日期</th>
+                <th class="table-set">操作</th>
+              </tr>
+          </thead>
+          <tbody>
+       
+           #foreach($user in $!users)
+            <tr>
+              <td><input type="checkbox" /></td>
+              <td>$!user.userId</td>
+              <td>$!user.realname</td>
+              <td><a href="mailto:1462927100@qq.com">$!user.email</a></td>
+              #if($user.state == '0')
+              <td class="am-active">正常</td>
+              #else
+              <td class="am-disabled">禁用</td>
+              #end
+              <td>$date.format($!user.updateTime)</td>
+              <td>
+                <div class="am-btn-toolbar">
+                  <div class="am-btn-group am-btn-group-xs">
+                    <button class="am-btn am-btn-default am-btn-xs am-text-secondary"><span class="am-icon-pencil-square-o"></span> 编辑</button>
+                    <button class="am-btn am-btn-default am-btn-xs"><span class="am-icon-copy"></span> 复制</button>
+                    <button class="am-btn am-btn-default am-btn-xs am-text-danger"><span class="am-icon-trash-o"></span> 删除</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            #end
+            
+            
+          </tbody>
+        </table>
+					</div>
+					  
+					<div class="am-panel-footer">...</div>
+				</div>
+
+
+			</div>
+
+		</div>
+
+
+
+		<!-- content end -->
+	</div>
+
+
+	#include('/common/footer.htm')
+
+	<!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="$!basePath/resources/js/polyfill/rem.min.js"></script>
+<script src="$!basePath/resources/js/polyfill/respond.min.js"></script>
+<script src="$!basePath/resources/js/amazeui.legacy.js"></script>
+<![endif]-->
+
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="$!basePath/resources/js/jquery.min.js"></script>
+	<script src="$!basePath/resources/js/amazeui.min.js"></script>
+
+	<!--<![endif]-->
+	<script src="$!basePath/resources/js/app.js"></script>
+	<script src="$!basePath/resources/js/admin/domainUser.js"></script>
+
+
+	<script>
+		$(function() {
+			domain.init();
+			var startDate = new Date();
+			var endDate = new Date();
+			endDate.setFullYear(endDate.getFullYear() + 5);
+			console.log(endDate);
+			var $alert = $('#my-alert');
+			$('#my-start').datepicker({
+				format : 'yyyy/mm/dd'
+			}).on('changeDate.datepicker.amui', function(event) {
+				if (event.date.valueOf() > endDate.valueOf()) {
+					$alert.find('p').text('开始日期应小于结束日期！').end().show();
+				} else {
+					$alert.hide();
+					startDate = new Date(event.date);
+					$('#my-startDate').val($('#my-start').data('date'));
+				}
+				$(this).datepicker('close');
+			});
+
+			$('#my-end').datepicker({
+				format : 'yyyy/mm/dd'
+			}).on('changeDate.datepicker.amui', function(event) {
+				if (event.date.valueOf() < startDate.valueOf()) {
+					$alert.find('p').text('结束日期应大于开始日期！').end().show();
+				} else {
+					$alert.hide();
+					endDate = new Date(event.date);
+					$('#my-endDate').val($('#my-end').data('date'));
+				}
+				$(this).datepicker('close');
+			});
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,250 @@
+
+
+
+<html>
+
+    <head><link rel="alternate" type="text/xml" href="/webservices/qqOnlineWebService.asmx?disco" />
+
+    <style type="text/css">
+    
+		BODY { color: #000000; background-color: white; font-family: Verdana; margin-left: 0px; margin-top: 0px; }
+		#content { margin-left: 30px; font-size: .70em; padding-bottom: 2em; }
+		A:link { color: #336699; font-weight: bold; text-decoration: underline; }
+		A:visited { color: #6699cc; font-weight: bold; text-decoration: underline; }
+		A:active { color: #336699; font-weight: bold; text-decoration: underline; }
+		A:hover { color: cc3300; font-weight: bold; text-decoration: underline; }
+		P { color: #000000; margin-top: 0px; margin-bottom: 12px; font-family: Verdana; }
+		pre { background-color: #e5e5cc; padding: 5px; font-family: Courier New; font-size: x-small; margin-top: -5px; border: 1px #f0f0e0 solid; }
+		td { color: #000000; font-family: Verdana; font-size: .7em; }
+		h2 { font-size: 1.5em; font-weight: bold; margin-top: 25px; margin-bottom: 10px; border-top: 1px solid #003366; margin-left: -15px; color: #003366; }
+		h3 { font-size: 1.1em; color: #000000; margin-left: -15px; margin-top: 10px; margin-bottom: 10px; }
+		ul { margin-top: 10px; margin-left: 20px; }
+		ol { margin-top: 10px; margin-left: 20px; }
+		li { margin-top: 10px; color: #000000; }
+		font.value { color: darkblue; font: bold; }
+		font.key { color: darkgreen; font: bold; }
+		font.error { color: darkred; font: bold; }
+		.heading1 { color: #ffffff; font-family: Tahoma; font-size: 26px; font-weight: normal; background-color: #003366; margin-top: 0px; margin-bottom: 0px; margin-left: -30px; padding-top: 10px; padding-bottom: 3px; padding-left: 15px; width: 105%; }
+		.button { background-color: #dcdcdc; font-family: Verdana; font-size: 1em; border-top: #cccccc 1px solid; border-bottom: #666666 1px solid; border-left: #cccccc 1px solid; border-right: #666666 1px solid; }
+		.frmheader { color: #000000; background: #dcdcdc; font-family: Verdana; font-size: .7em; font-weight: normal; border-bottom: 1px solid #dcdcdc; padding-top: 2px; padding-bottom: 2px; }
+		.frmtext { font-family: Verdana; font-size: .7em; margin-top: 8px; margin-bottom: 0px; margin-left: 32px; }
+		.frmInput { font-family: Verdana; font-size: 1em; }
+		.intro { margin-left: -15px; }
+           
+    </style>
+
+    <title>
+	易事通 查询外访记录 调用示例
+</title>
+	<script src="$!basePath/resources/js/jquery.min.js"></script>
+<script src="$!basePath/resources/js/api/test.js"></script>
+
+	<script type="text/javascript">
+		$(function(){
+			
+			test.init();
+			
+		})
+	
+	</script>
+
+</head>
+
+  <body>
+
+    <div id="content">
+
+      <p class="heading1"> 易事通 查询外访（按月） 记录 调用示例</p><br>
+
+      
+
+      
+
+      <span>
+          <p class="intro">单击<a href="$!basePath/api/doc/visitEvent/index">此处</a>，获取完整的操作列表。</p>
+          <h2>http://remotHost:remotPort/contextPath/api/visitEvent/records/{userId}/{year}/{month}/{day}/{curPage}/{perPageSum}/{token}</h2>
+          <p class="intro"><br /><h3>查询考勤记录</h3><p>
+          输入参数：
+          <pre>
+          	userId  查询的用户 id
+          	year    年份 
+          	month   查询的月份 
+          	day     固定 传 “1” 就好了。
+          	curPage 翻页  页码 
+          	perPageSum 每页显示多少条记录 
+          </pre>
+          <br/>
+          返回数据：
+          
+          </p><br /></p>
+
+          <h3>测试</h3>
+          <pre style="background-color: black;" >
+          <font style="color: white;">curl   "http://localhost:8080/ONESTONG/api/visitEvent/records/3/2015/1/1/1/5/asfafasfafafa"</font>
+          
+          </pre>
+          
+
+<input type="hidden"  value="$!basePath"  id="ctx"/>
+
+                      <!-- <form  target="_blank"  id="event_records"  action='$!basePath/api/attenceEvent/signStatusForToday' method="GET">                      
+                        
+                          <table cellspacing="0" cellpadding="4" frame="box" bordercolor="#dcdcdc" rules="none" style="border-collapse: collapse;">
+                          <tr>
+	<td class="frmHeader" background="#dcdcdc" style="border-right: 2px solid white;">参数</td>
+	<td class="frmHeader" background="#dcdcdc">值</td>
+	<td class="frmHeader" background="#dcdcdc">参数名称</td>
+	<td class="frmHeader" background="#dcdcdc">类型</td>
+                          <tr>
+                            <td class="frmText" style="color: #000000; font-weight: normal;">用户id:</td>
+                            <td><input class="frmInput" type="text" size="50" name="userId"></td>
+                            <td>userId</td>
+                            <td>Int</td>
+                          </tr>
+                            <tr>
+                            <td class="frmText" style="color: #000000; font-weight: normal;">查询月份:</td>
+                            <td><input class="frmInput" type="text" placeholder="2012/12/01(已此格式提交，表示12月份 ，11月份类似-2012/11/01)" size="50" name="yearAndMonth"></td>
+                            <td>yearAndMonth</td>
+                            <td>String</td>
+                          </tr>
+                          
+                           <tr>
+                            <td class="frmText" style="color: #000000; font-weight: normal;">请求页:</td>
+                            <td><input class="frmInput" type="text"  size="50" name="curPage"></td>
+                            <td>curPage</td>
+                            <td>Int</td>
+                          </tr>
+                          
+                           <tr>
+                            <td class="frmText" style="color: #000000; font-weight: normal;">每页拉取多少条记录（默认是5条）:</td>
+                            <td><input class="frmInput" type="text"  size="50" name="perPageSum"></td>
+                            <td>perPageSum</td>
+                            <td>Int</td>
+                          </tr>
+                           <tr>
+                            <td class="frmText" style="color: #000000; font-weight: normal;">token:</td>
+                            <td><input class="frmInput" type="text" size="50" name="test_token"></td>
+                        	<td></td>
+                            <td>String</td>
+                          </tr>
+                        <tr>
+                          <td></td>
+                          <td align="right"> <input type="submit" value="调用" class="button"></td>
+                          
+                        </tr>
+                        </table>
+                      
+
+                    </form> -->
+                  <span>
+
+
+         
+
+<!--           <span>
+              <h3>HTTP GET</h3>
+              <p>以下是 HTTP GET 请求和响应示例。所显示的<font class=value>占位符</font>需替换为实际值。</p>
+
+              <pre>GET /webservices/qqOnlineWebService.asmx/qqCheckOnline?<font class=key>qqCode</font>=<font class=value>string</font> HTTP/1.1
+Host: www.webxml.com.cn
+</pre>
+
+              <pre>HTTP/1.1 200 OK
+Content-Type: text/xml; charset=utf-8
+Content-Length: <font class=value>length</font>
+
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;string xmlns="http://WebXml.com.cn/"&gt;<font class=value>string</font>&lt;/string&gt;</pre>
+          </span> -->
+
+          <span>
+              <h3>HTTP GET</h3>
+              <p>以下是 可能的返回示例</p>
+
+              <pre>
+   部分返回码说明  
+   state  0 //外访 进行中
+   state  1 //外访 完成
+    
+              
+</pre>
+
+              <pre>
+
+
+
+{"statusCode":"g_t_invalid","description":"无效的 TOKEN","data":null}
+
+{
+    "statusCode": "200",
+    "description": "",
+    "data": [
+        {
+            "veId": "sfsfsf-sfsfsf-sfsf",
+            "userId": "3",
+            "customerId": "",
+            "title": "我去韦德办事",
+            "content": "testtest",
+            "visitedTime": "1420509691000",
+            "vistedAddress": "湖北武汉",
+            "vistedLongitude": "112.2323",
+            "visitedLatitude": "23.34",
+            "visitoutTime": "",
+            "visitoutAddress": "",
+            "visitoutLongitude": "",
+            "visitoutLatitude": "",
+            "state": "0",
+            "createTime": "1420509691000",
+            "updateTime": "1420509691000",
+            "creator": "admin",
+            "updator": "admin",
+            "valid": "0",
+            "optional1": "",
+            "optional2": "",
+            "optional3": "",
+            "visitSummary": "",
+            "visitoutTitle": ""
+        },
+        {
+            "veId": "sfsfsf-sfsfsf-sfsf",
+            "userId": "3",
+            "customerId": "",
+            "title": "我去韦德办事",
+            "content": "testtest",
+            "visitedTime": "1420509691000",
+            "vistedAddress": "湖北武汉",
+            "vistedLongitude": "112.2323",
+            "visitedLatitude": "23.34",
+            "visitoutTime": "",
+            "visitoutAddress": "",
+            "visitoutLongitude": "",
+            "visitoutLatitude": "",
+            "state": "0",
+            "createTime": "1420509691000",
+            "updateTime": "1420509691000",
+            "creator": "admin",
+            "updator": "admin",
+            "valid": "0",
+            "optional1": "",
+            "optional2": "",
+            "optional3": "",
+            "visitSummary": "",
+            "visitoutTitle": ""
+        }
+    ]
+}
+</pre>
+          </span>
+
+      </span>
+      
+
+    
+    
+      
+
+      
+
+    
+  </body>
+</html>

@@ -1,0 +1,143 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>ONSTONG 易事通|客户标签列表</title>
+<meta name="description" content="">
+<meta name="keywords" content="onestong">
+<meta name="keywords" content="易事通">
+
+
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/png"
+	href="$!basePath/resources/i/favicon.png">
+<link rel="apple-touch-icon-precomposed"
+	href="$!basePath/resources/i/app-icon72x72@2x.png">
+<meta name="apple-mobile-web-app-title" content="Amaze UI" />
+<link rel="stylesheet" href="$!basePath/resources/css/amazeui.min.css" />
+<link rel="stylesheet" href="$!basePath/resources/css/admin.css">
+<link rel="stylesheet"
+	href="$!basePath/resources/thrid/clockpicker/jquery-clockpicker.min.css">
+</head>
+<body>
+	<!--[if lte IE 9]>
+<p class="browsehappy">你正在使用<strong>过时</strong>的浏览器，Amaze UI 暂不支持。 请 <a href="http://browsehappy.com/" target="_blank">升级浏览器</a>
+  以获得更好的体验！</p>
+<![endif]-->
+
+	#parse('/common/header.htm')
+
+	<div class="am-cf admin-main">
+
+		#parse('/common/sidebar.htm')
+
+		<!-- content start -->
+		<div class="admin-content">
+
+			<div class="am-cf am-padding">
+				<div class="am-fl am-cf">
+					<strong class="am-text-primary am-text-lg">系统设置</strong> / <small>工作时间</small>
+				</div>
+			</div>
+
+			<div class="am-g">
+				<div class="am-u-md-6 am-cf">
+					<div class="am-fl am-cf">
+						<div class="am-btn-toolbar am-fl">
+							<div class="am-btn-group am-btn-group-xs">
+								<!--               <a  href="preUserAdd" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</a>
+ -->
+								<!--               <button type="button" class="am-btn am-btn-default"><span class="am-icon-save"></span> 保存</button>
+             <button type="button" class="am-btn am-btn-default"><span class="am-icon-archive"></span> 审核</button>
+              <button type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> 批量删除</button>
+               -->
+							</div>
+
+							<!--   <div class="am-form-group am-margin-left am-fl">
+              <select>
+                <option value="option1">所有事件</option>
+                <option value="option2">外访</option>
+              </select>
+            </div>  -->
+
+
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="am-g am-padding">
+				<div class="am-panel am-panel-default">
+
+					<div class="am-panel-bd">
+						<form id="wt_update_form" action="$!basePath/setting/worktime/updateWorktime" method="post" class="am-form am-form-inline" data-am-validator>
+											<input type="hidden" name="domainId" value="$!entity.domain.domainId" />
+											<input type="hidden" name="wtId" value="$!worktime.wtId" />
+						
+							<label for="startup">上班：</label>
+							<div class="am-form-group am-form-icon">
+								<i class="am-icon-clock-o"></i> <input  name="startworkTime" id="startup" type="text"
+									class="am-form-field clockpicker" value="$date.format('HH:mm',$!worktime.startworkTime)" required>
+							</div>
+							<label for="offwork">下班：</label>
+							<div class="am-form-group am-form-icon">
+								<i class="am-icon-clock-o"></i> <input name="offworkTime" type="text" id="offwork"
+									class="am-form-field clockpicker"  value="$date.format('HH:mm',$!worktime.offworkTime)" required>
+							</div>
+
+
+							<div
+								class="am-form-group am-u-sm-6 am-u-md-3 am-u-lg-centered am-padding">
+
+								<button type="submit" id="wt_update_btn"
+									class="am-btn am-btn-primary am-btn-xs">提交</button>
+							</div>
+						</form>
+
+
+
+					</div>
+
+
+
+				</div>
+
+
+			</div>
+
+		</div>
+		<!-- content end -->
+	</div>
+
+	#include('/common/footer.htm')
+
+	<!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="$!basePath/resources/js/polyfill/rem.min.js"></script>
+<script src="$!basePath/resources/js/polyfill/respond.min.js"></script>
+<script src="$!basePath/resources/js/amazeui.legacy.js"></script>
+<![endif]-->
+
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="$!basePath/resources/js/jquery.min.js"></script>
+	<script src="$!basePath/resources/js/amazeui.min.js"></script>
+	<!--<![endif]-->
+	<script src="$!basePath/resources/js/app.js"></script>
+	<script src="$!basePath/resources/js/system/worktime.js"></script>
+	<script
+		src="$!basePath/resources/thrid/clockpicker/jquery-clockpicker.min.js"></script>
+	<script>
+		$(function() {
+			$('.clockpicker').clockpicker();
+			worktime.init();
+		})
+	</script>
+</body>
+
+</html>
