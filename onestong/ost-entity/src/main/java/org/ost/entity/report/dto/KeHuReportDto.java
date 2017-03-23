@@ -19,9 +19,11 @@ public class KeHuReportDto {
 	private String source;
 	private String belongIndustry;
 	private Date createTimeStr;
+	
+	private String managerOwnerName;
 
-	//private Integer newCustomerCount;
-	//private Integer totalCustomerCount;
+	private Integer newCustomerCount;
+	private Integer totalCustomerCount;
 
 	public Integer getId() {
 		return id;
@@ -103,20 +105,28 @@ public class KeHuReportDto {
 		this.createTimeStr = createTimeStr;
 	}
 
-//	public Integer getNewCustomerCount() {
-//		return newCustomerCount;
-//	}
-//
-//	public void setNewCustomerCount(Integer newCustomerCount) {
-//		this.newCustomerCount = newCustomerCount;
-//	}
-//
-//	public Integer getTotalCustomerCount() {
-//		return totalCustomerCount;
-//	}
-//
-//	public void setTotalCustomerCount(Integer totalCustomerCount) {
-//		this.totalCustomerCount = totalCustomerCount;
-//	}
+	public String getManagerOwnerName() {
+		return managerOwnerName;
+	}
+
+	public void setManagerOwnerName(String managerOwnerName) {
+		this.managerOwnerName = managerOwnerName;
+	}
+
+	public Integer getNewCustomerCount() {
+		return newCustomerCount;
+	}
+
+	public void setNewCustomerCount(Integer newCustomerCount) {
+		this.newCustomerCount = newCustomerCount;
+	}
+
+	public Integer getTotalCustomerCount() {
+		return totalCustomerCount;
+	}
+
+	public void setTotalCustomerCount(Integer totalCustomerCount) {
+		this.totalCustomerCount = totalCustomerCount;
+	}
 
 }

@@ -28,40 +28,46 @@ public class ProjectTypeStepService {
 
 	/**
 	 * 添加和编辑项目类型阶段
-	 * 
 	 * @param projectTypeID
 	 * @param users
-	 * @param pdto
-	 * @return
+	 * @param projectStepsDetailDto
 	 */
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public void createOrUpdateTypeStep(Integer projectTypeID, Users users, ProjectStepsDetailDto pdto) {
-		ProjectType pro = new ProjectType();
-		pro.setCycWarningDay(MapUtils.getInteger(pdto.getCycWarning(), "cycWarningDay"));
-		pro.setCycWarningEnable(MapUtils.getString(pdto.getCycWarning(), "cycWarningEnable"));
-		pro.setStartTimeWarningDay(MapUtils.getInteger(pdto.getStartTimeWarning(), "startTimeWarningDay"));
-		pro.setStartTimeWarningEnable(MapUtils.getString(pdto.getStartTimeWarning(), "startTimeWarningEnable"));
-		pro.setId(projectTypeID);
-		projectTypeDao.updateParam(pro);
+	public void createOrUpdateTypeStep(Integer projectTypeID, Users users, ProjectStepsDetailDto projectStepsDetailDto) {
+		
+		//获取projectType中预警信息
+		ProjectType projectType = new ProjectType();
+		projectType.setId(projectTypeID);
+		projectType.setCycWarningDay(MapUtils.getInteger(projectStepsDetailDto.getCycWarning(), "cycWarningDay"));
+		projectType.setCycWarningEnable(MapUtils.getString(projectStepsDetailDto.getCycWarning(), "cycWarningEnable"));
+		projectType.setStartTimeWarningDay(MapUtils.getInteger(projectStepsDetailDto.getStartTimeWarning(), "startTimeWarningDay"));
+		projectType.setStartTimeWarningEnable(MapUtils.getString(projectStepsDetailDto.getStartTimeWarning(), "startTimeWarningEnable"));
+		
+		//对projectType进行update
+		projectTypeDao.updateParam(projectType);
 
-		ProjectTypeStep ps = new ProjectTypeStep();
+		//根据projectTypeID删除ProjectTypeStep中相关信息
+		ProjectTypeStep projectTypeStep = new ProjectTypeStep();
 		projectTypeStepDao.deleteProjectTypeStep(projectTypeID);
-
-		ps.setProjectTypeID(projectTypeID);
-		ps.setCreateBy(users.getRealname());
-		ps.setSchemaId(users.getSchemaId());
-		ps.setUpdateBy(ps.getCreateBy());
-		ps.setCreateTime(new Date());
-		ps.setUpdateTime(new Date());
-		ps.setIsDelete(Short.valueOf("0"));
-
-		pdto.getSteps().forEach(s -> {
-			ps.setMemo(s.getMemo());
-			ps.setRate(Integer.parseInt(s.getRate()));
-			ps.setStep(Double.parseDouble(s.getStep()));
-			ps.setDay(MapUtils.getInteger(s.getWarning(), "day"));
-			ps.setIsEnable(MapUtils.getByte(s.getWarning(), "isEnable"));
+		
+		//添加projectTypeStep中信息
+		projectTypeStep.setProjectTypeID(projectTypeID);
+		projectTypeStep.setCreateBy(users.getRealname());
+		projectTypeStep.setSchemaId(users.getSchemaId());
+		projectTypeStep.setUpdateBy(projectTypeStep.getCreateBy());
+		projectTypeStep.setCreateTime(new Date());
+		projectTypeStep.setUpdateTime(new Date());
+		projectTypeStep.setIsDelete(Short.valueOf("0"));
+		
+		//循环取出steps中信息添加到projectTypeStep
+		projectStepsDetailDto.getSteps().forEach(s -> {
+			projectTypeStep.setMemo(s.getMemo());
+			projectTypeStep.setRate(Integer.parseInt(s.getRate()));
+			projectTypeStep.setStep(Double.parseDouble(s.getStep()));
+			projectTypeStep.setDay(MapUtils.getInteger(s.getWarning(), "day"));
+			projectTypeStep.setIsEnable(MapUtils.getByte(s.getWarning(), "isEnable"));
 		});
-		projectTypeStepDao.insert(ps);
+		
+		projectTypeStepDao.insert(projectTypeStep);
 	}
 }

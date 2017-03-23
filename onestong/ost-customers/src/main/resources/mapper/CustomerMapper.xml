@@ -161,6 +161,18 @@
 	</select>
 
 	<!-- 客户报表 -->
+	<select id="selectNewCount" resultType="java.lang.Integer">
+		select 
+		count(1) as newCustomerCount
+		<include refid="searchListSQL"></include>
+		<if test='params.startDate != null and params.startDate != ""'>
+			and tbl_customer.createTime >= #{params.startDate}
+		</if>
+		<if test='params.startDate != null and params.startDate != ""'>
+			and tbl_customer.createTime &lt;= #{params.endDate}
+		</if>
+	</select>
+	
 	<select id="selectReportByParam" resultType="org.ost.entity.report.dto.KeHuReportDto">
 		SELECT
 		tbl_customer.id
@@ -180,19 +192,13 @@
 		<if test='params.startDate != null and params.startDate != ""'>
 			and tbl_customer.createTime &lt;= #{params.endDate}
 		</if>
-		and tbl_customer.isDelete=0
 		order by
 		tbl_customer.createTime desc
 	</select>
-
-	<select id="selectReportCount" resultType="java.lang.Integer">
-		SELECT count(1) as totalCustomerCount
-		<include refid="searchListSQL"></include>
-	</select>
-
-	<select id="selectReportChart" resultType="org.ost.entity.report.dto.KeHuReportVo">
-		select DATE_FORMAT(tbl_customer.createTime,'%Y-%m-%d') as
-		createTimeStr
+	
+	<select id="selectReportChart" resultType="org.ost.entity.report.dto.KeHuReportDto">
+		select 
+		DATE_FORMAT(tbl_customer.createTime,'%Y-%m-%d') as createTimeStr
 		<include refid="searchListSQL"></include>
 		<if test='params.startDate != null and params.startDate != ""'>
 			and tbl_customer.createTime >= #{params.startDate}
@@ -202,31 +208,25 @@
 		</if>
 		group by tbl_customer.createTime
 	</select>
+	
 
-	<select id="selectNewCount" resultType="java.lang.Integer">
-		select count(1) as newCustomerCount
+	<select id="selectReportCount" resultType="java.lang.Integer">
+		SELECT count(1) as totalCustomerCount
 		<include refid="searchListSQL"></include>
-		<if test='params.startDate != null and params.startDate != ""'>
-			and tbl_customer.createTime >= #{params.startDate}
-		</if>
-		<if test='params.startDate != null and params.startDate != ""'>
-			and tbl_customer.createTime &lt;= #{params.endDate}
-		</if>
 	</select>
-
 
 	<sql id="searchListSQL">
 		FROM tbl_customer
 		WHERE
 		1=1
-		<if test='managerOwnerName!=null and managerOwnerName!=""'>
+		<if test='params.managerOwnerName!=null and params.managerOwnerName!=""'>
 			and tbl_customer.id in (
 			select
 			customerID
 			from
 			tbl_user_customer
 			where
-			userName like CONCAT('%','${managerOwnerName}',
+			userName like CONCAT('%','${params.managerOwnerName}',
 			'%')
 			)
 		</if>
@@ -259,10 +259,8 @@
 			'$.belongIndustry'
 			=#{params.belongIndustry}
 		</if>
-		<!-- <if test='params.startDate != null and params.startDate != ""'> and 
-			tbl_customer.createTime >= #{params.startDate} </if> <if test='params.startDate 
-			!= null and params.startDate != ""'> and tbl_customer.createTime &lt;= #{params.endDate} 
-			</if> -->
+		and tbl_customer.isDelete='0'
+		and tbl_customer.schemaID=#{schemaID}
 	</sql>
 
 </mapper>

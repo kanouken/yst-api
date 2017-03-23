@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
 import org.common.tools.OperateResult;
 import org.common.tools.db.Page;
@@ -37,7 +38,6 @@ import org.ost.entity.customer.user.UserCustomers;
 import org.ost.entity.customer.vo.CustomerCreateVo;
 import org.ost.entity.customer.vo.CustomerVo;
 import org.ost.entity.report.dto.KeHuReportDto;
-import org.ost.entity.report.dto.KeHuReportVo;
 import org.ost.entity.user.Users;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +49,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.jna.platform.win32.Netapi32Util.User;
 
 @SuppressWarnings("unchecked")
 @Service
@@ -409,32 +410,39 @@ public class CustomerService {
 	 * @return
 	 */
 	@Transactional(readOnly = true)
-	public Map<String, Object> queryCustomerByReport(String managerOwnerName, KeHuReportDto kh, Integer curPage,
-			Integer perPageSum) {
+	public Map<String, Object> queryCustomersReport(String schemaID ,KeHuReportDto keHuReportDto,Integer curPage, Integer perPageSum) {
 		Page page = new Page();
 		page.setCurPage(curPage.intValue());
 		page.setPerPageSum(perPageSum.intValue());
-		RowBounds rb = new RowBounds(page.getNextPage(), page.getPerPageSum());
+		RowBounds rowBounds = new RowBounds(page.getNextPage(), page.getPerPageSum());
+
+		// 获取查询信息
 		Map<String, Object> params = new HashMap<>();
-		params.put("dealFrequency", kh.getDealFrequency());
-		params.put("type", kh.getType());
-		params.put("turnover", kh.getTurnover());
-		params.put("isPlc", kh.getIsPlc());
-		params.put("nature", kh.getNature());
-		params.put("source", kh.getSource());
-		params.put("belongIndustry", kh.getBelongIndustry());
-		params.put("startDate", kh.getCreateTimeStr());
-		params.put("endDate", kh.getCreateTimeStr());
-		Integer totalRecord = this.customerDao.selectNewCount(params, managerOwnerName);
-		List<KeHuReportDto> khDto = this.customerDao.selectReportByParam(params, managerOwnerName, rb);
+		params.put("managerOwnerName",keHuReportDto.getManagerOwnerName());
+		params.put("dealFrequency", keHuReportDto.getDealFrequency());
+		params.put("type", keHuReportDto.getType());
+		params.put("turnover", keHuReportDto.getTurnover());
+		params.put("isPlc", keHuReportDto.getIsPlc());
+		params.put("nature", keHuReportDto.getNature());
+		params.put("source", keHuReportDto.getSource());
+		params.put("belongIndustry", keHuReportDto.getBelongIndustry());
+		params.put("startDate", keHuReportDto.getCreateTimeStr());
+		params.put("endDate", keHuReportDto.getCreateTimeStr());
+
+		// 记录条数
+		Integer totalRecord = this.customerDao.selectNewCount(params,schemaID);
+
+		List<KeHuReportDto> KeHuReportDtoList = new ArrayList<KeHuReportDto>();
 		if (totalRecord > 0) {
-			khDto = this.customerDao.selectReportByParam(params, managerOwnerName, rb);
+			// 获取列表
+			KeHuReportDtoList = this.customerDao.selectReportByParam(params,rowBounds,schemaID);
 		}
-		return OperateResult.renderPage(page, khDto);
+		return OperateResult.renderPage(page, KeHuReportDtoList);
 	}
 
 	/**
 	 * 客户报表-获取图表数据
+	 * 
 	 * @param params
 	 * @param managerOwnerName
 	 * @param curPage
@@ -443,20 +451,36 @@ public class CustomerService {
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-	public Object reportChart(Map<String, Object> params, String managerOwnerName, Integer curPage, Integer perPageSum)
+	public Object reportChart(KeHuReportDto keHuReportDto,String schemaID)
 			throws InterruptedException, ExecutionException {
-		List<KeHuReportVo> kh = this.customerDao.selectReportChart(params, managerOwnerName);
-		Integer newCustomerCount=this.customerDao.selectNewCount(params, managerOwnerName);
-		Integer totalCustomerCount = this.customerDao.selectReportCount(params, managerOwnerName);
+		// 获取查询信息
+		Map<String, Object> params = new HashMap<>();
+		params.put("managerOwnerName", keHuReportDto.getManagerOwnerName());
+		params.put("dealFrequency", keHuReportDto.getDealFrequency());
+		params.put("type", keHuReportDto.getType());
+		params.put("turnover", keHuReportDto.getTurnover());
+		params.put("isPlc", keHuReportDto.getIsPlc());
+		params.put("nature", keHuReportDto.getNature());
+		params.put("source", keHuReportDto.getSource());
+		params.put("belongIndustry", keHuReportDto.getBelongIndustry());
+		params.put("startDate", keHuReportDto.getCreateTimeStr());
+		params.put("endDate", keHuReportDto.getCreateTimeStr());
+
+		List<KeHuReportDto> keHuReportDtoList = this.customerDao.selectReportChart(params,schemaID);
+		Integer newCustomerCount = this.customerDao.selectNewCount(params,schemaID);
+		Integer totalCustomerCount = this.customerDao.selectReportCount(params,schemaID);
+
 		params.clear();
 		params.put("newCustomerCount", newCustomerCount);
 		params.put("totalCustomerCount", totalCustomerCount);
-		kh.forEach(k->{
+
+		keHuReportDtoList.forEach(k -> {
 			k.setNewCustomerCount(newCustomerCount);
 			k.setTotalCustomerCount(totalCustomerCount);
 			params.put("createTimeStr", k);
 		});
-		return kh;
+
+		return keHuReportDtoList;
 	}
 
 	/**
@@ -466,10 +490,23 @@ public class CustomerService {
 	 * @param managerOwnerName
 	 * @return
 	 */
-	public Object reportCount(Map<String, Object> params, String managerOwnerName, Integer curPage,
-			Integer perPageSum) {
-		Integer newCustomerCount = this.customerDao.selectNewCount(params, managerOwnerName);
-		Integer totalCustomerCount = this.customerDao.selectReportCount(params, managerOwnerName);
+	public Object reportCount(KeHuReportDto keHuReportDto,String schemaID) {
+		// 获取查询信息
+		Map<String, Object> params = new HashMap<>();
+		params.put("managerOwnerName", keHuReportDto.getManagerOwnerName());
+		params.put("dealFrequency", keHuReportDto.getDealFrequency());
+		params.put("type", keHuReportDto.getType());
+		params.put("turnover", keHuReportDto.getTurnover());
+		params.put("isPlc", keHuReportDto.getIsPlc());
+		params.put("nature", keHuReportDto.getNature());
+		params.put("source", keHuReportDto.getSource());
+		params.put("belongIndustry", keHuReportDto.getBelongIndustry());
+		params.put("startDate", keHuReportDto.getCreateTimeStr());
+		params.put("endDate", keHuReportDto.getCreateTimeStr());
+
+		//新增用户数和用户总数
+		Integer newCustomerCount = this.customerDao.selectNewCount(params,schemaID);
+		Integer totalCustomerCount = this.customerDao.selectReportCount(params,schemaID);
 		params.clear();
 		params.put("newCustomerCount", newCustomerCount);
 		params.put("totalCustomerCount", totalCustomerCount);

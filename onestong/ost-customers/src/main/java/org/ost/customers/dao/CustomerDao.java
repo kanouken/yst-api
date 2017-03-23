@@ -13,7 +13,6 @@ import org.ost.entity.customer.org.CustomerOrg;
 import org.ost.entity.customer.user.UserCustomers;
 import org.ost.entity.customer.vo.CustomerVo;
 import org.ost.entity.report.dto.KeHuReportDto;
-import org.ost.entity.report.dto.KeHuReportVo;
 import org.springframework.stereotype.Repository;
 
 import tk.mybatis.mapper.common.Mapper;
@@ -53,15 +52,16 @@ public interface CustomerDao extends Mapper<Customer> {
 	Integer updateCustomerProject(CustomerProject cProject);
 
 	// 客户报表
-	List<KeHuReportDto> selectReportByParam(@Param("params") Map<String, Object> params,
-			@Param("managerOwnerName") String managerOwnerName, RowBounds rb);
+	//获取记录(客户总数)
+	Integer selectNewCount(@Param("params") Map<String, Object> params,@Param("schemaID")String schemaID);
+	//获取列表
+	List<KeHuReportDto> selectReportByParam(@Param("params") Map<String, Object> params,RowBounds rowBounds,@Param("schemaID")String schemaID);
+	//获取图标信息
+	List<KeHuReportDto> selectReportChart(@Param("params") Map<String, Object> params,@Param("schemaID")String schemaID);
+	//新增客户数
+	Integer selectReportCount(@Param("params") Map<String, Object> params,@Param("schemaID")String schemaID);
 
-	Integer selectReportCount(@Param("params") Map<String, Object> params,
-			@Param("managerOwnerName") String managerOwnerName);
+	
 
-	List<KeHuReportVo> selectReportChart(@Param("params") Map<String, Object> params,
-			@Param("managerOwnerName") String managerOwnerName);
-
-	Integer selectNewCount(@Param("params") Map<String, Object> params,
-			@Param("managerOwnerName") String managerOwnerName);
+	
 }
