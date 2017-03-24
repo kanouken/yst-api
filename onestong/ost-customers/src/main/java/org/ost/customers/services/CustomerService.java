@@ -402,9 +402,8 @@ public class CustomerService {
 
 	/**
 	 * 客户报表-获取列表数据
-	 * 
-	 * @param managerOwnerName
-	 * @param kh
+	 * @param schemaID
+	 * @param keHuReportDto
 	 * @param curPage
 	 * @param perPageSum
 	 * @return
@@ -426,8 +425,8 @@ public class CustomerService {
 		params.put("nature", keHuReportDto.getNature());
 		params.put("source", keHuReportDto.getSource());
 		params.put("belongIndustry", keHuReportDto.getBelongIndustry());
-		params.put("startDate", keHuReportDto.getCreateTimeStr());
-		params.put("endDate", keHuReportDto.getCreateTimeStr());
+		params.put("startDate", keHuReportDto.getStartCreateTime());
+		params.put("endDate", keHuReportDto.getEndCreateTime());
 
 		// 记录条数
 		Integer totalRecord = this.customerDao.selectNewCount(params,schemaID);
@@ -442,11 +441,8 @@ public class CustomerService {
 
 	/**
 	 * 客户报表-获取图表数据
-	 * 
-	 * @param params
-	 * @param managerOwnerName
-	 * @param curPage
-	 * @param perPageSum
+	 * @param keHuReportDto
+	 * @param schemaID
 	 * @return
 	 * @throws InterruptedException
 	 * @throws ExecutionException
@@ -463,11 +459,14 @@ public class CustomerService {
 		params.put("nature", keHuReportDto.getNature());
 		params.put("source", keHuReportDto.getSource());
 		params.put("belongIndustry", keHuReportDto.getBelongIndustry());
-		params.put("startDate", keHuReportDto.getCreateTimeStr());
-		params.put("endDate", keHuReportDto.getCreateTimeStr());
+		params.put("startDate", keHuReportDto.getStartCreateTime());
+		params.put("endDate", keHuReportDto.getEndCreateTime());
 
 		List<KeHuReportDto> keHuReportDtoList = this.customerDao.selectReportChart(params,schemaID);
+		
 		Integer newCustomerCount = this.customerDao.selectNewCount(params,schemaID);
+		params.put("startDate", null);
+		params.put("endDate", null);
 		Integer totalCustomerCount = this.customerDao.selectReportCount(params,schemaID);
 
 		params.clear();
@@ -476,7 +475,7 @@ public class CustomerService {
 
 		keHuReportDtoList.forEach(k -> {
 			k.setNewCustomerCount(newCustomerCount);
-			k.setTotalCustomerCount(totalCustomerCount);
+			k.setTotalCustomerCount(totalCustomerCount); 
 			params.put("createTimeStr", k);
 		});
 
@@ -485,9 +484,8 @@ public class CustomerService {
 
 	/**
 	 * 客户报表-获取统计数据
-	 * 
-	 * @param params
-	 * @param managerOwnerName
+	 * @param keHuReportDto
+	 * @param schemaID
 	 * @return
 	 */
 	public Object reportCount(KeHuReportDto keHuReportDto,String schemaID) {
@@ -501,11 +499,13 @@ public class CustomerService {
 		params.put("nature", keHuReportDto.getNature());
 		params.put("source", keHuReportDto.getSource());
 		params.put("belongIndustry", keHuReportDto.getBelongIndustry());
-		params.put("startDate", keHuReportDto.getCreateTimeStr());
-		params.put("endDate", keHuReportDto.getCreateTimeStr());
+		params.put("startDate", keHuReportDto.getStartCreateTime());
+		params.put("endDate", keHuReportDto.getEndCreateTime());
 
 		//新增用户数和用户总数
 		Integer newCustomerCount = this.customerDao.selectNewCount(params,schemaID);
+		params.put("startDate", null);
+		params.put("endDate", null);
 		Integer totalCustomerCount = this.customerDao.selectReportCount(params,schemaID);
 		params.clear();
 		params.put("newCustomerCount", newCustomerCount);

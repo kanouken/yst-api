@@ -18,12 +18,16 @@ public class KeHuReportDto {
 	private String nature;
 	private String source;
 	private String belongIndustry;
-	private Date createTimeStr;
+	private String startCreateTime;
+	private String endCreateTime;
 	
+	private String createTimeStr;
+
 	private String managerOwnerName;
 
 	private Integer newCustomerCount;
 	private Integer totalCustomerCount;
+	
 
 	public Integer getId() {
 		return id;
@@ -97,12 +101,20 @@ public class KeHuReportDto {
 		this.belongIndustry = belongIndustry;
 	}
 
-	public Date getCreateTimeStr() {
-		return createTimeStr;
+	public String getStartCreateTime() {
+		return startCreateTime;
 	}
 
-	public void setCreateTimeStr(Date createTimeStr) {
-		this.createTimeStr = createTimeStr;
+	public void setStartCreateTime(String startCreateTime) {
+		this.startCreateTime = startCreateTime;
+	}
+
+	public String getEndCreateTime() {
+		return endCreateTime;
+	}
+
+	public void setEndCreateTime(String endCreateTime) {
+		this.endCreateTime = endCreateTime;
 	}
 
 	public String getManagerOwnerName() {
@@ -127,6 +139,14 @@ public class KeHuReportDto {
 
 	public void setTotalCustomerCount(Integer totalCustomerCount) {
 		this.totalCustomerCount = totalCustomerCount;
+	}
+
+	public String getCreateTimeStr() {
+		return createTimeStr;
+	}
+
+	public void setCreateTimeStr(String createTimeStr) {
+		this.createTimeStr = createTimeStr;
 	}
 
 }

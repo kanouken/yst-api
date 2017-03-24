@@ -25,12 +25,11 @@ public class KeHuReportService {
 
 	/**
 	 * 客户报表-获取列表数据
-	 * 
-	 * @param managerOwnerName
 	 * @param params
 	 * @param page
+	 * @param users
 	 * @return
-	 */
+	 */ 
 	public Map<String, Object> queryCustomersReport(Map<String, Object> params, Page page,Users users) {
 		// 获取keHuReportDto中的相关信息值
 		KeHuReportDto keHuReportDto = new KeHuReportDto();
@@ -42,6 +41,8 @@ public class KeHuReportService {
 		keHuReportDto.setNature(MapUtils.getString(params, "nature"));
 		keHuReportDto.setSource(MapUtils.getString(params, "source"));
 		keHuReportDto.setBelongIndustry(MapUtils.getString(params, "belongIndustry"));
+		keHuReportDto.setStartCreateTime(MapUtils.getString(params, "startDate"));
+		keHuReportDto.setEndCreateTime(MapUtils.getString(params, "endDate"));
 
 		// 通过customerServiceClient拿Customers的值
 		OperateResult<PageEntity<KeHuReportDto>> result = this.customerServiceClient
@@ -56,9 +57,8 @@ public class KeHuReportService {
 
 	/**
 	 * 客户报表-获取图表数据
-	 * 
-	 * @param managerOwnerName
 	 * @param params
+	 * @param users
 	 * @return
 	 */
 	@Transactional(readOnly = true)
@@ -73,6 +73,8 @@ public class KeHuReportService {
 		keHuReportDto.setNature(MapUtils.getString(params, "nature"));
 		keHuReportDto.setSource(MapUtils.getString(params, "source"));
 		keHuReportDto.setBelongIndustry(MapUtils.getString(params, "belongIndustry"));
+		keHuReportDto.setStartCreateTime(MapUtils.getString(params, "startDate"));
+		keHuReportDto.setEndCreateTime(MapUtils.getString(params, "endDate"));
 
 		OperateResult<Object> result = this.customerServiceClient.reportChart(users.getSchemaId(),keHuReportDto);
 		return result;
@@ -80,9 +82,8 @@ public class KeHuReportService {
 
 	/**
 	 * 客户报表-获取统计数据
-	 * 
-	 * @param managerOwnerName
 	 * @param params
+	 * @param users
 	 * @return
 	 */
 	@Transactional(readOnly = true)
@@ -98,6 +99,8 @@ public class KeHuReportService {
 		keHuReportDto.setNature(MapUtils.getString(params, "nature"));
 		keHuReportDto.setSource(MapUtils.getString(params, "source"));
 		keHuReportDto.setBelongIndustry(MapUtils.getString(params, "belongIndustry"));
+		keHuReportDto.setStartCreateTime(MapUtils.getString(params, "startDate"));
+		keHuReportDto.setEndCreateTime(MapUtils.getString(params, "endDate"));
 
 		OperateResult<Object> result = this.customerServiceClient.queryReportCount(users.getSchemaId(),keHuReportDto);
 		return result;

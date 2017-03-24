@@ -172,6 +172,14 @@
 		<include refid="searchListSQL"></include>
 	</select>
 	
+	<select id="selectReportChart" resultType="org.ost.entity.report.dto.KeHuReportDto">
+		select 
+		DATE_FORMAT(tbl_customer.createTime,'%Y-%m') as createTimeStr,
+		count(1) as newCustomerCount
+		<include refid="searchListSQL"></include>
+		GROUP BY DATE_FORMAT(tbl_customer.createTime,'%Y-%m')
+	</select>
+	
 	<select id="selectReportByParam" resultType="org.ost.entity.report.dto.KeHuReportDto">
 		SELECT
 		tbl_customer.id
@@ -189,12 +197,6 @@
 		tbl_customer.createTime desc
 	</select>
 	
-	<select id="selectReportChart" resultType="org.ost.entity.report.dto.KeHuReportDto">
-		select 
-		DATE_FORMAT(tbl_customer.createTime,'%Y-%m-%d') as createTimeStr
-		<include refid="searchListSQL"></include>
-		group by tbl_customer.createTime
-	</select>
 	
 	<sql id="searchListSQL">
 		FROM tbl_customer
