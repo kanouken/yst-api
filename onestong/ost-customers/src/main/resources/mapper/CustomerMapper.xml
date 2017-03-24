@@ -165,12 +165,11 @@
 		select 
 		count(1) as newCustomerCount
 		<include refid="searchListSQL"></include>
-		<if test='params.startDate != null and params.startDate != ""'>
-			and tbl_customer.createTime >= #{params.startDate}
-		</if>
-		<if test='params.startDate != null and params.startDate != ""'>
-			and tbl_customer.createTime &lt;= #{params.endDate}
-		</if>
+	</select>
+	
+	<select id="selectReportCount" resultType="java.lang.Integer">
+		SELECT count(1) as totalCustomerCount
+		<include refid="searchListSQL"></include>
 	</select>
 	
 	<select id="selectReportByParam" resultType="org.ost.entity.report.dto.KeHuReportDto">
@@ -186,12 +185,6 @@
 		,tbl_customer.property->'$.belongIndustry' as belongIndustry
 		,tbl_customer.createTime as createTimeStr
 		<include refid="searchListSQL"></include>
-		<if test='params.startDate != null and params.startDate != ""'>
-			and tbl_customer.createTime >= #{params.startDate}
-		</if>
-		<if test='params.startDate != null and params.startDate != ""'>
-			and tbl_customer.createTime &lt;= #{params.endDate}
-		</if>
 		order by
 		tbl_customer.createTime desc
 	</select>
@@ -200,21 +193,9 @@
 		select 
 		DATE_FORMAT(tbl_customer.createTime,'%Y-%m-%d') as createTimeStr
 		<include refid="searchListSQL"></include>
-		<if test='params.startDate != null and params.startDate != ""'>
-			and tbl_customer.createTime >= #{params.startDate}
-		</if>
-		<if test='params.startDate != null and params.startDate != ""'>
-			and tbl_customer.createTime &lt;= #{params.endDate}
-		</if>
 		group by tbl_customer.createTime
 	</select>
 	
-
-	<select id="selectReportCount" resultType="java.lang.Integer">
-		SELECT count(1) as totalCustomerCount
-		<include refid="searchListSQL"></include>
-	</select>
-
 	<sql id="searchListSQL">
 		FROM tbl_customer
 		WHERE
@@ -258,6 +239,12 @@
 			and property ->
 			'$.belongIndustry'
 			=#{params.belongIndustry}
+		</if>
+		<if test='params.startDate != null and params.startDate != ""'>
+			and tbl_customer.createTime >= #{params.startDate}
+		</if>
+		<if test='params.startDate != null and params.startDate != ""'>
+			and tbl_customer.createTime &lt;= #{params.endDate}
 		</if>
 		and tbl_customer.isDelete='0'
 		and tbl_customer.schemaID=#{schemaID}

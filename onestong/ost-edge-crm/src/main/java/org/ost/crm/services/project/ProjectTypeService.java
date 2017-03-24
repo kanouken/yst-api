@@ -89,19 +89,20 @@ public class ProjectTypeService {
 	 * @return
 	 */
 	@Transactional(readOnly = true)
-	public Map<String, Object> queryMember(String name, Users users, Integer curPage, Integer perPageSum) {
+	public Map<String, Object> queryMember(String names, Users users, Integer curPage, Integer perPageSum) {
 		Page page = new Page();
 		page.setCurPage(curPage.intValue());
 		page.setPerPageSum(perPageSum.intValue());
 		RowBounds row = new RowBounds(page.getNextPage(), page.getPerPageSum());
 		
-		Map<String, Object> params = new HashMap<>();
+		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("schemaID", users.getSchemaId());
+		params.put("names",names);
 		
-		Integer totalRecord = this.projectTypeDao.selectProjectTypeCount(params,name);
-		List<ProjectTypeVo> projectTypeVoList = new ArrayList<>();
+		Integer totalRecord = this.projectTypeDao.selectProjectTypeCount(params);
+		List<ProjectTypeVo> projectTypeVoList = new ArrayList<ProjectTypeVo>();
 		if (totalRecord > 0) {
-			projectTypeVoList = this.projectTypeDao.selectProjectTypeVoList(params, row,name);
+			projectTypeVoList = this.projectTypeDao.selectProjectTypeVoList(params, row);
 		}
 
 		return OperateResult.renderPage(page, projectTypeVoList);
@@ -131,13 +132,13 @@ public class ProjectTypeService {
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
 	public String deleteProjectType(Integer id, Users user) {
 		
-		ProjectType pro = new ProjectType();
-		pro.setId(id);
-		pro.setSchemaId(user.getSchemaId());
-		pro.setIsDelete(Short.valueOf("1"));
+		ProjectType projectType = new ProjectType();
+		projectType.setId(id);
+		projectType.setSchemaId(user.getSchemaId());
+		projectType.setIsDelete(Short.valueOf("1"));
 		
 		//delete
-		int result = projectTypeDao.updateByPrimaryKeySelective(pro);
+		int result = projectTypeDao.updateByPrimaryKeySelective(projectType);
 		if (result > 0) {
 			return HttpStatus.OK.name();
 		}

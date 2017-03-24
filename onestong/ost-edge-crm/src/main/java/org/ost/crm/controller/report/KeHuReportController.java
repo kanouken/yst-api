@@ -66,7 +66,8 @@ public class KeHuReportController extends Action {
 
 	@ApiOperation(value = "客户报表-获取图表数据", notes = "客户报表-获取图表数据")
 	@GetMapping(value = "chart")
-	public Object reportChart(@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
+	public Object reportChart(
+			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
 			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
 			@RequestAttribute(value = LOGIN_USER) Users users,
 			@RequestParam(value = "managerOwnerName", required = false) String managerOwnerName,
@@ -87,7 +88,8 @@ public class KeHuReportController extends Action {
 
 	@ApiOperation(value = "客户报表-获取统计数据", notes = "客户报表-获取统计数据")
 	@GetMapping(value = "count")
-	public Object reportCount(@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
+	public Object reportCount(
+			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
 			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
 			@RequestAttribute(value = LOGIN_USER) Users users,
 			@RequestParam(value = "managerOwnerName", required = false) String managerOwnerName,

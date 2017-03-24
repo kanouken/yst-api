@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-
 import io.swagger.annotations.ApiOperation;
 
 @RestController
@@ -39,7 +38,8 @@ public class ProjectTypeController extends Action {
 
 	@ApiOperation(value = "新增项目分类", notes = "新增项目分类")
 	@PostMapping(value = "")
-	public void createProjectType(@RequestBody ProjectTypeVo projectTypeVo,
+	public void createProjectType(
+			@RequestBody ProjectTypeVo projectTypeVo,
 			@RequestAttribute(value = LOGIN_USER) Users user) throws JsonProcessingException {
 		projectTypeService.createProjectType(user, projectTypeVo);
 	}
@@ -48,21 +48,22 @@ public class ProjectTypeController extends Action {
 	@PutMapping(value = "{id}")
 	public OperateResult<String> updateProjectType(
 			@PathVariable(value = "id") Integer id,
-			@RequestBody ProjectTypeVo projectTypeVo, 
-			@RequestAttribute(value = LOGIN_USER) Users user)
+			@RequestBody ProjectTypeVo projectTypeVo, @RequestAttribute(value = LOGIN_USER) Users user)
 					throws JsonProcessingException {
 		return new OperateResult<String>(projectTypeService.updateProjectType(id, user, projectTypeVo));
 	}
 
 	@ApiOperation(value = "项目分类列表", notes = "项目分类列表")
 	@GetMapping(value = "list")
-	public OperateResult<Map<String, Object>> queryMember(@RequestAttribute(value = LOGIN_USER,required=false) Users user,
+	public OperateResult<Map<String, Object>> queryMember(
+			@RequestAttribute(value = LOGIN_USER, required = false) Users user,
 			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
 			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
-			@RequestParam(value="name", required=false) String name) {
-		return new OperateResult<>(this.projectTypeService.queryMember(name, user, curPage, perPageSum));
+			@RequestParam(value = "name", required = false) String names) {
+		return new OperateResult<Map<String, Object>>(
+				this.projectTypeService.queryMember(names, user, curPage, perPageSum));
 	}
-	
+
 	@ApiOperation(value = "获取项目分类详情", notes = "获取项目分类详情")
 	@GetMapping(value = "{id}")
 	public ProjectTypeVo detailProjectType(
@@ -74,7 +75,7 @@ public class ProjectTypeController extends Action {
 	@ApiOperation(value = "删除项目分类", notes = "删除项目分类")
 	@DeleteMapping(value = "{id}")
 	public OperateResult<String> deleteProjectType(
-			@PathVariable Integer id, 
+			@PathVariable Integer id,
 			@RequestAttribute(value = LOGIN_USER) Users user) {
 		return new OperateResult<String>(projectTypeService.deleteProjectType(id, user));
 	}

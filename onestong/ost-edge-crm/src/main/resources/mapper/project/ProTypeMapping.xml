@@ -13,11 +13,17 @@
 		id
 		,name
 		 <include refid="selectTerm"></include>
-		<if test='name !=null and name !=""'>
-			and tbl_project_type.name like CONCAT('%','${name}','%')
-		</if>
 		order by createTime desc
 	</select>
+	
+	<sql id="selectTerm">
+		FROM tbl_project_type
+		where isDelete='0'
+		and schemaID=#{params.schemaID}
+		<if test='params.names !=null and params.names !=""'>
+			and name = #{params.names}
+		</if> 
+	</sql>
 	
 	<select id="selectTypeById" resultType="org.ost.entity.project.vo.ProjectTypeVo">
 		SELECT 
@@ -39,11 +45,7 @@
 		WHERE id=#{id}
 	</update>
 	
-	<sql id="selectTerm">
-		FROM tbl_project_type
-		where isDelete='0'
-		and schemaID=#{params.schemaID}
-	</sql>
+	
 
 
 </mapper>
