@@ -56,9 +56,9 @@ public interface CustomerDao extends Mapper<Customer> {
 	Integer selectNewCount(@Param("params") Map<String, Object> params,@Param("schemaID")String schemaID);
 	//获取列表
 	List<KeHuReportDto> selectReportByParam(@Param("params") Map<String, Object> params,RowBounds rowBounds,@Param("schemaID")String schemaID);
-	//获取图标信息
+	//获取图表信息
 	List<KeHuReportDto> selectReportChart(@Param("params") Map<String, Object> params,@Param("schemaID")String schemaID);
-	//新增客户数
+	//统计列表
 	Integer selectReportCount(@Param("params") Map<String, Object> params,@Param("schemaID")String schemaID);
 
 	

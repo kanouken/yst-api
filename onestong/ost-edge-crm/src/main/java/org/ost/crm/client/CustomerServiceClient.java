@@ -74,19 +74,19 @@ public interface CustomerServiceClient extends BaseClient {
 	public OperateResult<CustomerVo> queryByProject(@RequestHeader(value = TENANT_ID) String schemaID,
 			@RequestParam(value = "projectId") Integer projectId);
 
-	@RequestMapping(value = "customer/KehuReportList", method = RequestMethod.POST, consumes = "application/json")
+	@RequestMapping(value = "customer/kehuReportList", method = RequestMethod.POST, consumes = "application/json")
 	public OperateResult<PageEntity<KeHuReportDto>> queryCustomersReport(
 			@RequestHeader(value = TENANT_ID) String schemaID,
 			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
 			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
 			@RequestBody KeHuReportDto keHuReportDto);
 
-	@RequestMapping(value = "customer/KehuReportChart", method = RequestMethod.POST, consumes = "application/json")
+	@RequestMapping(value = "customer/kehuReportChart", method = RequestMethod.POST, consumes = "application/json")
 	public OperateResult<Object> reportChart(
 			@RequestHeader(value = TENANT_ID) String schemaID,
 			@RequestBody KeHuReportDto keHuReportDto);
 
-	@RequestMapping(value = "customer/KehuReportCount", method = RequestMethod.POST, consumes = "application/json")
+	@RequestMapping(value = "customer/kehuReportCount", method = RequestMethod.POST, consumes = "application/json")
 	public OperateResult<Object> queryReportCount(
 			@RequestHeader(value = TENANT_ID) String schemaID,
 			@RequestBody KeHuReportDto keHuReportDto);

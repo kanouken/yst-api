@@ -1,6 +1,7 @@
 package org.ost.customers.services;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
 import org.common.tools.OperateResult;
+import org.common.tools.date.DateUtil;
 import org.common.tools.db.Page;
 import org.common.tools.pinyin.Chinese2PY;
 import org.ost.customers.dao.CustomerDao;
@@ -402,6 +404,7 @@ public class CustomerService {
 
 	/**
 	 * 客户报表-获取列表数据
+	 * 
 	 * @param schemaID
 	 * @param keHuReportDto
 	 * @param curPage
@@ -409,7 +412,8 @@ public class CustomerService {
 	 * @return
 	 */
 	@Transactional(readOnly = true)
-	public Map<String, Object> queryCustomersReport(String schemaID ,KeHuReportDto keHuReportDto,Integer curPage, Integer perPageSum) {
+	public Map<String, Object> queryCustomersReport(String schemaID, KeHuReportDto keHuReportDto, Integer curPage,
+			Integer perPageSum) {
 		Page page = new Page();
 		page.setCurPage(curPage.intValue());
 		page.setPerPageSum(perPageSum.intValue());
@@ -417,7 +421,7 @@ public class CustomerService {
 
 		// 获取查询信息
 		Map<String, Object> params = new HashMap<>();
-		params.put("managerOwnerName",keHuReportDto.getManagerOwnerName());
+		params.put("managerOwnerName", keHuReportDto.getManagerOwnerName());
 		params.put("dealFrequency", keHuReportDto.getDealFrequency());
 		params.put("type", keHuReportDto.getType());
 		params.put("turnover", keHuReportDto.getTurnover());
@@ -429,25 +433,26 @@ public class CustomerService {
 		params.put("endDate", keHuReportDto.getEndCreateTime());
 
 		// 记录条数
-		Integer totalRecord = this.customerDao.selectNewCount(params,schemaID);
+		Integer totalRecord = this.customerDao.selectNewCount(params, schemaID);
 
 		List<KeHuReportDto> KeHuReportDtoList = new ArrayList<KeHuReportDto>();
 		if (totalRecord > 0) {
 			// 获取列表
-			KeHuReportDtoList = this.customerDao.selectReportByParam(params,rowBounds,schemaID);
+			KeHuReportDtoList = this.customerDao.selectReportByParam(params, rowBounds, schemaID);
 		}
 		return OperateResult.renderPage(page, KeHuReportDtoList);
 	}
 
 	/**
 	 * 客户报表-获取图表数据
+	 * 
 	 * @param keHuReportDto
 	 * @param schemaID
 	 * @return
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-	public Object reportChart(KeHuReportDto keHuReportDto,String schemaID)
+	public Object reportChart(KeHuReportDto keHuReportDto, String schemaID)
 			throws InterruptedException, ExecutionException {
 		// 获取查询信息
 		Map<String, Object> params = new HashMap<>();
@@ -459,36 +464,56 @@ public class CustomerService {
 		params.put("nature", keHuReportDto.getNature());
 		params.put("source", keHuReportDto.getSource());
 		params.put("belongIndustry", keHuReportDto.getBelongIndustry());
+
+		// 按月分组查总量（查本年度 2017-01-01 2017-12-31）
+		Date currentDate = new Date();
+		Date start = null, end = null;
+		Calendar calendar = Calendar.getInstance();
+		// 获取当前时间
+		calendar.setTime(currentDate);
+		// 修改开始时间为（01-01 00：00：00）
+		calendar.set(Calendar.MONTH, calendar.getMinimum(Calendar.MONTH));
+		calendar.set(Calendar.DAY_OF_MONTH, 1);
+		start = DateUtil.setDayMinTime(calendar.getTime());
+		// 修改结束时间为（12-31 23:59:59）
+		calendar.set(Calendar.MONTH, calendar.getMaximum(Calendar.MONTH));
+		calendar.set(Calendar.DAY_OF_MONTH, calendar.getMaximum(Calendar.DAY_OF_MONTH));
+		end = DateUtil.setDayMaxTime(calendar.getTime());
+		// 获取时间段
+		params.put("startDate", start);
+		params.put("endDate", end);
+		List<KeHuReportDto> keHuReportDtoList = this.customerDao.selectReportChart(params, schemaID);
+		// 增量(按月分组)
 		params.put("startDate", keHuReportDto.getStartCreateTime());
 		params.put("endDate", keHuReportDto.getEndCreateTime());
+		List<KeHuReportDto> newCountList = this.customerDao.selectReportChart(params, schemaID);
+		KeHuReportDto keHuReportDtoTemp = new KeHuReportDto();
+		for (int i = 0; i < keHuReportDtoList.size(); i++) {
+			keHuReportDtoTemp = keHuReportDtoList.get(i);
+			if (i != 0) {
+				keHuReportDtoTemp.setTotalCustomerCount(keHuReportDtoTemp.getTotalCustomerCount()
+						+ keHuReportDtoList.get(i - 1).getTotalCustomerCount());
+			}
+			for (int j = 0; j < newCountList.size(); j++) {
+				if (keHuReportDtoTemp.getCreateTimeStr().trim().equals(newCountList.get(j).getCreateTimeStr())) {
+					keHuReportDtoTemp.setNewCustomerCount(newCountList.get(j).getTotalCustomerCount());
+					break;
+				}
 
-		List<KeHuReportDto> keHuReportDtoList = this.customerDao.selectReportChart(params,schemaID);
-		
-		Integer newCustomerCount = this.customerDao.selectNewCount(params,schemaID);
-		params.put("startDate", null);
-		params.put("endDate", null);
-		Integer totalCustomerCount = this.customerDao.selectReportCount(params,schemaID);
+			}
 
-		params.clear();
-		params.put("newCustomerCount", newCustomerCount);
-		params.put("totalCustomerCount", totalCustomerCount);
-
-		keHuReportDtoList.forEach(k -> {
-			k.setNewCustomerCount(newCustomerCount);
-			k.setTotalCustomerCount(totalCustomerCount); 
-			params.put("createTimeStr", k);
-		});
-
+		}
 		return keHuReportDtoList;
 	}
 
 	/**
 	 * 客户报表-获取统计数据
+	 * 
 	 * @param keHuReportDto
 	 * @param schemaID
 	 * @return
 	 */
-	public Object reportCount(KeHuReportDto keHuReportDto,String schemaID) {
+	public Object reportCount(KeHuReportDto keHuReportDto, String schemaID) {
 		// 获取查询信息
 		Map<String, Object> params = new HashMap<>();
 		params.put("managerOwnerName", keHuReportDto.getManagerOwnerName());
@@ -502,11 +527,11 @@ public class CustomerService {
 		params.put("startDate", keHuReportDto.getStartCreateTime());
 		params.put("endDate", keHuReportDto.getEndCreateTime());
 
-		//新增用户数和用户总数
-		Integer newCustomerCount = this.customerDao.selectNewCount(params,schemaID);
+		// 新增用户数和用户总数
+		Integer newCustomerCount = this.customerDao.selectNewCount(params, schemaID);
 		params.put("startDate", null);
 		params.put("endDate", null);
-		Integer totalCustomerCount = this.customerDao.selectReportCount(params,schemaID);
+		Integer totalCustomerCount = this.customerDao.selectReportCount(params, schemaID);
 		params.clear();
 		params.put("newCustomerCount", newCustomerCount);
 		params.put("totalCustomerCount", totalCustomerCount);

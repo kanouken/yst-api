@@ -1,7 +1,5 @@
 package org.ost.entity.report.dto;
 
-import java.util.Date;
-
 /**
  * 客户报表
  * 
@@ -18,6 +16,7 @@ public class KeHuReportDto {
 	private String nature;
 	private String source;
 	private String belongIndustry;
+	
 	private String startCreateTime;
 	private String endCreateTime;
 	

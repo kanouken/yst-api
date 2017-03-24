@@ -118,7 +118,7 @@ public class CustomerController extends Action {
 	}
 
 	@ApiOperation(value = "客户报表-获取列表数据", notes = "客户报表-获取列表数据")
-	@PostMapping(value = "/KehuReportList")
+	@PostMapping(value = "/kehuReportList")
 	public OperateResult<Map<String, Object>> queryCustomersReport(
 			@RequestHeader(value = TENANT_ID) String schemaID,
 			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
@@ -129,7 +129,7 @@ public class CustomerController extends Action {
 	}
 
 	@ApiOperation(value = "客户报表-获取图表数据", notes = "客户报表-获取图表数据")
-	@PostMapping(value = "/KehuReportChart")
+	@PostMapping(value = "/kehuReportChart")
 	public OperateResult<Object> reportChart(
 			@RequestHeader(value = TENANT_ID) String schemaID,
 			@RequestBody KeHuReportDto keHuReportDto
@@ -138,7 +138,7 @@ public class CustomerController extends Action {
 	}
 
 	@ApiOperation(value = "客户报表-获取统计数据", notes = "客户报表-获取统计数据")
-	@PostMapping(value = "/KehuReportCount")
+	@PostMapping(value = "/kehuReportCount")
 	public OperateResult<Object> queryReportCount(
 			@RequestHeader(value = TENANT_ID) String schemaID,
 			@RequestBody KeHuReportDto keHuReportDto

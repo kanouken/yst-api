@@ -175,7 +175,7 @@
 	<select id="selectReportChart" resultType="org.ost.entity.report.dto.KeHuReportDto">
 		select 
 		DATE_FORMAT(tbl_customer.createTime,'%Y-%m') as createTimeStr,
-		count(1) as newCustomerCount
+		count(1) as totalCustomerCount
 		<include refid="searchListSQL"></include>
 		GROUP BY DATE_FORMAT(tbl_customer.createTime,'%Y-%m')
 	</select>
@@ -242,10 +242,10 @@
 			'$.belongIndustry'
 			=#{params.belongIndustry}
 		</if>
-		<if test='params.startDate != null and params.startDate != ""'>
+		<if test='params.startDate != null'>
 			and tbl_customer.createTime >= #{params.startDate}
 		</if>
-		<if test='params.startDate != null and params.startDate != ""'>
+		<if test='params.startDate != null'>
 			and tbl_customer.createTime &lt;= #{params.endDate}
 		</if>
 		and tbl_customer.isDelete='0'
