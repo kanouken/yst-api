@@ -15,8 +15,8 @@
 		schemaID
 		) values
 
-		<foreach collection="vps" item="vp" separator="," open="("
-			close=")">
+		<foreach collection="vps" item="vp" separator=",">
+			(
 			#{vp.visitEventID},
 			#{vp.projectID},
 			#{vp.createTime},
@@ -25,6 +25,7 @@
 			#{vp.updateBy},
 			#{vp.isDelete},
 			#{vp.schemaId}
+			)
 		</foreach>
 
 	</insert>
@@ -46,8 +47,8 @@
 		schemaID
 		) values
 
-		<foreach collection="vps" item="vp" separator="," open="("
-			close=")">
+		<foreach collection="vps" item="vp" separator=",">
+			(
 			#{vp.visitEventID},
 			#{vp.userID},
 			#{vp.userName},
@@ -59,7 +60,7 @@
 			#{vp.updateTime},
 			#{vp.updateBy},
 			#{vp.isDelete},
-			#{vp.schemaId}
+			#{vp.schemaId} )
 		</foreach>
 
 	</insert>
@@ -81,8 +82,8 @@
 		schemaID
 		) values
 
-		<foreach collection="vps" item="vp" separator="," open="("
-			close=")">
+		<foreach collection="vps" item="vp" separator=",">
+			(
 			#{vp.visitEventID},
 			#{vp.userID},
 			#{vp.userName},
@@ -96,6 +97,7 @@
 			#{vp.updateBy},
 			#{vp.isDelete},
 			#{vp.schemaId}
+			)
 		</foreach>
 
 	</insert>

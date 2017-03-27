@@ -17,6 +17,7 @@ public interface VisitEntityMapper {
 	VisitEntityMapper INSTANCE = Mappers.getMapper(VisitEntityMapper.class);
 
 	@Mapping(target = "createTime", expression = "java(new java.util.Date())")
+	@Mapping(target = "updateTime", expression = "java(new java.util.Date())")
 	@Mapping(target = "createBy", source = "currentUser.realname")
 	@Mapping(target = "updateBy", source = "currentUser.realname")
 	@Mapping(target = "isDelete", constant = "0")

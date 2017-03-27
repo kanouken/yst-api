@@ -70,7 +70,7 @@ public interface ContactsServiceClient extends BaseClient {
 	 * @param projectId
 	 * @return
 	 */
-	@RequestMapping(value = "contacts/visit", method = RequestMethod.POST)
+	@RequestMapping(value = "contacts/visit", method = RequestMethod.POST,consumes = "application/json")
 	public OperateResult<String> createVisitContacts(@RequestHeader(value = TENANT_ID) String schemaID,
 			@RequestBody VisitContactsDto visitContactsDto);
 

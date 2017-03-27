@@ -88,7 +88,7 @@ public class ContactController extends Action {
 	 * @param projectId
 	 * @return
 	 */
-	@PostMapping(value = "visit")
+	@RequestMapping(value="/visit",method=RequestMethod.POST)
 	public OperateResult<String> addVisitContacts(@RequestHeader(value = TENANT_ID) String schemaID,
 			@RequestBody VisitContactsDto visitContactsDto ) {
 		return new OperateResult<String>(contactService.createVisitContacts(schemaID,visitContactsDto));

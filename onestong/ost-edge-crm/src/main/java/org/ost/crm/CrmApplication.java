@@ -1,6 +1,8 @@
 package org.ost.crm;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.ost.crm.conf.FeignDecoder;
 import org.ost.crm.conf.FeignEncoder;
@@ -26,7 +28,9 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.ApiKey;
 import springfox.documentation.service.Contact;
+import springfox.documentation.service.SecurityScheme;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -67,7 +71,8 @@ public class CrmApplication extends WebMvcConfigurerAdapter {
 		AuthCheckInterceptor auth = new AuthCheckInterceptor();
 
 		registry.addInterceptor(auth).addPathPatterns("/**").excludePathPatterns(
-				"/swagger**",
+				"/webjars/**",
+				"/swagger**/**",
 				"/configuration/**",
 				"/v2/api**",
 				"/info",
@@ -93,8 +98,12 @@ public class CrmApplication extends WebMvcConfigurerAdapter {
 
 	@Bean
 	public Docket createRestApi() {
+		
+		List sList  = new ArrayList();
+		sList.add(apiKey());
 		return new Docket(DocumentationType.SWAGGER_2).apiInfo(testApiInfo()).select()
-				.apis(RequestHandlerSelectors.basePackage("org.ost.crm.controller")).paths(PathSelectors.any()).build();
+				.apis(RequestHandlerSelectors.basePackage("org.ost.crm.controller")).paths
+				(PathSelectors.any()).build().securitySchemes(sList);
 	}
 
 	private ApiInfo testApiInfo() {
@@ -108,5 +117,8 @@ public class CrmApplication extends WebMvcConfigurerAdapter {
 		);
 		return apiInfo;
 	}
+	private ApiKey apiKey() {
+	    return new ApiKey("api_key", "api_key", "header");
+	  }
 
 }

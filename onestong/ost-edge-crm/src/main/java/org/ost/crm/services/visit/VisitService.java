@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.tools.classfile.StackMapTable_attribute.verification_type_info;
 
 @Service
 public class VisitService extends BaseService {
@@ -68,6 +69,11 @@ public class VisitService extends BaseService {
 					currentUser.getDeptId(), currentUser.getDepartmentName(), Byte.parseByte("0"));
 			vs.setVisitContent(mapper.writeValueAsString(createVisitDto.getVisitContent()));
 			vs.setVisitDetail(createVisitDto.getVisitDetail());
+			vs.setCreateTime(visit.getCreateTime());
+			vs.setUpdateTime(visit.getUpdateTime());
+			vs.setCreateId(visit.getCreateId());
+			vs.setUpdateId(visit.getUpdateId());
+			vs.setSchemaId(visit.getSchemaId());
 			vps.add(vs);
 			visitDao.insertVisitSupporter(vps);
 		}
@@ -85,6 +91,8 @@ public class VisitService extends BaseService {
 		if (CollectionUtils.isNotEmpty(createVisitDto.getContacts())) {
 			VisitContactsDto visitContactsDto = new VisitContactsDto();
 			visitContactsDto.setVisitEventId(visit.getId());
+			visitContactsDto.setUserId(String.valueOf(currentUser.getUserId()));
+			visitContactsDto.setUserName(currentUser.getRealname());
 			visitContactsDto.setContactsIds(
 					createVisitDto.getContacts().stream().map(c -> c.getId()).collect(Collectors.toList()));
 			OperateResult<String> result = contactsServiceClient.createVisitContacts(currentUser.getSchemaId(),

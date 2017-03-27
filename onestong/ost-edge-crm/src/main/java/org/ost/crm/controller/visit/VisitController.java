@@ -22,13 +22,14 @@ public class VisitController extends Action {
 
 	/**
 	 * 新增外访
-	 * @throws JsonProcessingException 
+	 * 
+	 * @throws JsonProcessingException
 	 */
 	@ApiOperation(value = "新增外访", notes = "", code = 200, produces = "application/json")
 	@PostMapping(value = "visitEvent")
 	public OperateResult<String> createVisit(@RequestAttribute(value = LOGIN_USER) Users currentUser,
 			@RequestBody CreateVisitDto createVisitDto) throws JsonProcessingException {
-		return new OperateResult<String>(visitService.createVisit(currentUser,createVisitDto));
+		return new OperateResult<String>(visitService.createVisit(currentUser, createVisitDto));
 	}
 
 }
