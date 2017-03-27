@@ -2,8 +2,6 @@ package org.ost.contacts.controllers;
 
 import java.util.List;
 
-import javax.ws.rs.PUT;
-
 import org.common.tools.OperateResult;
 import org.ost.contacts.services.ContactsService;
 import org.ost.entity.base.PageEntity;
@@ -11,20 +9,17 @@ import org.ost.entity.contacts.dto.ContactsDto;
 import org.ost.entity.contacts.dto.ContactsListDto;
 import org.ost.entity.contacts.dto.VisitContactsDto;
 import org.ost.entity.project.dto.ProjectContactsDto;
-import org.ost.entity.project.dto.ProjectCreateOrUpdateDto;
 import org.ost.entity.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import sun.tools.tree.ThisExpression;
 
 @RestController
 @RequestMapping(value = "contacts")
