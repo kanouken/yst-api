@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
 import org.common.tools.OperateResult;
 import org.common.tools.date.DateUtil;
@@ -51,7 +50,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.jna.platform.win32.Netapi32Util.User;
 
 @SuppressWarnings("unchecked")
 @Service

@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@RequestMapping(value = "ProjectTypeStep")
+@RequestMapping(value = "projectTypeStep")
 public class ProjectTypeStepController extends Action {
 
 	@Autowired

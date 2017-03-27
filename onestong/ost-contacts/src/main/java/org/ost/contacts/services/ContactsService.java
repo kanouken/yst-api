@@ -12,6 +12,7 @@ import org.common.tools.pinyin.Chinese2PY;
 import org.ost.contacts.dao.ContactDao;
 import org.ost.contacts.dao.CustomerContactsDao;
 import org.ost.contacts.dao.ProjectContactsDao;
+import org.ost.contacts.dao.VisitContactsDao;
 import org.ost.contacts.dao.address.ContactsAddressDao;
 import org.ost.contacts.dao.files.ContactsFileDao;
 import org.ost.contacts.dao.info.ContactsInfoDao;
@@ -30,8 +31,10 @@ import org.ost.entity.contacts.contactsinfo.ContactsInfo;
 import org.ost.entity.contacts.contactsinfo.dto.ContactsInfoDto;
 import org.ost.entity.contacts.dto.ContactsDto;
 import org.ost.entity.contacts.dto.ContactsListDto;
+import org.ost.entity.contacts.dto.VisitContactsDto;
 import org.ost.entity.contacts.file.ContactsFile;
 import org.ost.entity.contacts.mapper.ContactsEntityMapper;
+import org.ost.entity.contacts.visit.VisitContacts;
 import org.ost.entity.customer.vo.CustomerVo;
 import org.ost.entity.project.dto.ProjectContactsDto;
 import org.ost.entity.user.Users;
@@ -61,6 +64,9 @@ public class ContactsService {
 
 	@Autowired
 	CustomerContactsDao customerContactsDao;
+
+	@Autowired
+	VisitContactsDao visitContactsDao;
 
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
 	public ContactsDto createContacts(ContactsDto contactsDto) {
@@ -153,7 +159,7 @@ public class ContactsService {
 			contact.setPy(contactsDto.getName());
 		}
 		contact.setHeadPic(contactsDto.getHeadPic());
-		if(StringUtils.isNotEmpty(contactsDto.getSex())){
+		if (StringUtils.isNotEmpty(contactsDto.getSex())) {
 			contact.setSex(contactsDto.getSex());
 		}
 		contact.setSchemaId(contactsDto.getSchemaId());
@@ -225,15 +231,15 @@ public class ContactsService {
 
 	@Transactional(readOnly = true)
 	public PageEntity<ContactsListDto> queryContacts(String tenantId, Integer curPage, Integer perPageSum, String email,
-			String name, String phone,String keyword, Integer customerID) {
-		logger.info("调用参数 keyword" + keyword + " name-" + name  );
-		
+			String name, String phone, String keyword, Integer customerID) {
+		logger.info("调用参数 keyword" + keyword + " name-" + name);
+
 		PageEntity<ContactsListDto> pages = new PageEntity<ContactsListDto>();
 		List<ContactsListDto> contacts = new ArrayList<ContactsListDto>();
 		Integer totalRecords = this.contactDao.selectCountContacts(name, phone, keyword, email, customerID);
 		RowBounds rb = new RowBounds();
 		if (totalRecords > 0) {
-			contacts = this.contactDao.selectContacts(name, phone,keyword,  email, customerID, rb);
+			contacts = this.contactDao.selectContacts(name, phone, keyword, email, customerID, rb);
 		}
 		pages.setCurPage(curPage);
 		pages.setTotalRecord(totalRecords);
@@ -253,7 +259,7 @@ public class ContactsService {
 		info.setContactId(contacts.getId());
 		info.setIsDelete(Short.valueOf("0"));
 		List<ContactsInfo> infos = this.infoDao.select(info);
-		
+
 		ContactsFile cFile = new ContactsFile();
 		cFile.setContactID(contacts.getId());
 		cFile.setIsDelete(Short.valueOf("0"));
@@ -262,8 +268,8 @@ public class ContactsService {
 		ContactsDto dto = ContactsEntityMapper.INSTANCE.contactsToContactsDto(contacts);
 		dto.setLocations(ContactsEntityMapper.INSTANCE.contactsAddressToContactsAddressDto(cas));
 		List<ContactsInfo> _tmp = null;
-		if(CollectionUtils.isNotEmpty(infos)){
-			_tmp =  infos.stream().filter(i-> !i.getType().equals("email")).collect(Collectors.toList());
+		if (CollectionUtils.isNotEmpty(infos)) {
+			_tmp = infos.stream().filter(i -> !i.getType().equals("email")).collect(Collectors.toList());
 		}
 		dto.setPhone(ContactsEntityMapper.INSTANCE.contactsInfoToContactsInfoDto(_tmp));
 		dto.setPhoto(ContactsEntityMapper.INSTANCE.contactsFileToContactsFileDto(cFiles));
@@ -373,6 +379,31 @@ public class ContactsService {
 	public List<ContactsListDto> queryByProject(String schemaID, Integer projectId) {
 		List<ContactsListDto> contactsListDtos = this.contactDao.selectByProject(schemaID, projectId);
 		return contactsListDtos;
+	}
+
+	/**
+	 * 添加外访联系人
+	 * 
+	 * @param schemaID
+	 * @param visitContactsDto
+	 * @return
+	 */
+	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
+	public String createVisitContacts(String schemaID, VisitContactsDto visitContactsDto) {
+		visitContactsDto.getContactsIds().forEach(c -> {
+			VisitContacts vc = new VisitContacts();
+			vc.setContactID(c);
+			vc.setCreateBy(visitContactsDto.getUserName());
+			vc.setCreateId(Integer.parseInt(visitContactsDto.getUserId()));
+			vc.setCreateTime(new Date());
+			vc.setIsDelete(Short.parseShort("0"));
+			vc.setSchemaId(schemaID);
+			vc.setUpdateBy(visitContactsDto.getUserName());
+			vc.setUpdateTime(vc.getCreateTime());
+			vc.setVisitEventID(visitContactsDto.getVisitEventId());
+			visitContactsDao.insertSelective(vc);
+		});
+		return HttpStatus.OK.name();
 	}
 
 }

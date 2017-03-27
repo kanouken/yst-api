@@ -6,12 +6,16 @@ import java.util.Map;
 import org.ost.crm.dao.project.common.CommonParamDao;
 import org.ost.crm.model.common.CommonParams;
 import org.ost.entity.tools.JsonType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class BaseService {
+	final protected  Logger  LOG = LoggerFactory.getLogger(this.getClass());
+	
 	@Autowired
 	private CommonParamDao commonParamDao;
 
