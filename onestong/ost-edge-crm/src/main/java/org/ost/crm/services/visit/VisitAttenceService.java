@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import org.common.tools.exception.ApiException;
 import org.ost.crm.dao.visit.VisitAttenceDao;
-import org.ost.crm.dao.visit.VisitDao;
 import org.ost.crm.dao.visit.VisitSupporterDao;
 import org.ost.crm.model.visit.VisitAttence;
 import org.ost.crm.model.visit.VisitSupporter;
@@ -19,8 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.netflix.infix.lang.infix.antlr.EventFilterParser.null_predicate_return;
 
 @Service
 public class VisitAttenceService extends BaseService {
