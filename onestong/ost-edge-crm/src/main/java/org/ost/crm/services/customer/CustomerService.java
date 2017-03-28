@@ -262,6 +262,7 @@ public class CustomerService extends BaseService {
 		List<CommonParams> source = this.getParams("customer_source");
 		List<CommonParams> turnover = this.getParams("customer_turnover");
 		List<CommonParams> type = this.getParams("customer_type");
+		List<CommonParams> scale = this.getParams("customer_scale");
 
 		Map<String, Object> reqMap = new HashMap<String, Object>();
 
@@ -272,6 +273,7 @@ public class CustomerService extends BaseService {
 		reqMap.put("source", source.stream().map(b -> b.getVal()).collect(Collectors.toList()));
 		reqMap.put("turnover", turnover.stream().map(b -> b.getVal()).collect(Collectors.toList()));
 		reqMap.put("type", type.stream().map(b -> b.getVal()).collect(Collectors.toList()));
+		reqMap.put("scale", scale.stream().map(b -> b.getVal()).collect(Collectors.toList()));
 
 		return reqMap;
 	}
