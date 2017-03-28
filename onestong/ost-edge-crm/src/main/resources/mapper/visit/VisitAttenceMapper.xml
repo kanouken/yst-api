@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="org.ost.crm.dao.visit.VisitAttenceDao">
+	<select id="selectAttence" resultType="org.ost.crm.model.visit.VisitAttence">
+		select ae.* from tbl_visit_event_user veu right join
+		tbl_attence_events ae on veu.attenceEventID = ae.id
+		where veu.userID =
+		#{userId} and veu.visitEventID = #{visitId} and veu.schemaID =
+		#{schemaId}
+		and veu.isDelete = 0
+	</select>
+
+</mapper>

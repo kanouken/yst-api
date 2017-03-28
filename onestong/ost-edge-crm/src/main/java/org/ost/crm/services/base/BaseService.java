@@ -16,6 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class BaseService {
 	final protected  Logger  LOG = LoggerFactory.getLogger(this.getClass());
 	
+	public static final Short YES = 1;
+	public static final Short NO = 0;
+	
+	
 	@Autowired
 	private CommonParamDao commonParamDao;
 
@@ -26,6 +30,14 @@ public class BaseService {
 		cParams.setSchemaId("0");
 		cParams.setType(typeCode);
 		List<CommonParams> comonParams = commonParamDao.select(cParams);
+		return comonParams;
+	}
+	// TODO cache
+	public List<CommonParams> getParamsEx(String typeCodeRegx) {
+		CommonParams cParams = new CommonParams();
+		cParams.setSchemaId("0");
+		cParams.setType(typeCodeRegx);
+		List<CommonParams> comonParams = commonParamDao.selectByTypeCode(cParams);
 		return comonParams;
 	}
 

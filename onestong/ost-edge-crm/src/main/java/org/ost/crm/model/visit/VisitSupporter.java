@@ -17,7 +17,7 @@ public class VisitSupporter extends BaseEntity {
 	private Byte role;
 	private Object visitContent;
 	private String visitDetail;
-	private Integer attenceEventID;
+	private String attenceEventID;
 
 	public VisitSupporter() {
 		super();
@@ -98,11 +98,11 @@ public class VisitSupporter extends BaseEntity {
 		this.visitDetail = visitDetail;
 	}
 
-	public Integer getAttenceEventID() {
+	public String getAttenceEventID() {
 		return attenceEventID;
 	}
 
-	public void setAttenceEventID(Integer attenceEventID) {
+	public void setAttenceEventID(String attenceEventID) {
 		this.attenceEventID = attenceEventID;
 	}
 

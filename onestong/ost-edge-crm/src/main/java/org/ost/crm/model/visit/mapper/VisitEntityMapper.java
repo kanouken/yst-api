@@ -5,12 +5,16 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 import org.ost.crm.model.visit.Visit;
 import org.ost.crm.model.visit.VisitApprover;
+import org.ost.crm.model.visit.VisitAttence;
 import org.ost.crm.model.visit.VisitProject;
 import org.ost.crm.model.visit.VisitSupporter;
 import org.ost.crm.model.visit.dto.CreateVisitDto;
+import org.ost.crm.model.visit.dto.VisitAttenceCreateDto;
 import org.ost.entity.project.dto.ProjectListDto;
 import org.ost.entity.user.Users;
 import org.ost.entity.user.dto.UserListDto;
+
+import com.hp.hpl.sparta.xpath.TrueExpr;
 
 @Mapper
 public interface VisitEntityMapper {
@@ -49,6 +53,17 @@ public interface VisitEntityMapper {
 	@Mapping(target="userName",source="user.name")
 	@Mapping(target = "approvalStatus", expression = "java(org.ost.crm.model.visit.VisitApprovalFlow.NO_PASS.getState())")
 	VisitApprover combineUserListDtoAndVisitToVisitApprover(UserListDto user, Visit visit);
+
+	@Mapping(target = "createTime", expression = "java(new java.util.Date())")
+	@Mapping(target = "updateTime", expression = "java(new java.util.Date())")
+	@Mapping(target = "createBy", source = "currentUser.realname")
+	@Mapping(target = "updateBy", source = "currentUser.realname")
+	@Mapping(target = "isDelete", constant = "0")
+	@Mapping(target = "createId", source = "currentUser.userId")
+	@Mapping(target = "updateId", source = "currentUser.userId")
+	@Mapping(target="state",ignore=true)
+	VisitAttence combineCreateVisitAttenceAndCurrentUserToVisitAttence(VisitAttenceCreateDto visitAttenceCreateDto,
+			Users currentUser);
 
 	
 }
