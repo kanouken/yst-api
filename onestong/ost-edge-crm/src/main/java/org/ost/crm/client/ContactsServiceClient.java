@@ -6,11 +6,13 @@ import org.common.tools.OperateResult;
 import org.ost.entity.base.PageEntity;
 import org.ost.entity.contacts.dto.ContactsDto;
 import org.ost.entity.contacts.dto.ContactsListDto;
+import org.ost.entity.contacts.dto.VisitContactsDto;
 import org.ost.entity.project.dto.ProjectContactsDto;
 import org.ost.entity.project.dto.ProjectCreateOrUpdateDto;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,7 +48,7 @@ public interface ContactsServiceClient extends BaseClient {
 			@RequestParam(value = "email", required = false) String email,
 			@RequestParam(value = "name", required = false) String name,
 			@RequestParam(value = "phone", required = false) String phone,
-			@RequestParam(value= "keyword",required =false) String keyword,
+			@RequestParam(value = "keyword", required = false) String keyword,
 			@RequestParam(value = "customerID", required = false) Integer customerID);
 
 	@RequestMapping(value = "contacts/project", method = RequestMethod.POST, consumes = "application/json")
@@ -60,4 +62,16 @@ public interface ContactsServiceClient extends BaseClient {
 	@RequestMapping(value = "contacts/queryByProject", method = RequestMethod.GET)
 	public OperateResult<List<ContactsListDto>> queryByProject(@RequestHeader(value = TENANT_ID) String schemaID,
 			@RequestParam(value = "projectId") Integer projectId);
+
+	/**
+	 * 新增外访联系人
+	 * 
+	 * @param schemaID
+	 * @param projectId
+	 * @return
+	 */
+	@RequestMapping(value = "contacts/visit", method = RequestMethod.POST,consumes = "application/json")
+	public OperateResult<String> createVisitContacts(@RequestHeader(value = TENANT_ID) String schemaID,
+			@RequestBody VisitContactsDto visitContactsDto);
+
 }

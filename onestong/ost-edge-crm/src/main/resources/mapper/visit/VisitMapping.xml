@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="org.ost.crm.dao.visit.VisitDao">
+
+	<insert id="insertVisitProject">
+		insert into tbl_visit_event_project(
+		visitEventID,
+		projectID,
+		createTIme,
+		createBy,
+		updateTime,
+		updateBy,
+		isDelete,
+		schemaID
+		) values
+
+		<foreach collection="vps" item="vp" separator=",">
+			(
+			#{vp.visitEventID},
+			#{vp.projectID},
+			#{vp.createTime},
+			#{vp.createBy},
+			#{vp.updateTime},
+			#{vp.updateBy},
+			#{vp.isDelete},
+			#{vp.schemaId}
+			)
+		</foreach>
+
+	</insert>
+
+
+	<insert id="insertVisitSupporter">
+		insert into tbl_visit_event_user(
+		visitEventID,
+		userID,
+		userName,
+		organizeID,
+		organizeName,
+		role,
+		createTIme,
+		createBy,
+		updateTime,
+		updateBy,
+		isDelete,
+		schemaID
+		) values
+
+		<foreach collection="vps" item="vp" separator=",">
+			(
+			#{vp.visitEventID},
+			#{vp.userID},
+			#{vp.userName},
+			#{vp.organizeID},
+			#{vp.organizeName},
+			#{vp.role},
+			#{vp.createTime},
+			#{vp.createBy},
+			#{vp.updateTime},
+			#{vp.updateBy},
+			#{vp.isDelete},
+			#{vp.schemaId} )
+		</foreach>
+
+	</insert>
+
+	<insert id="insertVisitApprover">
+		insert into tbl_visit_event_approval_user(
+		visitEventID,
+		userID,
+		userName,
+		organizeID,
+		organizeName,
+		role,
+		approvalStatus,
+		createTIme,
+		createBy,
+		updateTime,
+		updateBy,
+		isDelete,
+		schemaID
+		) values
+
+		<foreach collection="vps" item="vp" separator=",">
+			(
+			#{vp.visitEventID},
+			#{vp.userID},
+			#{vp.userName},
+			#{vp.organizeID},
+			#{vp.organizeName},
+			#{vp.role},
+			#{vp.approvalStatus},
+			#{vp.createTime},
+			#{vp.createBy},
+			#{vp.updateTime},
+			#{vp.updateBy},
+			#{vp.isDelete},
+			#{vp.schemaId}
+			)
+		</foreach>
+
+	</insert>
+
+</mapper>

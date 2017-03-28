@@ -44,9 +44,10 @@ public class OperateResult<T> {
 		this.innerException = innerException;
 		this.description = description;
 		this.data = data;
+		this.statusCode = "400";
 	}
-	
-	public OperateResult(String innerException, String description, T data,String statusCode) {
+
+	public OperateResult(String innerException, String description, T data, String statusCode) {
 		super();
 		this.innerException = innerException;
 		this.description = description;

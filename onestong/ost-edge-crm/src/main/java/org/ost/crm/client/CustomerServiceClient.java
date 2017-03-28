@@ -11,6 +11,7 @@ import org.ost.entity.customer.Customer;
 import org.ost.entity.customer.dto.CustomerDetailDto;
 import org.ost.entity.customer.dto.CustomerListDto;
 import org.ost.entity.customer.dto.CustomerProjectDto;
+import org.ost.entity.customer.dto.CustomerQueryDto;
 import org.ost.entity.customer.vo.CustomerCreateVo;
 import org.ost.entity.customer.vo.CustomerVo;
 import org.ost.entity.report.dto.KeHuReportDto;
@@ -18,6 +19,7 @@ import org.ost.entity.user.Users;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -74,18 +76,26 @@ public interface CustomerServiceClient extends BaseClient {
 	public OperateResult<CustomerVo> queryByProject(@RequestHeader(value = TENANT_ID) String schemaID,
 			@RequestParam(value = "projectId") Integer projectId);
 
-	@RequestMapping(value = "customer/KehuReportList", method = RequestMethod.POST, consumes = "application/json")
-	public OperateResult<PageEntity<KeHuReportDto>> queryCustomerByParam(
+	@RequestMapping(value = "customer/kehuReportList", method = RequestMethod.POST, consumes = "application/json")
+	public OperateResult<PageEntity<KeHuReportDto>> queryCustomersReport(
+			@RequestHeader(value = TENANT_ID) String schemaID,
 			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
 			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
-			@RequestParam(value = "managerOwnerName", required = false) String managerOwnerName,
-			@RequestBody KeHuReportDto kh);
+			@RequestBody KeHuReportDto keHuReportDto);
 
-	@RequestMapping(value = "customer/KehuReportChart", method = RequestMethod.POST, consumes = "application/json")
-	public OperateResult<Object> queryReportChart(
-			@RequestParam(value = "managerOwnerName", required = false) String managerOwnerName);
+	@RequestMapping(value = "customer/kehuReportChart", method = RequestMethod.POST, consumes = "application/json")
+	public OperateResult<Object> reportChart(@RequestHeader(value = TENANT_ID) String schemaID,
+			@RequestBody KeHuReportDto keHuReportDto);
 
-	@RequestMapping(value = "customer/KehuReportCount", method = RequestMethod.POST, consumes = "application/json")
-	public OperateResult<Object> queryReportCount(
-			@RequestParam(value = "managerOwnerName", required = false) String managerOwnerName);
+	@RequestMapping(value = "customer/kehuReportCount", method = RequestMethod.POST, consumes = "application/json")
+	public OperateResult<Object> queryReportCount(@RequestHeader(value = TENANT_ID) String schemaID,
+			@RequestBody KeHuReportDto keHuReportDto);
+
+	@RequestMapping(value = "customer/queryByUser", method = RequestMethod.POST, consumes = "application/json")
+	public OperateResult<PageEntity<CustomerListDto>> queryCustomerByUser(
+			@RequestHeader(value = TENANT_ID, required = true) String schemaID,
+			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
+			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
+			@RequestBody CustomerQueryDto customerQueryDto);
+
 }

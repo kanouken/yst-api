@@ -2,29 +2,50 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
 <mapper namespace="org.ost.crm.dao.project.ProjectTypeDao">
-	<select id="selectTypeCount" resultType="java.lang.Integer">
-		SELECT count(1) FROM
-		tbl_project_type
+	<select id="selectProjectTypeCount" resultType="java.lang.Integer">
+		SELECT 
+		count(1)
+		 <include refid="selectTerm"></include>
 	</select>
-	<select id="selectTypeList" resultType="org.ost.entity.project.vo.ProjectTypeVo">
-		SELECT * FROM
-		tbl_project_type
+	
+	<select id="selectProjectTypeVoList" resultType="org.ost.entity.project.vo.ProjectTypeVo">
+		SELECT 
+		id
+		,name
+		 <include refid="selectTerm"></include>
+		order by createTime desc
 	</select>
+	
+	<sql id="selectTerm">
+		FROM tbl_project_type
+		where isDelete='0'
+		and schemaID=#{params.schemaID}
+		<if test='params.names !=null and params.names !=""'>
+			and name = #{params.names}
+		</if> 
+	</sql>
+	
 	<select id="selectTypeById" resultType="org.ost.entity.project.vo.ProjectTypeVo">
-		SELECT * FROM
+		SELECT 
+		id
+		,name
+		FROM
 		tbl_project_type where id=#{id}
+		
 	</select>
 
 	<update id="updateParam">
 
 		UPDATE tbl_project_type
-
 		SET
-
-		cycWarningDay=#{cycWarningDay},cycWarningEnable=#{cycWarningEnable},startTimeWarningDay=#{startTimeWarningDay},startTimeWarningEnable=#{startTimeWarningEnable}
-
+		cycWarningDay=#{cycWarningDay}
+		,cycWarningEnable=#{cycWarningEnable}
+		,startTimeWarningDay=#{startTimeWarningDay}
+		,startTimeWarningEnable=#{startTimeWarningEnable}
 		WHERE id=#{id}
-
 	</update>
+	
+	
+
 
 </mapper>

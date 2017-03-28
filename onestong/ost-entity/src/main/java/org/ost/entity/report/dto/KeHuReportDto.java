@@ -1,7 +1,5 @@
 package org.ost.entity.report.dto;
 
-import java.util.Date;
-
 /**
  * 客户报表
  * 
@@ -18,10 +16,17 @@ public class KeHuReportDto {
 	private String nature;
 	private String source;
 	private String belongIndustry;
-	private Date createTimeStr;
+	
+	private String startCreateTime;
+	private String endCreateTime;
+	
+	private String createTimeStr;
 
-	//private Integer newCustomerCount;
-	//private Integer totalCustomerCount;
+	private String managerOwnerName;
+
+	private Integer newCustomerCount;
+	private Integer totalCustomerCount;
+	
 
 	public Integer getId() {
 		return id;
@@ -95,28 +100,52 @@ public class KeHuReportDto {
 		this.belongIndustry = belongIndustry;
 	}
 
-	public Date getCreateTimeStr() {
+	public String getStartCreateTime() {
+		return startCreateTime;
+	}
+
+	public void setStartCreateTime(String startCreateTime) {
+		this.startCreateTime = startCreateTime;
+	}
+
+	public String getEndCreateTime() {
+		return endCreateTime;
+	}
+
+	public void setEndCreateTime(String endCreateTime) {
+		this.endCreateTime = endCreateTime;
+	}
+
+	public String getManagerOwnerName() {
+		return managerOwnerName;
+	}
+
+	public void setManagerOwnerName(String managerOwnerName) {
+		this.managerOwnerName = managerOwnerName;
+	}
+
+	public Integer getNewCustomerCount() {
+		return newCustomerCount;
+	}
+
+	public void setNewCustomerCount(Integer newCustomerCount) {
+		this.newCustomerCount = newCustomerCount;
+	}
+
+	public Integer getTotalCustomerCount() {
+		return totalCustomerCount;
+	}
+
+	public void setTotalCustomerCount(Integer totalCustomerCount) {
+		this.totalCustomerCount = totalCustomerCount;
+	}
+
+	public String getCreateTimeStr() {
 		return createTimeStr;
 	}
 
-	public void setCreateTimeStr(Date createTimeStr) {
+	public void setCreateTimeStr(String createTimeStr) {
 		this.createTimeStr = createTimeStr;
 	}
-
-//	public Integer getNewCustomerCount() {
-//		return newCustomerCount;
-//	}
-//
-//	public void setNewCustomerCount(Integer newCustomerCount) {
-//		this.newCustomerCount = newCustomerCount;
-//	}
-//
-//	public Integer getTotalCustomerCount() {
-//		return totalCustomerCount;
-//	}
-//
-//	public void setTotalCustomerCount(Integer totalCustomerCount) {
-//		this.totalCustomerCount = totalCustomerCount;
-//	}
 
 }

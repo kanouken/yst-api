@@ -7,19 +7,19 @@ import org.ost.contacts.services.ContactsService;
 import org.ost.entity.base.PageEntity;
 import org.ost.entity.contacts.dto.ContactsDto;
 import org.ost.entity.contacts.dto.ContactsListDto;
+import org.ost.entity.contacts.dto.VisitContactsDto;
 import org.ost.entity.project.dto.ProjectContactsDto;
-import org.ost.entity.project.dto.ProjectCreateOrUpdateDto;
 import org.ost.entity.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import sun.tools.tree.ThisExpression;
 
 @RestController
 @RequestMapping(value = "contacts")
@@ -80,6 +80,18 @@ public class ContactController extends Action {
 	public OperateResult<List<ContactsListDto>> queryByProject(@RequestHeader(value = TENANT_ID) String schemaID,
 			@RequestParam(value = "projectId") Integer projectId) {
 		return new OperateResult<List<ContactsListDto>>(contactService.queryByProject(schemaID, projectId));
+	}
+	
+	/**
+	 * 新增外访联系人
+	 * @param schemaID
+	 * @param projectId
+	 * @return
+	 */
+	@RequestMapping(value="/visit",method=RequestMethod.POST)
+	public OperateResult<String> addVisitContacts(@RequestHeader(value = TENANT_ID) String schemaID,
+			@RequestBody VisitContactsDto visitContactsDto ) {
+		return new OperateResult<String>(contactService.createVisitContacts(schemaID,visitContactsDto));
 	}
 	
 }

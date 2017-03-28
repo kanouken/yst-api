@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -117,38 +118,31 @@ public class CustomerController extends Action {
 	}
 
 	@ApiOperation(value = "客户报表-获取列表数据", notes = "客户报表-获取列表数据")
-	@PostMapping(value = "/KehuReportList")
-	public OperateResult<Map<String, Object>> queryCustomerByParam(
+	@PostMapping(value = "/kehuReportList")
+	public OperateResult<Map<String, Object>> queryCustomersReport(
+			@RequestHeader(value = TENANT_ID) String schemaID,
 			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
 			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
-			@RequestParam(value = "managerOwnerName", required = false) String managerOwnerName,
-			@RequestBody KeHuReportDto kh) {
+			@RequestBody KeHuReportDto keHuReportDto) {
 		return new OperateResult<>(
-				this.customerService.queryCustomerByReport(managerOwnerName, kh, curPage, perPageSum));
+				this.customerService.queryCustomersReport(schemaID,keHuReportDto, curPage, perPageSum));
 	}
 
 	@ApiOperation(value = "客户报表-获取图表数据", notes = "客户报表-获取图表数据")
-	@PostMapping(value = "/KehuReportChart")
-	public OperateResult<Object> queryReportChart(
-			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
-			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
-			@RequestParam(value = "managerOwnerName", required = false) String managerOwnerName,
-			@RequestParam(value = "startDate", required = false) String startDate,
-			@RequestParam(value = "endDate", required = false) String endDate, HttpServletRequest request)
-					throws InterruptedException, ExecutionException, ParseException {
-		Map<String, Object> params = this.getRequestParam(request);
-		return new OperateResult<>(this.customerService.reportChart(params, managerOwnerName, curPage, perPageSum));
+	@PostMapping(value = "/kehuReportChart")
+	public OperateResult<Object> reportChart(
+			@RequestHeader(value = TENANT_ID) String schemaID,
+			@RequestBody KeHuReportDto keHuReportDto
+			)throws InterruptedException, ExecutionException, ParseException {
+		return new OperateResult<>(this.customerService.reportChart(keHuReportDto, schemaID));
 	}
 
 	@ApiOperation(value = "客户报表-获取统计数据", notes = "客户报表-获取统计数据")
-	@PostMapping(value = "/KehuReportCount")
+	@PostMapping(value = "/kehuReportCount")
 	public OperateResult<Object> queryReportCount(
-			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
-			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
-			@RequestParam(value = "managerOwnerName", required = false) String managerOwnerName,
-			@RequestParam(value = "startDate", required = false) String startDate,
-			@RequestParam(value = "endDate", required = false) String endDate, HttpServletRequest request) {
-		Map<String, Object> params = this.getRequestParam(request);
-		return new OperateResult<>(this.customerService.reportCount(params, managerOwnerName, curPage, perPageSum));
+			@RequestHeader(value = TENANT_ID) String schemaID,
+			@RequestBody KeHuReportDto keHuReportDto
+			) {
+		return new OperateResult<>(this.customerService.reportCount(keHuReportDto, schemaID));
 	}
 }

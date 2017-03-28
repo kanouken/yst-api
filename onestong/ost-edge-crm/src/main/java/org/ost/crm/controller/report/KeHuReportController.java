@@ -40,6 +40,7 @@ public class KeHuReportController extends Action {
 	@ApiOperation(value = "客户报表-获取列表数据", notes = "客户报表-获取列表数据")
 	@GetMapping(value = "/list")
 	public OperateResult<Map<String, Object>> queryCustomersReport(
+			@RequestAttribute(value = LOGIN_USER) Users users,
 			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
 			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
 			@RequestParam(value = "managerOwnerName", required = false) String managerOwnerName,
@@ -51,30 +52,16 @@ public class KeHuReportController extends Action {
 			@RequestParam(value = "belongIndustry", required = false) String belongIndustry,
 			@RequestParam(value = "type", required = false) String type,
 			@RequestParam(value = "startDate", required = false) String startDate,
-			@RequestParam(value = "endDate", required = false) String endDate)
+			@RequestParam(value = "endDate", required = false) String endDate, 
+			HttpServletRequest request)
 					throws JsonParseException, JsonMappingException, IOException {
-		Map<String, Object> params = new HashMap<String, Object>();
-		if (StringUtils.isNotEmpty(belongIndustry))
-			params.put("belongIndustry", belongIndustry);
-		if (StringUtils.isNotEmpty(dealFrequency))
-			params.put("dealFrequency", dealFrequency);
-		if (StringUtils.isNotEmpty(isPlc))
-			params.put("isPlc", isPlc);
-		if (StringUtils.isNotEmpty(managerOwnerName))
-			params.put("managerOwnerName", managerOwnerName);
-		if (StringUtils.isNotEmpty(turnover))
-			params.put("turnover", turnover);
-		if (StringUtils.isNotEmpty(source))
-			params.put("source", source);
-		if (StringUtils.isNotEmpty(turnover))
-			params.put("turnover", turnover);
-		if (StringUtils.isNotEmpty(type))
-			params.put("type", type);
+		Map<String, Object> params = this.getRequestParam(request);
+
 		Page page = new Page();
 		page.setCurPage(curPage);
 		page.setPerPageSum(perPageSum);
 		return new OperateResult<Map<String, Object>>(
-				this.keHuReportService.reportCustomer(managerOwnerName, params, page));
+				this.keHuReportService.queryCustomersReport(params, page, users));
 	}
 
 	@ApiOperation(value = "客户报表-获取图表数据", notes = "客户报表-获取图表数据")
@@ -82,7 +69,7 @@ public class KeHuReportController extends Action {
 	public Object reportChart(
 			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
 			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
-			@RequestAttribute(value = LOGIN_USER) Users user,
+			@RequestAttribute(value = LOGIN_USER) Users users,
 			@RequestParam(value = "managerOwnerName", required = false) String managerOwnerName,
 			@RequestParam(value = "belongIndustry", required = false) String belongIndustry,
 			@RequestParam(value = "dealFrequency", required = false) String dealFrequency,
@@ -95,7 +82,8 @@ public class KeHuReportController extends Action {
 			@RequestParam(value = "turnover", required = false) String turnover, HttpServletRequest request)
 					throws InterruptedException, ExecutionException {
 		Map<String, Object> params = this.getRequestParam(request);
-		return keHuReportService.reportChart(managerOwnerName, params);
+		
+		return keHuReportService.reportChart(params, users);
 	}
 
 	@ApiOperation(value = "客户报表-获取统计数据", notes = "客户报表-获取统计数据")
@@ -103,7 +91,7 @@ public class KeHuReportController extends Action {
 	public Object reportCount(
 			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
 			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
-			@RequestAttribute(value = LOGIN_USER) Users user,
+			@RequestAttribute(value = LOGIN_USER) Users users,
 			@RequestParam(value = "managerOwnerName", required = false) String managerOwnerName,
 			@RequestParam(value = "belongIndustry", required = false) String belongIndustry,
 			@RequestParam(value = "dealFrequency", required = false) String dealFrequency,
@@ -113,9 +101,10 @@ public class KeHuReportController extends Action {
 			@RequestParam(value = "nature", required = false) String nature,
 			@RequestParam(value = "source", required = false) String source,
 			@RequestParam(value = "type", required = false) String type,
-			@RequestParam(value = "turnover", required = false) String turnover, HttpServletRequest request) {
+			@RequestParam(value = "turnover", required = false) String turnover, HttpServletRequest request
+			) {
 		Map<String, Object> params = this.getRequestParam(request);
-		return keHuReportService.reportCount(managerOwnerName, params);
+		return keHuReportService.reportCount(params, users);
 	}
 
 }

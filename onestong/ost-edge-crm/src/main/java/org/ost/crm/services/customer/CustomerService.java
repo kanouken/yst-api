@@ -28,6 +28,7 @@ import org.ost.entity.customer.address.vo.AddressVo;
 import org.ost.entity.customer.contacts.vo.ContactInfoVo;
 import org.ost.entity.customer.dto.CustomerDetailDto;
 import org.ost.entity.customer.dto.CustomerListDto;
+import org.ost.entity.customer.dto.CustomerQueryDto;
 import org.ost.entity.customer.mapper.CustomerEntityMapper;
 import org.ost.entity.customer.vo.CustomerCreateVo;
 import org.ost.entity.org.department.dto.DepartmentListDto;
@@ -120,6 +121,59 @@ public class CustomerService extends BaseService {
 
 	}
 
+	/**
+	 * ✅普通用户只能查看属于自己的客户 
+	 * TODO 部门主管可以看本部门以及下级部门的所有客户
+	 * 
+	 * @param current
+	 * @param params
+	 * @param page
+	 * @return
+	 */
+	public Map<String, Object> queryCustomersByUserScope(Users current, Map<String, String> params, Page page) {
+		Boolean isDirector = current.getIsDirector().equals(Byte.parseByte("0")) ? false : true;
+		CustomerQueryDto customerQueryDto = new CustomerQueryDto();
+		customerQueryDto.setSchemaId(current.getSchemaId());
+		String name = null;
+		if ((name = MapUtils.getString(params, "name")) != null) {
+			customerQueryDto.setName(name);
+			params.remove("name");
+		}
+		customerQueryDto.setProperty(params);
+		OperateResult<PageEntity<CustomerListDto>> result = null;
+		if (isDirector) {
+			// 按部门搜索
+			
+		} else {
+			result = this.customerServiceClient.queryCustomerByUser(current.getSchemaId(), page.getCurPage(),
+					page.getPerPageSum(), customerQueryDto);
+		}
+		if (result.success()) {
+			List<CustomerListDto> customers = result.getData().getObjects();
+			final List<Map<String, Object>> tmps = new ArrayList<Map<String, Object>>();
+			customers.forEach(c -> {
+				Map<String, Object> _t = transBean2Map(c);
+				_t.putAll(c.getProperties());
+				_t.remove("properties");
+				tmps.add(_t);
+			});
+			page.setTotalRecords(result.getData().getTotalRecord());
+			return OperateResult.renderPage(page, tmps);
+		} else {
+			throw new ApiException("获取列表失败", result.getInnerException());
+		}
+	}
+
+	/**
+	 * 普通用户只能查看属于自己的客户 部门主管可以看本部门以及下级部门的所有客户
+	 * 
+	 * @see #queryCustomersByUserScope(Users, Map, Page)
+	 * @param current
+	 * @param params
+	 * @param page
+	 * @return
+	 */
+	@Deprecated
 	public Map<String, Object> queryCustomers(Users current, Map<String, String> params, Page page) {
 		Customer customer = new Customer();
 		customer.setSchemaId(current.getSchemaId());
@@ -319,12 +373,13 @@ public class CustomerService extends BaseService {
 
 	/**
 	 * 批量分配客户经理 部门
+	 * 
 	 * @param user
 	 * @param dtos
 	 * @return
 	 */
 	public String updateMangerOwnersBatch(Users user, List<CustomerListDto> dtos) {
-		
+
 		return null;
 	}
 }

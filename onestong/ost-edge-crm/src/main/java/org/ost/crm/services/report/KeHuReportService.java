@@ -25,53 +25,84 @@ public class KeHuReportService {
 
 	/**
 	 * 客户报表-获取列表数据
-	 * 
-	 * @param managerOwnerName
 	 * @param params
 	 * @param page
+	 * @param users
 	 * @return
-	 */
-	public Map<String, Object> reportCustomer(String managerOwnerName, Map<String, Object> params, Page page) {
-		KeHuReportDto kh = new KeHuReportDto();
-		kh.setDealFrequency(MapUtils.getString(params, "dealFrequency"));
-		kh.setType(MapUtils.getString(params, "type"));
-		kh.setTurnover(MapUtils.getString(params, "turnover"));
-		kh.setIsPlc(MapUtils.getString(params, "isPlc"));
-		kh.setNature(MapUtils.getString(params, "nature"));
-		kh.setSource(MapUtils.getString(params, "source"));
-		kh.setBelongIndustry(MapUtils.getString(params, "belongIndustry"));
+	 */ 
+	public Map<String, Object> queryCustomersReport(Map<String, Object> params, Page page,Users users) {
+		// 获取keHuReportDto中的相关信息值
+		KeHuReportDto keHuReportDto = new KeHuReportDto();
+		keHuReportDto.setManagerOwnerName(MapUtils.getString(params, "managerOwnerName"));
+		keHuReportDto.setDealFrequency(MapUtils.getString(params, "dealFrequency"));
+		keHuReportDto.setType(MapUtils.getString(params, "type"));
+		keHuReportDto.setTurnover(MapUtils.getString(params, "turnover"));
+		keHuReportDto.setIsPlc(MapUtils.getString(params, "isPlc"));
+		keHuReportDto.setNature(MapUtils.getString(params, "nature"));
+		keHuReportDto.setSource(MapUtils.getString(params, "source"));
+		keHuReportDto.setBelongIndustry(MapUtils.getString(params, "belongIndustry"));
+		keHuReportDto.setStartCreateTime(MapUtils.getString(params, "startDate"));
+		keHuReportDto.setEndCreateTime(MapUtils.getString(params, "endDate"));
 
+		// 通过customerServiceClient拿Customers的值
 		OperateResult<PageEntity<KeHuReportDto>> result = this.customerServiceClient
-				.queryCustomerByParam(page.getCurPage(), page.getPerPageSum(), managerOwnerName, kh);
-		List<KeHuReportDto> ke = new ArrayList<KeHuReportDto>();
+				.queryCustomersReport(users.getSchemaId(),page.getCurPage(), page.getPerPageSum(), keHuReportDto);
+		// 获取集合
+		List<KeHuReportDto> keHuReportDtoList = new ArrayList<KeHuReportDto>();
 		if (result.success()) {
-			ke = result.getData().getObjects();
+			keHuReportDtoList = result.getData().getObjects();
 		}
-		return OperateResult.renderPage(page, ke);
+		return OperateResult.renderPage(page, keHuReportDtoList);
 	}
-
 
 	/**
 	 * 客户报表-获取图表数据
-	 * @param managerOwnerName
 	 * @param params
+	 * @param users
 	 * @return
 	 */
 	@Transactional(readOnly = true)
-	public Object reportChart(String managerOwnerName, Map<String, Object> params) {
-		OperateResult<Object> result = this.customerServiceClient.queryReportChart(managerOwnerName);
+	public Object reportChart(Map<String, Object> params,Users users) {
+		// 获取keHuReportDto中的相关信息值
+		KeHuReportDto keHuReportDto = new KeHuReportDto();
+		keHuReportDto.setManagerOwnerName(MapUtils.getString(params, "managerOwnerName"));
+		keHuReportDto.setDealFrequency(MapUtils.getString(params, "dealFrequency"));
+		keHuReportDto.setType(MapUtils.getString(params, "type"));
+		keHuReportDto.setTurnover(MapUtils.getString(params, "turnover"));
+		keHuReportDto.setIsPlc(MapUtils.getString(params, "isPlc"));
+		keHuReportDto.setNature(MapUtils.getString(params, "nature"));
+		keHuReportDto.setSource(MapUtils.getString(params, "source"));
+		keHuReportDto.setBelongIndustry(MapUtils.getString(params, "belongIndustry"));
+		keHuReportDto.setStartCreateTime(MapUtils.getString(params, "startDate"));
+		keHuReportDto.setEndCreateTime(MapUtils.getString(params, "endDate"));
+
+		OperateResult<Object> result = this.customerServiceClient.reportChart(users.getSchemaId(),keHuReportDto);
 		return result;
 	}
 
 	/**
 	 * 客户报表-获取统计数据
-	 * @param managerOwnerName
 	 * @param params
+	 * @param users
 	 * @return
 	 */
 	@Transactional(readOnly = true)
-	public Object reportCount(String managerOwnerName, Map<String, Object> params) {
-		OperateResult<Object> result=this.customerServiceClient.queryReportCount(managerOwnerName);
+	public Object reportCount(Map<String, Object> params,Users users) {
+
+		// 获取keHuReportDto中的相关信息值
+		KeHuReportDto keHuReportDto = new KeHuReportDto();
+		keHuReportDto.setManagerOwnerName(MapUtils.getString(params, "managerOwnerName"));
+		keHuReportDto.setDealFrequency(MapUtils.getString(params, "dealFrequency"));
+		keHuReportDto.setType(MapUtils.getString(params, "type"));
+		keHuReportDto.setTurnover(MapUtils.getString(params, "turnover"));
+		keHuReportDto.setIsPlc(MapUtils.getString(params, "isPlc"));
+		keHuReportDto.setNature(MapUtils.getString(params, "nature"));
+		keHuReportDto.setSource(MapUtils.getString(params, "source"));
+		keHuReportDto.setBelongIndustry(MapUtils.getString(params, "belongIndustry"));
+		keHuReportDto.setStartCreateTime(MapUtils.getString(params, "startDate"));
+		keHuReportDto.setEndCreateTime(MapUtils.getString(params, "endDate"));
+
+		OperateResult<Object> result = this.customerServiceClient.queryReportCount(users.getSchemaId(),keHuReportDto);
 		return result;
 	}
 

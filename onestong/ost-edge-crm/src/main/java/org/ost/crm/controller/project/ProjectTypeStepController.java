@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@RequestMapping(value = "ProjectTypeStep")
+@RequestMapping(value = "projectTypeStep")
 public class ProjectTypeStepController extends Action {
 
 	@Autowired
@@ -32,21 +32,26 @@ public class ProjectTypeStepController extends Action {
 
 	@ApiOperation(value = "新增项目类型阶段", notes = "新增项目类型阶段")
 	@PostMapping(value = "{projectTypeID}")
-	public void CreateProjectTypeSteps(@PathVariable(value = "projectTypeID") Integer projectTypeID,
-			@RequestAttribute(value = LOGIN_USER) Users users, @RequestBody ProjectStepsDetailDto pdto) {
+	public void CreateProjectTypeSteps(
+			@PathVariable(value = "projectTypeID") Integer projectTypeID,
+			@RequestAttribute(value = LOGIN_USER) Users users, 
+			@RequestBody ProjectStepsDetailDto pdto) {
 		projectTypeStepService.createOrUpdateTypeStep(projectTypeID, users, pdto);
 	}
 
 	@ApiOperation(value = "编辑项目类型阶段", notes = "编辑项目类型阶段")
 	@PutMapping(value = "{projectTypeID}")
-	public void updateProjectTypeSteps(@PathVariable(value = "projectTypeID") Integer projectTypeID,
-			@RequestAttribute(value = LOGIN_USER) Users users, @RequestBody ProjectStepsDetailDto pdto) {
+	public void updateProjectTypeSteps(
+			@PathVariable(value = "projectTypeID") Integer projectTypeID,
+			@RequestAttribute(value = LOGIN_USER) Users users, 
+			@RequestBody ProjectStepsDetailDto pdto) {
 		projectTypeStepService.createOrUpdateTypeStep(projectTypeID, users, pdto);
 	}
 
 	@ApiOperation(value = "项目类型阶段详情", notes = "项目类型阶段详情")
 	@GetMapping(value = "{projectTypeID}")
-	public OperateResult<ProjectStepsDetailDto> detailProjectTypeSteps(@PathVariable(value = "projectTypeID") Integer projectTypeID,
+	public OperateResult<ProjectStepsDetailDto> detailProjectTypeSteps(
+			@PathVariable(value = "projectTypeID") Integer projectTypeID,
 			@RequestAttribute(value = LOGIN_USER) Users users) {
 		return new OperateResult<ProjectStepsDetailDto>(projectService.queryProjectSteps(projectTypeID, users));
 		 
