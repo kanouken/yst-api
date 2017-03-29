@@ -225,12 +225,15 @@ public class EventCollectionsDataApi extends Action {
 
 	/**
 	 * 所有类型事件
-	 * 
+	 * 外访事件分为 外访、外访审批
+	 * 外访 2  外访支持 2.1  外访审批观察 2.2 外访审批审批 2.3
+	 * like_count 》》》 考勤状态 
 	 * @param user
 	 * @param curPage
 	 * @param perPageSum
 	 * @return
 	 */
+	@ApiOperation(value = "所有类型事件", notes = "type 类型 外访 2  外访支持 2.1  外访审批观察 2.2 外访审批审批 2.3  外访中考勤状态 ‘like_count’  \"考勤状态\n1:没有签退\n2:签退 但是 没有签到\n3:既签到又签退\"", code = 200, produces = "application/json")
 	@GetMapping(value = "")
 	public List<Map<String, Object>> pull(@RequestAttribute(value = LOGIN_USER) User user,
 			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
