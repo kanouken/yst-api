@@ -13,6 +13,7 @@ import org.common.tools.exception.ApiException;
 import org.ost.crm.client.ContactsServiceClient;
 import org.ost.crm.dao.visit.VisitApproverDao;
 import org.ost.crm.dao.visit.VisitDao;
+import org.ost.crm.dao.visit.VisitSupporterDao;
 import org.ost.crm.model.common.CommonParams;
 import org.ost.crm.model.visit.Visit;
 import org.ost.crm.model.visit.VisitApprovalFlow;
@@ -20,20 +21,26 @@ import org.ost.crm.model.visit.VisitApprover;
 import org.ost.crm.model.visit.VisitApproverExample;
 import org.ost.crm.model.visit.VisitProject;
 import org.ost.crm.model.visit.VisitSupporter;
+import org.ost.crm.model.visit.VisitSupporterExample;
 import org.ost.crm.model.visit.dto.CreateVisitDto;
-import org.ost.crm.model.visit.dto.VisitAttenceCreateDto;
+import org.ost.crm.model.visit.dto.UpdateVisitDto;
+import org.ost.crm.model.visit.dto.VisitDetailDto;
 import org.ost.crm.model.visit.mapper.VisitEntityMapper;
 import org.ost.crm.services.base.BaseService;
 import org.ost.entity.contacts.dto.VisitContactsDto;
 import org.ost.entity.user.Users;
+import org.ost.entity.user.dto.UserListDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import sun.tools.tree.ThisExpression;
 
 @Service
 public class VisitService extends BaseService {
@@ -46,6 +53,15 @@ public class VisitService extends BaseService {
 	 */
 	public static final Byte ROLE_APPROVAL_VIEW = 1;
 
+	/**
+	 * 角色 人员 发起人
+	 */
+	public static final Byte ROLE_VISIT_CREATOR = 0;
+	/**
+	 * 角色 人员 支持者
+	 */
+	public static final Byte ROLE_VISIT_SUPPORT = 1;
+
 	@Autowired
 	VisitDao visitDao;
 
@@ -54,6 +70,9 @@ public class VisitService extends BaseService {
 
 	@Autowired
 	VisitApproverDao visitApproverDao;
+
+	@Autowired
+	VisitSupporterDao visitSupportDao;
 
 	/**
 	 * 新增外访
@@ -199,6 +218,145 @@ public class VisitService extends BaseService {
 		} else {
 			throw new ApiException("审批失败", "未找到审批数据");
 		}
+	}
+
+	/**
+	 * 
+	 * @param currentUser
+	 * @param id
+	 * @param actionType
+	 *            2 外访发起人 2.1支持者 2.2 观察 2.3 审批
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	public VisitDetailDto queryDetail(Users currentUser, Integer id, String actionType) {
+		VisitDetailDto visitDetailDto = null;
+		Visit visit = visitDao.selectByPrimaryKey(id);
+		Assert.notNull(visit, "参数异常");
+		VisitSupporter vsSupporter = null;
+		if (actionType.trim().equals("2") || actionType.trim().equals("2.2") || actionType.trim().equals("2.3")) {
+			// 外访发起人查看外访详细
+
+			// 发起人
+			vsSupporter = new VisitSupporter();
+			vsSupporter.setUserID(currentUser.getUserId());
+			vsSupporter.setVisitEventID(id);
+			vsSupporter.setRole(ROLE_VISIT_CREATOR);
+			vsSupporter = visitSupportDao.selectOne(vsSupporter);
+			Assert.notNull(vsSupporter, "参数异常");
+
+			visitDetailDto = VisitEntityMapper.INSTANCE.combineVisitAndSupporterToVisitDetailDto(visit, vsSupporter);
+			// 审批状态
+			if (actionType.trim().equals("2.3")) {
+				VisitApprover visitApprover = new VisitApprover();
+				visitApprover.setUserID(currentUser.getUserId());
+				visitApprover.setVisitEventID(id);
+				visitApprover.setRole(ROLE_APPROVAL_APPROVA);
+				visitApprover = visitApproverDao.selectOne(visitApprover);
+				Assert.notNull(visitApprover, "参数异常");
+				visitDetailDto.setRoleApprovalStatus(visitApprover.getApprovalStatus().toString());
+			}
+
+		} else if (actionType.trim().equals("2.1")) {
+
+			// 支持者
+			vsSupporter = new VisitSupporter();
+			vsSupporter.setUserID(currentUser.getUserId());
+			vsSupporter.setVisitEventID(id);
+			vsSupporter.setRole(ROLE_VISIT_SUPPORT);
+			vsSupporter = visitSupportDao.selectOne(vsSupporter);
+			Assert.notNull(vsSupporter, "参数异常");
+			visitDetailDto = VisitEntityMapper.INSTANCE.combineVisitAndSupporterToVisitDetailDto(visit, vsSupporter);
+
+		} else {
+			throw new IllegalArgumentException("参数异常");
+		}
+
+		return visitDetailDto;
+	}
+
+	@Transactional(readOnly = true)
+	public Map<String, Object> querySupporters(Users currentUser, Integer id) {
+		List<UserListDto> supporters = this.visitSupportDao.selectByVisitId(currentUser.getSchemaId(), id,
+				ROLE_VISIT_SUPPORT.intValue());
+
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put("objects", supporters);
+		return result;
+	}
+
+	/**
+	 * 更新外访
+	 * 
+	 * @param currentUser
+	 * @param updateVisitDto
+	 * @param id
+	 * @return
+	 * @throws JsonProcessingException
+	 */
+	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
+	public String updateVisit(Users currentUser, UpdateVisitDto updateVisitDto, Integer id)
+			throws JsonProcessingException {
+		// role check
+
+		VisitSupporter vSupporter = new VisitSupporter();
+		vSupporter.setUserID(currentUser.getUserId());
+		vSupporter.setVisitEventID(id);
+		vSupporter.setRole(ROLE_VISIT_CREATOR);
+		VisitSupporter creator = visitSupportDao.selectOne(vSupporter);
+		
+		// update contacts
+		if (CollectionUtils.isNotEmpty(updateVisitDto.getContacts())) {
+			Assert.notNull(creator,"参数异常");
+			VisitContactsDto vContactsDto = new VisitContactsDto();
+			vContactsDto.setVisitEventId(id);
+			vContactsDto.setContactsIds(
+					updateVisitDto.getContacts().stream().map(c -> c.getId()).collect(Collectors.toList()));
+			OperateResult<String> result = this.contactsServiceClient.updateVisitContacts(currentUser.getSchemaId(),
+					vContactsDto);
+			if (result.success()) {
+			} else {
+				throw new ApiException("更新外访失败", result.getInnerException());
+			}
+		}
+		// 项目
+		if (CollectionUtils.isNotEmpty(updateVisitDto.getProjects())) {
+			Assert.notNull(creator,"参数异常");
+			visitDao.deleteVisitProject(id);
+			List<VisitProject> vps = new ArrayList<VisitProject>();
+			Visit visit = this.visitDao.selectByPrimaryKey(id);
+			visit.setCreateTime(new Date());
+			visit.setUpdateTime(new Date());
+			updateVisitDto.getProjects().forEach(p -> {
+				vps.add(VisitEntityMapper.INSTANCE.combineProjectListDtoAndVisitToVisitProject(p, visit));
+			});
+			visitDao.insertVisitProject(vps);
+		}
+
+		if (updateVisitDto.getProjectTypeID() != null) {
+			Assert.notNull(creator,"参数异常");
+			Visit visit = new Visit();
+			visit.setId(id);
+			visit.setUpdateBy(currentUser.getRealname());
+			visit.setUpdateTime(new Date());
+			visit.setProjectTypeID(Integer.parseInt(updateVisitDto.getProjectTypeID()));
+			this.visitDao.updateByPrimaryKeySelective(visit);
+		}
+
+		if (updateVisitDto.getVisitContent() != null || updateVisitDto.getVisitDetail() != null) {
+			vSupporter = new VisitSupporter();
+			vSupporter.setUpdateBy(currentUser.getRealname());
+			vSupporter.setUpdateTime(new Date());
+			if (updateVisitDto.getVisitContent() != null)
+				vSupporter.setVisitContent(this.objctMapper.writeValueAsString(updateVisitDto.getVisitContent()));
+			vSupporter.setVisitDetail(updateVisitDto.getVisitDetail());
+			VisitSupporterExample vse = new VisitSupporterExample();
+			vse.createCriteria().andVisiteventidEqualTo(id).andUseridEqualTo(currentUser.getUserId());
+			if (0 == visitSupportDao.updateByExampleSelective(vSupporter, vse)) {
+				throw new ApiException("更新失败", "");
+			}
+		}
+		return HttpStatus.OK.name();
 	}
 
 }

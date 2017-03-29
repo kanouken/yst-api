@@ -30,6 +30,12 @@
 
 	</insert>
 
+	<delete id="deleteVisitProject">
+		delete from tbl_visit_event_project
+		where visitEventID
+		= #{visitId}
+	</delete>
+
 
 	<insert id="insertVisitSupporter">
 		insert into tbl_visit_event_user(

@@ -82,16 +82,6 @@ public class ContactController extends Action {
 		return new OperateResult<List<ContactsListDto>>(contactService.queryByProject(schemaID, projectId));
 	}
 	
-	/**
-	 * 新增外访联系人
-	 * @param schemaID
-	 * @param projectId
-	 * @return
-	 */
-	@RequestMapping(value="/visit",method=RequestMethod.POST)
-	public OperateResult<String> addVisitContacts(@RequestHeader(value = TENANT_ID) String schemaID,
-			@RequestBody VisitContactsDto visitContactsDto ) {
-		return new OperateResult<String>(contactService.createVisitContacts(schemaID,visitContactsDto));
-	}
+	
 	
 }

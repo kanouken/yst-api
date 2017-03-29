@@ -55,7 +55,20 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
 		ApiException ae = (ApiException) ex;
 		return new ResponseEntity<>(new OperateResult(ae.getInnerException(), ae.getMessage(), null), HttpStatus.OK);
 	}
-	
+
+	@org.springframework.web.bind.annotation.ExceptionHandler({ IllegalArgumentException.class })
+	@ResponseBody
+	ResponseEntity<?> handleArgumentException(HttpServletRequest request, Throwable ex) {
+
+		StringWriter writer = new StringWriter();
+		PrintWriter pWriter = new PrintWriter(writer);
+		ex.printStackTrace(pWriter);
+		ex.printStackTrace();
+
+		return new ResponseEntity<>(new OperateResult(writer.getBuffer().toString(), ex.getMessage(), null),
+				HttpStatus.OK);
+	}
+
 	/**
 	 * 402 为保持代码健壮 抛出的 业务异常
 	 * 
@@ -68,7 +81,6 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
 	ResponseEntity<?> handler403(HttpServletRequest request, Throwable ex) {
 		return new ResponseEntity<>(new OperateResult("", "禁止访问", null), HttpStatus.OK);
 	}
-
 
 	/**
 	 * 5xx 错误 数据库、代码异常

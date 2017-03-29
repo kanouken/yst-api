@@ -20,4 +20,6 @@ public interface VisitDao extends Mapper<Visit> {
 
 	void insertVisitApprover(@Param("vps") List<VisitApprover> vps);
 
+	void deleteVisitProject(@Param("visitId") Integer id);
+
 }

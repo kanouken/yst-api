@@ -381,29 +381,5 @@ public class ContactsService {
 		return contactsListDtos;
 	}
 
-	/**
-	 * 添加外访联系人
-	 * 
-	 * @param schemaID
-	 * @param visitContactsDto
-	 * @return
-	 */
-	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public String createVisitContacts(String schemaID, VisitContactsDto visitContactsDto) {
-		visitContactsDto.getContactsIds().forEach(c -> {
-			VisitContacts vc = new VisitContacts();
-			vc.setContactID(c);
-			vc.setCreateBy(visitContactsDto.getUserName());
-			vc.setCreateId(Integer.parseInt(visitContactsDto.getUserId()));
-			vc.setCreateTime(new Date());
-			vc.setIsDelete(Short.parseShort("0"));
-			vc.setSchemaId(schemaID);
-			vc.setUpdateBy(visitContactsDto.getUserName());
-			vc.setUpdateTime(vc.getCreateTime());
-			vc.setVisitEventID(visitContactsDto.getVisitEventId());
-			visitContactsDao.insertSelective(vc);
-		});
-		return HttpStatus.OK.name();
-	}
-
+	
 }

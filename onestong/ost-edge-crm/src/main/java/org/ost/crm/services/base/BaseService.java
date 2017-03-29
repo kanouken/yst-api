@@ -12,13 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Service
 public class BaseService {
 	final protected  Logger  LOG = LoggerFactory.getLogger(this.getClass());
 	
 	public static final Short YES = 1;
 	public static final Short NO = 0;
-	
+	@Autowired
+	protected ObjectMapper objctMapper;
 	
 	@Autowired
 	private CommonParamDao commonParamDao;

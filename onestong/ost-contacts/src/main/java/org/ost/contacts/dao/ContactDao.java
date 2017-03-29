@@ -3,7 +3,6 @@ package org.ost.contacts.dao;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.session.RowBounds;
 import org.ost.entity.contacts.Contacts;
 import org.ost.entity.contacts.dto.ContactsListDto;
@@ -28,5 +27,7 @@ public interface ContactDao extends Mapper<Contacts> {
 			RowBounds rb);
 
 	List<ContactsListDto> selectByProject(@Param("schemaId") String schemaID, @Param("projectId") Integer projectId);
+
+	List<ContactsListDto> selectByVisit(@Param("schemaId") String schemaID, @Param("visitId") Integer projectId);
 
 }

@@ -78,11 +78,47 @@ public class ContactsService {
 		}
 
 	}
+	/**
+	 * FIXME 无分页
+	 * @param visitId
+	 * @param currentUser
+	 * @return
+	 */
+	private Map<String, Object> queryContactsByVisit(Integer visitId, Users currentUser) {
+		OperateResult<List<ContactsListDto>> result = contactsServiceClient.queryByVisit(currentUser.getSchemaId(),
+				visitId);
+		List<ContactsListDto> records = new ArrayList<ContactsListDto>();
+		if (result.success()) {
+			records = result.getData();
+			if (CollectionUtils.isNotEmpty(result.getData())) {
+				int[] customerIds = result.getData().stream().mapToInt(c -> c.getCustomerID()).toArray();
+				OperateResult<List<CustomerListDto>> result2 = this.customerServiceClient
+						.queryByIds(currentUser.getSchemaId(), customerIds);
+				if (result2.success()) {
+					records.forEach(r -> {
+						Optional<CustomerListDto> _rOptional = result2.getData().stream()
+								.filter(c -> c.getId() == r.getCustomerID()).findFirst();
+						if (_rOptional.isPresent()) {
+							r.setCustomer(new CustomerVo(_rOptional.get().getId(), _rOptional.get().getName()));
+						}
+					});
+
+				}
+			}
+			Page page = new Page();
+			page.setCurPage(1);
+			page.setTotalRecords(result.getData().size());
+			return OperateResult.renderPage(page, result.getData());
+		} else {
+			throw new ApiException("获取联系人列表失败", result.getInnerException());
+		}
+	}
 
 	/**
 	 * 联系人列表
 	 * 
 	 * @param customerID
+	 * @param customerId
 	 * @param keyword
 	 * @param name
 	 * @param phone
@@ -91,11 +127,15 @@ public class ContactsService {
 	 * @param perPageSum
 	 * @return
 	 */
-	public Map<String, Object> queryContacts(Integer customerID, String keyword, String name, String phone, Users users,
-			Integer curPage, Integer perPageSum) {
-		logger.info("调用参数 keyword "+keyword +"-name " + name);
+	public Map<String, Object> queryContacts(Integer visitId, Integer customerID, String keyword, String name,
+			String phone, Users users, Integer curPage, Integer perPageSum) {
+		logger.info("调用参数 keyword " + keyword + "-name " + name);
+		if (visitId != null) {
+			return this.queryContactsByVisit(visitId, users);
+		}
+
 		OperateResult<PageEntity<ContactsListDto>> result = contactsServiceClient.contactList(curPage,
-				users.getSchemaId(), perPageSum, null, name, phone,keyword,customerID);
+				users.getSchemaId(), perPageSum, null, name, phone, keyword, customerID);
 		List<ContactsListDto> records = new ArrayList<ContactsListDto>();
 		if (result.success()) {
 			records = result.getData().getObjects();

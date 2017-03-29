@@ -3,12 +3,50 @@
 
 <mapper namespace="org.ost.crm.dao.visit.VisitAttenceDao">
 	<select id="selectAttence" resultType="org.ost.crm.model.visit.VisitAttence">
-		select ae.* from tbl_visit_event_user veu right join
-		tbl_attence_events ae on veu.attenceEventID = ae.id
+		select ae.* from
+		tbl_visit_event_user veu right join
+		tbl_attence_events ae on
+		veu.attenceEventID = ae.id
 		where veu.userID =
-		#{userId} and veu.visitEventID = #{visitId} and veu.schemaID =
+		#{userId} and
+		veu.visitEventID = #{visitId} and veu.schemaID =
 		#{schemaId}
-		and veu.isDelete = 0
+		and
+		veu.isDelete = 0
 	</select>
 
+
+	<select id="selectUnSignOut" resultType="org.ost.entity.notification.visit.UnSignOutVisit">
+		SELECT
+		count(1) total,
+		t.userID ,
+		t.c_id clientId,
+		t.userName
+		FROM
+		(
+		SELECT
+		ve.id ,
+		veu.userID ,
+		veu.userName ,
+		u.c_id
+		FROM
+		tbl_visit_event ve
+		LEFT JOIN tbl_visit_event_user veu ON(ve.id , ve.schemaID)
+		=(veu.visitEventID , veu.schemaID)
+		LEFT JOIN tbl_attence_events ae ON(
+		veu.attenceEventID ,
+		veu.schemaID
+		) =(ae.id , ae.schemaID)
+		LEFT JOIN users u ON(veu.userID ,
+		veu.schemaID) =(u.user_id , u.domain_id)
+		WHERE
+		ae.signOutState = 0
+		) t
+		GROUP BY
+		t.userID ,
+		t.c_id ,
+		t.userName
+
+
+	</select>
 </mapper>

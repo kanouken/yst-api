@@ -1,6 +1,7 @@
 package org.ost.crm.services.visit;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.common.tools.exception.ApiException;
@@ -10,14 +11,17 @@ import org.ost.crm.model.visit.VisitAttence;
 import org.ost.crm.model.visit.VisitSupporter;
 import org.ost.crm.model.visit.VisitSupporterExample;
 import org.ost.crm.model.visit.dto.VisitAttenceCreateDto;
+import org.ost.crm.model.visit.dto.VisitAttenceDto;
 import org.ost.crm.model.visit.mapper.VisitEntityMapper;
 import org.ost.crm.services.base.BaseService;
+import org.ost.entity.notification.visit.UnSignOutVisit;
 import org.ost.entity.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 @Service
 public class VisitAttenceService extends BaseService {
@@ -111,7 +115,7 @@ public class VisitAttenceService extends BaseService {
 		if (visitAttence == null) {
 			throw new ApiException("无考勤记录", "");
 		}
-		if (visitAttence.getSignOutState()!= null && visitAttence.getSignOutState().equals(ATTENCE_SIGN_OUT)) {
+		if (visitAttence.getSignOutState() != null && visitAttence.getSignOutState().equals(ATTENCE_SIGN_OUT)) {
 			throw new ApiException("外访考勤已签退", "");
 		}
 		String attenceId = visitAttence.getId();
@@ -125,5 +129,28 @@ public class VisitAttenceService extends BaseService {
 		visitAttence.setCreateTime(null);
 		visitAttenceDao.updateByPrimaryKeySelective(visitAttence);
 		return HttpStatus.OK.name();
+	}
+
+	@Transactional(readOnly = true)
+	public VisitAttenceDto queryAttence(Users currentUser, Integer id) {
+
+		VisitSupporter visitSupporter = new VisitSupporter();
+		visitSupporter.setVisitEventID(id);
+		visitSupporter.setUserID(currentUser.getUserId());
+		visitSupporter = visitSupporterDao.selectOne(visitSupporter);
+		Assert.notNull(visitSupporter, "参数错误");
+		VisitAttence visitAttence = visitAttenceDao.selectByPrimaryKey(visitSupporter.getAttenceEventID());
+		VisitAttenceDto visitAttenceDto = VisitEntityMapper.INSTANCE.visitAttenceToVisitAttenceDto(visitAttence);
+		return visitAttenceDto;
+	}
+
+	/**
+	 * 查询当前时间未签退的外访记录
+	 * 
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	public List<UnSignOutVisit> queryNoSignOut() {
+		return this.visitAttenceDao.selectUnSignOut();
 	}
 }
