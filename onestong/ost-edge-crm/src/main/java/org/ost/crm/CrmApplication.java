@@ -76,7 +76,8 @@ public class CrmApplication extends WebMvcConfigurerAdapter {
 				"/v2/api**",
 				"/info",
 				"/report/*/export",
-				"/api/users/login");
+				"/api/users/login",
+				"/web/user/login");
 	}
 
 	@Bean

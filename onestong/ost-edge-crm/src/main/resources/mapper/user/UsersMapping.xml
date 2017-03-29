@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.ost.crm.dao.web.user.UserDao">
+
+	<select id="selectLogin" resultType="org.ost.crm.model.web.user.UserDto">
+		select
+		users.`user_id` as userid
+		,users.`realname`
+		, users.`email`
+		,users.`phone_num` as phonenum
+		,users.`department_name` as departmentname
+		,users.`position`
+		,users.`company_name` as companyname
+		,users.`domain_id` as schemaId
+		from
+		`users`
+		where
+		users.`account_id` in
+		(select
+		account_id
+		from accounts
+		where
+		accounts.`login_name`=#{email,jdbcType=VARCHAR}
+		and
+		accounts.`login_password`=#{password,jdbcType=VARCHAR}
+		)
+	</select>
+
+	<select id="selectByEmail" resultType="org.ost.crm.model.web.user.UserDto">
+		select
+		users.`email`
+		from `users`
+		where users.`email`=#{email}
+	</select>
+
+</mapper>
