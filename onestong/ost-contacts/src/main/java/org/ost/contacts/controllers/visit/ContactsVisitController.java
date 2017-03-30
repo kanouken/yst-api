@@ -36,6 +36,19 @@ public class ContactsVisitController extends Action {
 	}
 
 	/**
+	 * 根据外访记录查询联系人
+	 * 
+	 * @param schemaID
+	 * @param id
+	 * @return
+	 */
+	@GetMapping(value = "queryByVisits")
+	public OperateResult<List<VisitContactsDto>> queryByVisits(@RequestHeader(value = TENANT_ID) String schemaID,
+			@RequestParam(value = "visitId") Integer[] ids) {
+		return new OperateResult<List<VisitContactsDto>>(contactsVisitService.queryByVisits(schemaID, ids));
+	}
+
+	/**
 	 * 新增外访联系人
 	 * 
 	 * @param schemaID

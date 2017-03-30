@@ -159,7 +159,8 @@
 		select
 		tc.id,
 		tc.sex,
-		case tc.sex when 0 then '男士' when 1 then '女士'  else '' end sexName,  
+		case
+		tc.sex when 0 then '男士' when 1 then '女士' else '' end sexName,
 		CONCAT(tc.firstName,tc.lastName) name,
 		tc.position,
 		tc.dept,
@@ -174,18 +175,20 @@
 		tc.isDelete = 0
 
 	</select>
-	
-	
+
+
 	<select id="selectByVisit" resultType="org.ost.entity.contacts.dto.ContactsListDto">
 		select
 		tc.id,
 		tc.sex,
-		case tc.sex when 0 then '男士' when 1 then '女士'  else '' end sexName,  
+		case
+		tc.sex when 0 then '男士' when 1 then '女士' else '' end sexName,
 		CONCAT(tc.firstName,tc.lastName) name,
 		tc.position,
 		tc.dept
-		
-		from tbl_contact tc left join tbl_visit_event_contact vec
+
+		from
+		tbl_contact tc left join tbl_visit_event_contact vec
 
 		on(tc.id
 		,tc.schemaID) = (vec.contactID,vec.schemaID)
@@ -195,5 +198,56 @@
 		tc.isDelete = 0
 
 	</select>
+
+
+	<resultMap type="org.ost.entity.contacts.dto.VisitContactsDto"
+		id="visitContactsDto">
+		<id column="visitEventID" property="visitEventId" />
+		<collection property="contacts"
+			ofType="org.ost.entity.contacts.dto.ContactsListDto">
+			<id column="contactsId" property="id" />
+			<result property="headPic" column="headPic" />
+			<result property="dept" column="dept"/>
+			<result property="position" column="position"/>
+			<result property="name" column="name" />
+			<result property="sex" column="sex" />
+			<result property="sexName" column="sexName" />
+		</collection>
+
+	</resultMap>
+
+
+	<select id="selectByVisits">
+
+		select
+		vec.visitEventID,
+		tc.id contactsId,
+		tc.sex,
+		case
+		tc.sex when 0 then
+		'男士' when 1 then '女士' else '' end
+		sexName,
+		CONCAT(tc.firstName,tc.lastName) name,
+		tc.position,
+		tc.dept,
+		u.pic headPic
+
+		from
+		tbl_contact tc left join tbl_visit_event_contact vec
+
+		on(tc.id
+		,tc.schemaID) = (vec.contactID,vec.schemaID)
+		left join users u on tc.id = u.user_id 
+		where vec.visitEventID in
+		<foreach collection="visitIds" item="visitId" separator=","
+			open="(" close=")">
+			#{visitId}
+		</foreach>
+		and vec.schemaID = #{schemaId} and vec.isDelete = 0 and
+		tc.isDelete = 0
+
+	</select>
+
+
 
 </mapper>

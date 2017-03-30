@@ -74,4 +74,16 @@ public class ContactsVisitService extends BaseService {
 		return HttpStatus.OK.name();
 	}
 
+	/**
+	 * 根据外访记录查询联系人
+	 * 
+	 * @param schemaID
+	 * @param ids
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	public List<VisitContactsDto> queryByVisits(String schemaID, Integer[] ids) {
+		return this.contactDao.selectByVisits(schemaID, ids);
+	}
+
 }

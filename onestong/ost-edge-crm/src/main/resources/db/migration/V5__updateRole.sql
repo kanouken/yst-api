@@ -1,0 +1,1 @@
+ALTER TABLE `onestong`.`roles` ADD COLUMN `role_code` varchar(50) COMMENT 'slug' AFTER `role_name`;

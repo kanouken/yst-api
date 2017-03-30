@@ -7,25 +7,25 @@
 		<where>
 			<trim prefixOverrides="AND |OR">
 				<if test="managerOwnerName != null and managerOwnerName !=''">
-					and ve.creator = #{managerOwnerName}
+					and ve.createBy = #{managerOwnerName}
 				</if>
 				<if test="contactType != null and contactType !=''">
-					and ve.contact_type = #{contactType}
+					and ve.visitType = #{contactType}
 				</if>
 				<if test="start != null">
-					and ve.create_time >= #{start,jdbcType=TIMESTAMP}
+					and ve.createTime >= #{start,jdbcType=TIMESTAMP}
 				</if>
 				<if test="end != null">
-				<![CDATA[ and ve.create_time <= #{end,jdbcType=TIMESTAMP}]]>
+				<![CDATA[ and ve.createTime <= #{end,jdbcType=TIMESTAMP}]]>
 				</if>
 				<if test="hasBus != null">
 					and
 					<choose>
 						<when test="hasBus == 0  ">
-							ve.bus_change is null
+							ve.projectTypeID is null
 						</when>
 						<when test="hasBus ==1 ">
-							ve.bus_change is not null and ve.bus_change != ''
+							ve.projectTypeID is not null 
 						</when>
 						<otherwise>
 						</otherwise>
@@ -37,23 +37,23 @@
 	</sql>
 
 	<select id="selectBy" resultType="java.util.HashMap">
-		select
-		ve.contacts_name contact,
-		ve.contact_type contactType ,
-		ve.create_time createTime,
-		DATE_FORMAT(ve.create_time,'%Y-%m-%d %H:%i')
-		createTimeStr,
-		ve.ve_id id,
-		ve.customer_name name,
-		case
-		ve.bus_change
-		when
-		null then '无' when '' then
-		'无' else '有' end hasBusStr,
-		ve.bus_change
-		busChange
-		from
-		visit_events ve
+		SELECT
+		ve.visitType contactType ,
+		ve.createTime createTime ,
+		DATE_FORMAT(ve.createTime , '%Y-%m-%d %H:%i') createTimeStr ,
+		ve.id id ,
+		ve.customerName NAME ,
+		CASE
+		WHEN pt. NAME IS NULL THEN
+		'无'
+		ELSE
+		'有'
+		END hasBusStr ,
+		pt. NAME busChange
+		FROM
+		tbl_visit_event ve
+		LEFT JOIN tbl_project_type pt ON(ve.schemaID , ve.projectTypeID)
+		=(pt.schemaID , pt.id)
 		<include refid="whereCriteria"></include>
 
 		order by ve.create_time

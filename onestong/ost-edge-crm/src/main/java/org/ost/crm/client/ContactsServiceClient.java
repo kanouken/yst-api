@@ -9,6 +9,7 @@ import org.ost.entity.contacts.dto.ContactsListDto;
 import org.ost.entity.contacts.dto.VisitContactsDto;
 import org.ost.entity.project.dto.ProjectContactsDto;
 import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -79,4 +80,8 @@ public interface ContactsServiceClient extends BaseClient {
 	public OperateResult<List<ContactsListDto>> queryByVisit(@RequestHeader(value = TENANT_ID) String schemaID,
 			@RequestParam(value = "visitId") Integer id);
 
+	
+	@RequestMapping(value = "contacts/queryByVisits", method = RequestMethod.GET)
+	public OperateResult<List<VisitContactsDto>> queryByVisits(@RequestHeader(value = TENANT_ID) String schemaID,
+			@RequestParam(value = "visitId") int[] ids);
 }

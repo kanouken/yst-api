@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
 import org.ost.entity.contacts.Contacts;
 import org.ost.entity.contacts.dto.ContactsListDto;
+import org.ost.entity.contacts.dto.VisitContactsDto;
 import org.springframework.stereotype.Repository;
 
 import tk.mybatis.mapper.common.Mapper;
@@ -29,5 +30,8 @@ public interface ContactDao extends Mapper<Contacts> {
 	List<ContactsListDto> selectByProject(@Param("schemaId") String schemaID, @Param("projectId") Integer projectId);
 
 	List<ContactsListDto> selectByVisit(@Param("schemaId") String schemaID, @Param("visitId") Integer projectId);
+
+	
+	List<VisitContactsDto> selectByVisits(@Param("schemaId") String schemaID, @Param("visitIds") Integer[] visitIds);
 
 }

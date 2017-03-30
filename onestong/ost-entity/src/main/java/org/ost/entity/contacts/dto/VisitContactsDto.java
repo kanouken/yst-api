@@ -6,9 +6,19 @@ public class VisitContactsDto {
 	private Integer visitEventId;
 	private List<Integer> contactsIds;
 
+	private List<ContactsListDto> contacts;
+
 	private String userName;
 
 	private String userId;
+
+	public List<ContactsListDto> getContacts() {
+		return contacts;
+	}
+
+	public void setContacts(List<ContactsListDto> contacts) {
+		this.contacts = contacts;
+	}
 
 	public Integer getVisitEventId() {
 		return visitEventId;

@@ -98,11 +98,11 @@ public class VisitService extends BaseService {
 		List<VisitSupporter> vps = new ArrayList<VisitSupporter>();
 		// 支持人员
 		if (CollectionUtils.isNotEmpty(createVisitDto.getSupportUsers())) {
-			
+
 			createVisitDto.getSupportUsers().forEach(p -> {
 				vps.add(VisitEntityMapper.INSTANCE.combineSupporterDtoAndVisitToVisitSupporter(p, visit));
 			});
-			
+
 		}
 		// 发起人
 		VisitSupporter vs = new VisitSupporter(visit.getId(), currentUser.getUserId(), currentUser.getRealname(),
@@ -316,6 +316,8 @@ public class VisitService extends BaseService {
 			vContactsDto.setVisitEventId(id);
 			vContactsDto.setContactsIds(
 					updateVisitDto.getContacts().stream().map(c -> c.getId()).collect(Collectors.toList()));
+			vContactsDto.setUserId(String.valueOf(currentUser.getUserId()));
+			vContactsDto.setUserName(currentUser.getRealname());
 			OperateResult<String> result = this.contactsServiceClient.updateVisitContacts(currentUser.getSchemaId(),
 					vContactsDto);
 			if (result.success()) {
