@@ -30,7 +30,7 @@
 		id
 		,name
 		FROM
-		tbl_project_type where id=#{id}
+		tbl_project_type where id=#{projectType.id}
 		
 	</select>
 
@@ -42,7 +42,7 @@
 		,cycWarningEnable=#{cycWarningEnable}
 		,startTimeWarningDay=#{startTimeWarningDay}
 		,startTimeWarningEnable=#{startTimeWarningEnable}
-		WHERE id=#{id}
+		WHERE id=#{projectType.id}
 	</update>
 	
 	
