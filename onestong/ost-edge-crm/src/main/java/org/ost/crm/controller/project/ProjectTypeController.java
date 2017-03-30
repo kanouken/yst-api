@@ -66,10 +66,10 @@ public class ProjectTypeController extends Action {
 
 	@ApiOperation(value = "获取项目分类详情", notes = "获取项目分类详情")
 	@GetMapping(value = "{id}")
-	public ProjectTypeVo detailProjectType(
+	public OperateResult<ProjectTypeVo> detailProjectType(
 			@PathVariable Integer id,
 			@RequestAttribute(value = LOGIN_USER, required = false) Users user) {
-		return this.projectTypeService.detailProjectType(id, user);
+		return new OperateResult<ProjectTypeVo>(this.projectTypeService.detailProjectType(id, user));
 	}
 
 	@ApiOperation(value = "删除项目分类", notes = "删除项目分类")
