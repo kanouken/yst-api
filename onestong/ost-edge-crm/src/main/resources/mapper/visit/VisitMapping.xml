@@ -50,7 +50,9 @@
 		updateTime,
 		updateBy,
 		isDelete,
-		schemaID
+		schemaID,
+		visitContent,
+		visitDetail
 		) values
 
 		<foreach collection="vps" item="vp" separator=",">
@@ -66,7 +68,10 @@
 			#{vp.updateTime},
 			#{vp.updateBy},
 			#{vp.isDelete},
-			#{vp.schemaId} )
+			#{vp.schemaId},
+			#{vp.visitContent},
+			#{vp.visitDetail}
+			)
 		</foreach>
 
 	</insert>

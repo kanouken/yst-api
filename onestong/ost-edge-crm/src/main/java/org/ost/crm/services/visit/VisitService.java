@@ -95,33 +95,37 @@ public class VisitService extends BaseService {
 			});
 			visitDao.insertVisitProject(vps);
 		}
+		List<VisitSupporter> vps = new ArrayList<VisitSupporter>();
 		// 支持人员
 		if (CollectionUtils.isNotEmpty(createVisitDto.getSupportUsers())) {
-			List<VisitSupporter> vps = new ArrayList<VisitSupporter>();
+			
 			createVisitDto.getSupportUsers().forEach(p -> {
 				vps.add(VisitEntityMapper.INSTANCE.combineSupporterDtoAndVisitToVisitSupporter(p, visit));
 			});
-			// 发起人
-			VisitSupporter vs = new VisitSupporter(visit.getId(), currentUser.getUserId(), currentUser.getRealname(),
-					currentUser.getDeptId(), currentUser.getDepartmentName(), Byte.parseByte("0"));
-			vs.setVisitContent(mapper.writeValueAsString(createVisitDto.getVisitContent()));
-			vs.setVisitDetail(createVisitDto.getVisitDetail());
-			vs.setCreateTime(visit.getCreateTime());
-			vs.setUpdateTime(visit.getUpdateTime());
-			vs.setCreateId(visit.getCreateId());
-			vs.setUpdateId(visit.getUpdateId());
-			vs.setSchemaId(visit.getSchemaId());
-			vps.add(vs);
-			visitDao.insertVisitSupporter(vps);
+			
 		}
-
+		// 发起人
+		VisitSupporter vs = new VisitSupporter(visit.getId(), currentUser.getUserId(), currentUser.getRealname(),
+				currentUser.getDeptId(), currentUser.getDepartmentName(), Byte.parseByte("0"));
+		if (createVisitDto.getVisitContent() != null)
+			vs.setVisitContent(mapper.writeValueAsString(createVisitDto.getVisitContent()));
+		vs.setVisitDetail(createVisitDto.getVisitDetail());
+		vs.setCreateBy(currentUser.getRealname());
+		vs.setUpdateBy(currentUser.getRealname());
+		vs.setCreateTime(visit.getCreateTime());
+		vs.setUpdateTime(visit.getUpdateTime());
+		vs.setCreateId(visit.getCreateId());
+		vs.setUpdateId(visit.getUpdateId());
+		vs.setSchemaId(visit.getSchemaId());
+		vps.add(vs);
+		visitDao.insertVisitSupporter(vps);
 		// 审批人
 		if (CollectionUtils.isNotEmpty(createVisitDto.getApprovalUsers())) {
-			List<VisitApprover> vps = new ArrayList<VisitApprover>();
+			List<VisitApprover> vas = new ArrayList<VisitApprover>();
 			createVisitDto.getApprovalUsers().forEach(p -> {
-				vps.add(VisitEntityMapper.INSTANCE.combineUserListDtoAndVisitToVisitApprover(p, visit));
+				vas.add(VisitEntityMapper.INSTANCE.combineUserListDtoAndVisitToVisitApprover(p, visit));
 			});
-			visitDao.insertVisitApprover(vps);
+			visitDao.insertVisitApprover(vas);
 			// TODO 观察者 行政
 		}
 		// 联系人
@@ -304,10 +308,10 @@ public class VisitService extends BaseService {
 		vSupporter.setVisitEventID(id);
 		vSupporter.setRole(ROLE_VISIT_CREATOR);
 		VisitSupporter creator = visitSupportDao.selectOne(vSupporter);
-		
+
 		// update contacts
 		if (CollectionUtils.isNotEmpty(updateVisitDto.getContacts())) {
-			Assert.notNull(creator,"参数异常");
+			Assert.notNull(creator, "参数异常");
 			VisitContactsDto vContactsDto = new VisitContactsDto();
 			vContactsDto.setVisitEventId(id);
 			vContactsDto.setContactsIds(
@@ -321,7 +325,7 @@ public class VisitService extends BaseService {
 		}
 		// 项目
 		if (CollectionUtils.isNotEmpty(updateVisitDto.getProjects())) {
-			Assert.notNull(creator,"参数异常");
+			Assert.notNull(creator, "参数异常");
 			visitDao.deleteVisitProject(id);
 			List<VisitProject> vps = new ArrayList<VisitProject>();
 			Visit visit = this.visitDao.selectByPrimaryKey(id);
@@ -334,7 +338,7 @@ public class VisitService extends BaseService {
 		}
 
 		if (updateVisitDto.getProjectTypeID() != null) {
-			Assert.notNull(creator,"参数异常");
+			Assert.notNull(creator, "参数异常");
 			Visit visit = new Visit();
 			visit.setId(id);
 			visit.setUpdateBy(currentUser.getRealname());

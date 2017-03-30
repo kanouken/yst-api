@@ -30,7 +30,7 @@ public interface VisitEntityMapper {
 	@Mapping(target = "visitTime", source = "createVisitDto.visitTime", dateFormat = "yyyy-MM-dd HH:MM")
 	@Mapping(target = "createId", source = "currentUser.userId")
 	@Mapping(target = "updateId", source = "currentUser.userId")
-	@Mapping(target = "approvalStatus", expression = "java(org.ost.crm.model.visit.VisitApprovalFlow.NO_PASS.getState())")
+	@Mapping(target = "approvalStatus", expression = "java(org.ost.crm.model.visit.VisitApprovalFlow.NOT_COMPLETE.getState())")
 	Visit combineCreateVisitDtoAndUsersToVisit(CreateVisitDto createVisitDto, Users currentUser);
 
 	@Mapping(target = "id", ignore = true)
@@ -54,7 +54,7 @@ public interface VisitEntityMapper {
 	@Mapping(target = "organizeID", source = "user.deptID")
 	@Mapping(target = "organizeName", source = "user.deptName")
 	@Mapping(target = "userName", source = "user.name")
-	@Mapping(target = "approvalStatus", expression = "java(org.ost.crm.model.visit.VisitApprovalFlow.NO_PASS.getState())")
+	@Mapping(target = "approvalStatus", expression = "java(org.ost.crm.model.visit.VisitApprovalFlow.NOT_COMPLETE.getState())")
 	VisitApprover combineUserListDtoAndVisitToVisitApprover(UserListDto user, Visit visit);
 
 	@Mapping(target = "createTime", expression = "java(new java.util.Date())")
