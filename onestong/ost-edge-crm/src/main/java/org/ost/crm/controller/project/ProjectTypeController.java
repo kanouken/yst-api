@@ -38,10 +38,10 @@ public class ProjectTypeController extends Action {
 
 	@ApiOperation(value = "新增项目分类", notes = "新增项目分类")
 	@PostMapping(value = "")
-	public void createProjectType(
+	public OperateResult<String> createProjectType(
 			@RequestBody ProjectTypeVo projectTypeVo,
 			@RequestAttribute(value = LOGIN_USER) Users user) throws JsonProcessingException {
-		projectTypeService.createProjectType(user, projectTypeVo);
+		return new OperateResult<String>(projectTypeService.createProjectType(user, projectTypeVo));
 	}
 
 	@ApiOperation(value = "编辑项目分类", notes = "编辑项目分类")
