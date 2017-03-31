@@ -66,10 +66,12 @@ public class ProjectsController extends Action {
 			@RequestParam(value = "keyword", required = false) String keyword,
 			@RequestParam(value = "name", required = false) String name,
 			@RequestParam(value = "state", required = false) String state,
-			@RequestParam(value = "typeID", required = false) String typeId)
+			@RequestParam(value = "typeID", required = false) String typeId,
+			@RequestParam(value="visitEventID" ,required = false) String visitEventID
+			)
 			throws InterruptedException, ExecutionException {
 		return new OperateResult<Map<String, Object>>(
-				projectService.queryProjects(user, customerId, keyword, name, state, typeId, curPage, perPageSum));
+				projectService.queryProjects(visitEventID,user, customerId, keyword, name, state, typeId, curPage, perPageSum));
 	}
 
 	/**

@@ -394,6 +394,7 @@ public class ProjectService extends BaseService {
 
 	/**
 	 * ✅ FIXME YSTCRM-272 项目-列表，排序按创建时间倒序
+	 * @param visitEventID 
 	 * 
 	 * @param user
 	 * @param customerId
@@ -408,8 +409,12 @@ public class ProjectService extends BaseService {
 	 * @throws ExecutionException
 	 */
 	@Transactional(readOnly = true)
-	public Map<String, Object> queryProjects(Users user, Integer customerId, String keyword, String name, String state,
+	public Map<String, Object> queryProjects(String visitEventID, Users user, Integer customerId, String keyword, String name, String state,
 			String typeId, Integer curPage, Integer perPageSum) throws InterruptedException, ExecutionException {
+		if(StringUtils.isNotEmpty(visitEventID)){
+			return queryProjectsByVisit(visitEventID,user);
+		}
+		
 		List<ProjectListDto> projectListDtos = new ArrayList<>();
 		Map<String, Object> params = new HashMap<String, Object>();
 
@@ -455,6 +460,55 @@ public class ProjectService extends BaseService {
 		page.setTotalRecords(totalRecords);
 		return OperateResult.renderPage(page, projectListDtos);
 	}
+	
+	/*
+	 * 根据外访查询关联项目
+	 */
+	@Transactional(readOnly = true)
+	public Map<String, Object> queryProjectsByVisit(String visitEventID, Users currentUser) throws InterruptedException, ExecutionException {
+		
+		List<ProjectListDto> projectListDtos = new ArrayList<>();
+		Map<String, Object> params = new HashMap<String, Object>();
+
+		Page page = new Page();
+		page.setCurPage(1);
+		page.setPerPageSum(1000);
+		params.put("schemaId", currentUser.getSchemaId());
+		params.put("visitId",visitEventID);
+		params.put("page", page);
+		Integer totalRecords = this.projectDao.selectCountByVisit(params);
+
+		if (totalRecords > 0) {
+			projectListDtos = this.projectDao.selectProjectByVisit(params);
+			int[] projectIds = projectListDtos.stream().mapToInt(dto -> Integer.valueOf(dto.getId())).toArray();
+			int[] customerIds = projectListDtos.stream().filter(dto -> dto.getCustomer() != null)
+					.mapToInt(dto -> dto.getCustomer().getId()).toArray();
+			List<Project> projects = this.projectDao.selectProjectConfigStepsAndHistorySetps(currentUser.getSchemaId(),
+					projectIds);
+
+			CompletableFuture<OperateResult<List<CustomerListDto>>> customerFuture = CompletableFuture
+					.supplyAsync(() -> this.customerServiceClient.queryByIds(currentUser.getSchemaId(), customerIds));
+			this.configCurrentStepForProject(projects, projectListDtos);
+			// customer
+			OperateResult<List<CustomerListDto>> result = customerFuture.get();
+			if (result.success()) {
+				projectListDtos.forEach(dto -> {
+					if (dto.getCustomer() != null) {
+						Optional<CustomerListDto> _result = result.getData().stream()
+								.filter(customer -> customer.getId().equals(Integer.valueOf(dto.getCustomer().getId())))
+								.findFirst();
+						if (_result.isPresent()) {
+							dto.setCustomer(new CustomerVo(dto.getCustomer().getId(), _result.get().getName()));
+						}
+					}
+				});
+			}
+		}
+		page.setTotalRecords(totalRecords);
+		return OperateResult.renderPage(page, projectListDtos);
+	}
+	
+	
 
 	private void configCurrentStepForProject(List<Project> infos, List<ProjectListDto> listDtos) {
 		DateFormat dFormat = new SimpleDateFormat("yyyy-MM-dd");

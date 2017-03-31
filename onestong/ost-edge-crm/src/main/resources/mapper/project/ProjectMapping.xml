@@ -153,6 +153,72 @@
 		) t1
 
 	</select>
+	
+	
+	<select id="selectCountByVisit" resultType="java.lang.Integer">
+		select count(distinct t1.id) from (
+		select tp.* ,tpt.name typeName
+		,tup.id tupId,tup.userName,tup.organizeName
+		xx1,top.id
+		topId,top.organizeName x2,top.organizeID
+		,tpc.id tpcId,tpc.customerID
+
+		from (
+		SELECT id,`name`,state,startTime
+		isCyc,cyc,amount,detail,schemaID,projectTypeID,createTime
+		from
+		tbl_project) tp left join tbl_user_project tup
+		on (tp.id,tp.schemaID) =
+		(tup.projectID,tup.schemaID)
+
+		left join tbl_organize_project top
+		on
+		(tp.id,tp.schemaID) = (top.projectID,top.schemaID)
+
+		left join
+		tbl_project_customer tpc
+		on (tp.id,tp.schemaID) =
+		(tpc.projectID,tpc.schemaID)
+
+		left join tbl_project_type tpt
+
+		on
+		(tp.projectTypeID,tp.schemaID) = (tpt.id,tpt.schemaID)
+	
+		left join tbl_visit_event_project vep  
+		on(tp.id,tp.schemaID) = (vep.projectID,vep.schemaID)
+		
+		<where>
+
+			<trim prefixOverrides="AND |OR">
+				tp.schemaId = #{schemaId}
+				<if test="customerId != null">
+					and tpc.customerID =#{customerId}
+				</if>
+				<if test="typeId != null">
+					and tp.projectTypeID =#{typeId}
+				</if>
+				<if test="state != null">
+					and tp.state =#{state}
+				</if>
+				<if test="name != null and name !=''">
+					and instr(tp.name,#{name}) >0
+				</if>
+				<if test="keyword != null and keyword !=''">
+					and instr(tp.name,#{keyword}) >0
+				</if>
+				<if test="visitId != null ">
+					and vep.visitEventID = #{visitId,jdbcType=INTEGER}
+				</if>
+				
+				
+			</trim>
+		</where>
+
+		) t1
+
+	</select>
+	
 
 
 	<select id="selectProjectBy" resultMap="projectListMap">
@@ -219,6 +285,81 @@
 		<where>
 			<if test="customerId != null">
 				and tpc.customerID =#{customerId}
+			</if>
+		</where>
+
+	</select>
+
+
+
+	<select id="selectProjectByVisit" resultMap="projectListMap">
+		select tp.* ,tpt.name typeName ,
+
+		tup.id tupId,tup.userName tupUserName,
+		tup.userID tupUserId,
+		tup.organizeName tupDeptName,
+		tup.organizeID
+		tupDeptId,
+		top.id topId,top.organizeName topDeptName,top.organizeID
+		topDeptId
+
+		,tpc.id tpcId,tpc.customerID
+		from (
+		SELECT
+		id,`name`,state,startTime
+		isCyc,cyc,amount,detail,schemaID,projectTypeID,createTime
+		from
+		tbl_project
+
+		<where>
+			<trim prefixOverrides="AND |OR">
+				schemaId = #{schemaId}
+				<if test="typeId != null">
+					and projectTypeID =#{typeId}
+				</if>
+				<if test="state != null">
+					and state =#{state}
+				</if>
+				<if test="name != null and name !=''">
+					and instr(name,#{name}) >0
+				</if>
+				<if test="keyword != null and keyword !=''">
+					and instr(name,#{keyword}) >0
+				</if>
+			</trim>
+		</where>
+
+		order by createTime desc limit #{page.nextPage} ,#{page.perPageSum} )
+		tp left join tbl_user_project tup
+		on
+		(tp.id,tp.schemaID) =
+		(tup.projectID,tup.schemaID)
+
+		left join
+		tbl_organize_project top
+		on
+		(tp.id,tp.schemaID) =
+		(top.projectID,top.schemaID)
+
+		left join
+		tbl_project_customer tpc
+		on
+		(tp.id,tp.schemaID) =
+		(tpc.projectID,tpc.schemaID)
+
+		left join
+		tbl_project_type tpt
+
+		on
+		(tp.projectTypeID,tp.schemaID) =
+		(tpt.id,tpt.schemaID)
+		left join tbl_visit_event_project vep 
+		on
+		(tp.id,tp.schemaID) =
+		(vep.projectID,vep.schemaID)
+		<where>
+			<if test="visitId != null">
+				and vep.visitEventID =#{visitId,jdbcType=INTEGER}
 			</if>
 		</where>
 

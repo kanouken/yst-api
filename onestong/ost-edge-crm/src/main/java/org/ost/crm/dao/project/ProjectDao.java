@@ -24,9 +24,14 @@ public interface ProjectDao extends Mapper<Project> {
 	void deleteProjectUser(@Param("schemaId") String schemaId, @Param("projectId") Integer projectId);
 
 	Integer selectCountBy(Map<String, Object> params);
+	Integer selectCountByVisit(Map<String, Object> params);
 
 	List<ProjectListDto> selectProjectBy(Map<String, Object> params);
 
+	
+	List<ProjectListDto> selectProjectByVisit(Map<String, Object> params);
+
+	
 	List<Project> selectProjectConfigStepsAndHistorySetps(@Param("schemaId") String schemaId,
 			@Param("projectIds") int[] projectIds);
 	
