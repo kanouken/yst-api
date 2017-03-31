@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.common.tools.OperateResult;
 import org.common.tools.exception.ApiException;
 import org.ost.crm.client.ContactsServiceClient;
@@ -85,6 +86,9 @@ public class VisitService extends BaseService {
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
 	public String createVisit(Users currentUser, CreateVisitDto createVisitDto) throws JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();
+		if(StringUtils.isEmpty(createVisitDto.getProjectTypeID())){
+			createVisitDto.setProjectTypeID(null);
+		}
 		Visit visit = VisitEntityMapper.INSTANCE.combineCreateVisitDtoAndUsersToVisit(createVisitDto, currentUser);
 		visitDao.insertSelective(visit);
 		// 项目
