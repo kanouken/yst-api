@@ -318,7 +318,7 @@ public class VisitService extends BaseService {
 			vsSupporter.setRole(ROLE_VISIT_CREATOR);
 			vsSupporter = visitSupportDao.selectOne(vsSupporter);
 			Assert.notNull(vsSupporter, "参数错误");
-			visit.setCreateId(vsSupporter.getId());
+			visit.setCreateId(vsSupporter.getUserID());
 			visitDetailDto = VisitEntityMapper.INSTANCE.combineVisitAndSupporterToVisitDetailDto(visit, vsSupporter);
 			// 考勤
 			if (vsSupporter.getAttenceEventID() != null) {
