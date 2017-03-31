@@ -185,14 +185,18 @@
 		tc.sex when 0 then '男士' when 1 then '女士' else '' end sexName,
 		CONCAT(tc.firstName,tc.lastName) name,
 		tc.position,
-		tc.dept
+		tc.dept,
+		tcc.customerID
 
 		from
 		tbl_contact tc left join tbl_visit_event_contact vec
 
 		on(tc.id
 		,tc.schemaID) = (vec.contactID,vec.schemaID)
+		left join tbl_customer_contact  tcc 
 
+		on tc.id = tcc.contactID
+		
 		where vec.visitEventID =
 		#{visitId} and vec.schemaID = #{schemaId} and vec.isDelete = 0 and
 		tc.isDelete = 0
@@ -217,7 +221,7 @@
 	</resultMap>
 
 
-	<select id="selectByVisits">
+	<select id="selectByVisits" >
 
 		select
 		vec.visitEventID,
@@ -230,7 +234,8 @@
 		CONCAT(tc.firstName,tc.lastName) name,
 		tc.position,
 		tc.dept,
-		u.pic headPic
+		u.pic headPic,
+		tcc.customerID 
 
 		from
 		tbl_contact tc left join tbl_visit_event_contact vec
@@ -238,6 +243,9 @@
 		on(tc.id
 		,tc.schemaID) = (vec.contactID,vec.schemaID)
 		left join users u on tc.id = u.user_id 
+		left join tbl_customer_contact  tcc 
+
+		on tc.id = tcc.contactID
 		where vec.visitEventID in
 		<foreach collection="visitIds" item="visitId" separator=","
 			open="(" close=")">

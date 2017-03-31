@@ -5,7 +5,6 @@ import java.util.List;
 import org.ost.entity.customer.vo.CustomerVo;
 
 public class ContactsListDto {
-
 	private Integer projectId;
 
 	private CustomerVo customer;
