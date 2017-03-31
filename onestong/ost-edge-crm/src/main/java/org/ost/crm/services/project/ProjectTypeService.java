@@ -38,7 +38,7 @@ public class ProjectTypeService {
 	 * @throws JsonProcessingException
 	 */
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public void createProjectType(Users user, ProjectTypeVo projectTypeVo) throws JsonProcessingException {
+	public String createProjectType(Users user, ProjectTypeVo projectTypeVo) throws JsonProcessingException {
 		ProjectType projectType = new ProjectType();
 		projectType.setName(projectTypeVo.getName());
 		projectType.setCycWarningDay(projectTypeVo.getCycWarningDay());
@@ -52,6 +52,7 @@ public class ProjectTypeService {
 		projectType.setCreateBy(user.getRealname());
 		projectType.setUpdateBy(projectType.getCreateBy());
 		this.projectTypeDao.insert(projectType);
+		return HttpStatus.OK.name();
 	}
 
 	/**

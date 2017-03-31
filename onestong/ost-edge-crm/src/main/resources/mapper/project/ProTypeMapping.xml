@@ -20,20 +20,25 @@
 		SELECT 
 		id
 		,name
-		FROM
-		tbl_project_type where id=#{id}
-		
+		,cycWarningDay
+		,cycWarningEnable
+		,startTimeWarningDay
+		,startTimeWarningEnable
+		FROM tbl_project_type
+		where
+		id=#{projectType.id}
 	</select>
 
 	<update id="updateParam">
 
 		UPDATE tbl_project_type
 		SET
-		cycWarningDay=#{cycWarningDay}
-		,cycWarningEnable=#{cycWarningEnable}
-		,startTimeWarningDay=#{startTimeWarningDay}
-		,startTimeWarningEnable=#{startTimeWarningEnable}
-		WHERE id=#{id}
+		cycWarningDay=#{projectType.cycWarningDay}
+		,cycWarningEnable=#{projectType.cycWarningEnable}
+		,startTimeWarningDay=#{projectType.startTimeWarningDay}
+		,startTimeWarningEnable=#{projectType.startTimeWarningEnable}
+		WHERE
+		id=#{projectType.id}
 	</update>
 	
 	<sql id="selectTerm">

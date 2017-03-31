@@ -33,7 +33,7 @@ public class ProjectTypeStepService {
 	 * @param projectStepsDetailDto
 	 */
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public void createOrUpdateTypeStep(Integer projectTypeID, Users users, ProjectStepsDetailDto projectStepsDetailDto) {
+	public String createOrUpdateTypeStep(Integer projectTypeID, Users users, ProjectStepsDetailDto projectStepsDetailDto) {
 		
 		//获取projectType中预警信息
 		ProjectType projectType = new ProjectType();
@@ -46,28 +46,29 @@ public class ProjectTypeStepService {
 		//对projectType进行update
 		projectTypeDao.updateParam(projectType);
 
-		//根据projectTypeID删除ProjectTypeStep中相关信息
-		ProjectTypeStep projectTypeStep = new ProjectTypeStep();
+		//删除原来的step
 		projectTypeStepDao.deleteProjectTypeStep(projectTypeID);
-		
-		//添加projectTypeStep中信息
-		projectTypeStep.setProjectTypeID(projectTypeID);
-		projectTypeStep.setCreateBy(users.getRealname());
-		projectTypeStep.setSchemaId(users.getSchemaId());
-		projectTypeStep.setUpdateBy(projectTypeStep.getCreateBy());
-		projectTypeStep.setCreateTime(new Date());
-		projectTypeStep.setUpdateTime(new Date());
-		projectTypeStep.setIsDelete(Short.valueOf("0"));
-		
+
 		//循环取出steps中信息添加到projectTypeStep
 		projectStepsDetailDto.getSteps().forEach(s -> {
+			//根据projectTypeID删除ProjectTypeStep中相关信息
+			ProjectTypeStep projectTypeStep = new ProjectTypeStep();
+			//添加projectTypeStep中信息
+			projectTypeStep.setProjectTypeID(projectTypeID);
+			projectTypeStep.setCreateBy(users.getRealname());
+			projectTypeStep.setSchemaId(users.getSchemaId());
+			projectTypeStep.setUpdateBy(projectTypeStep.getCreateBy());
+			projectTypeStep.setCreateTime(new Date());
+			projectTypeStep.setUpdateTime(new Date());
+			projectTypeStep.setIsDelete(Short.valueOf("0"));
 			projectTypeStep.setMemo(s.getMemo());
 			projectTypeStep.setRate(Integer.parseInt(s.getRate()));
 			projectTypeStep.setStep(Double.parseDouble(s.getStep()));
 			projectTypeStep.setDay(MapUtils.getInteger(s.getWarning(), "day"));
 			projectTypeStep.setIsEnable(MapUtils.getByte(s.getWarning(), "isEnable"));
+			projectTypeStepDao.insert(projectTypeStep);
 		});
-		
-		projectTypeStepDao.insert(projectTypeStep);
+
+		return HttpStatus.OK.name();
 	}
 }

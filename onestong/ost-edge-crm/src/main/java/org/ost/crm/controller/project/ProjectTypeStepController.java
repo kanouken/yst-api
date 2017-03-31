@@ -32,20 +32,20 @@ public class ProjectTypeStepController extends Action {
 
 	@ApiOperation(value = "新增项目类型阶段", notes = "新增项目类型阶段")
 	@PostMapping(value = "{projectTypeID}")
-	public void CreateProjectTypeSteps(
+	public OperateResult<String> CreateProjectTypeSteps(
 			@PathVariable(value = "projectTypeID") Integer projectTypeID,
 			@RequestAttribute(value = LOGIN_USER) Users users, 
 			@RequestBody ProjectStepsDetailDto pdto) {
-		projectTypeStepService.createOrUpdateTypeStep(projectTypeID, users, pdto);
+		return new OperateResult<String>(projectTypeStepService.createOrUpdateTypeStep(projectTypeID, users, pdto));
 	}
 
 	@ApiOperation(value = "编辑项目类型阶段", notes = "编辑项目类型阶段")
 	@PutMapping(value = "{projectTypeID}")
-	public void updateProjectTypeSteps(
+	public OperateResult<String> updateProjectTypeSteps(
 			@PathVariable(value = "projectTypeID") Integer projectTypeID,
 			@RequestAttribute(value = LOGIN_USER) Users users, 
 			@RequestBody ProjectStepsDetailDto pdto) {
-		projectTypeStepService.createOrUpdateTypeStep(projectTypeID, users, pdto);
+		return new OperateResult<String>(projectTypeStepService.createOrUpdateTypeStep(projectTypeID, users, pdto));
 	}
 
 	@ApiOperation(value = "项目类型阶段详情", notes = "项目类型阶段详情")
