@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Created by lugia on 2017/3/14.
  */
-public interface XiaoShouReportDao extends Mapper<Project> {
+public interface XiaoShouReportDao {
     Integer searchListCount(@Param("params") Map<String, Object> params);
 
     List<XiaoShouReportDto> searchList(@Param("params") Map<String, Object> params);

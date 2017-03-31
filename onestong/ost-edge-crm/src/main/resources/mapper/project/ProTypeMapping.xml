@@ -16,21 +16,12 @@
 		order by createTime desc
 	</select>
 	
-	<sql id="selectTerm">
-		FROM tbl_project_type
-		where isDelete='0'
-		and schemaID=#{params.schemaID}
-		<if test='params.names !=null and params.names !=""'>
-			and name = #{params.names}
-		</if> 
-	</sql>
-	
 	<select id="selectTypeById" resultType="org.ost.entity.project.vo.ProjectTypeVo">
 		SELECT 
 		id
 		,name
 		FROM
-		tbl_project_type where id=#{projectType.id}
+		tbl_project_type where id=#{id}
 		
 	</select>
 
@@ -42,10 +33,18 @@
 		,cycWarningEnable=#{cycWarningEnable}
 		,startTimeWarningDay=#{startTimeWarningDay}
 		,startTimeWarningEnable=#{startTimeWarningEnable}
-		WHERE id=#{projectType.id}
+		WHERE id=#{id}
 	</update>
 	
-	
+	<sql id="selectTerm">
+		FROM tbl_project_type
+		where
+		isDelete='0'
+		and schemaID = #{params.schemaID}
+		<if test='params.projectTypeName != null and params.projectTypeName != ""'>
+			and tbl_project_type.name like CONCAT('%','${params.projectTypeName}','%')
+		</if>
+	</sql>
 
 
 </mapper>

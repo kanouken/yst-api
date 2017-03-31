@@ -38,7 +38,7 @@ public class ProjectTypeService {
 	 * @throws JsonProcessingException
 	 */
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public String createProjectType(Users user, ProjectTypeVo projectTypeVo) throws JsonProcessingException {
+	public void createProjectType(Users user, ProjectTypeVo projectTypeVo) throws JsonProcessingException {
 		ProjectType projectType = new ProjectType();
 		projectType.setName(projectTypeVo.getName());
 		projectType.setCycWarningDay(projectTypeVo.getCycWarningDay());
@@ -51,11 +51,7 @@ public class ProjectTypeService {
 		projectType.setUpdateTime(new Date());
 		projectType.setCreateBy(user.getRealname());
 		projectType.setUpdateBy(projectType.getCreateBy());
-		int result =this.projectTypeDao.insert(projectType);
-		if (result > 0) {
-			return HttpStatus.OK.name();
-		}
-		throw new ApiException("新增项目分类失败");
+		this.projectTypeDao.insert(projectType);
 	}
 
 	/**
@@ -93,7 +89,7 @@ public class ProjectTypeService {
 	 * @return
 	 */
 	@Transactional(readOnly = true)
-	public Map<String, Object> queryMember(String names, Users users, Integer curPage, Integer perPageSum) {
+	public Map<String, Object> queryMember(String name, Users users, Integer curPage, Integer perPageSum) {
 		Page page = new Page();
 		page.setCurPage(curPage.intValue());
 		page.setPerPageSum(perPageSum.intValue());
@@ -101,10 +97,10 @@ public class ProjectTypeService {
 		
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("schemaID", users.getSchemaId());
-		params.put("names",names);
+		params.put("projectTypeName", name);
 		
 		Integer totalRecord = this.projectTypeDao.selectProjectTypeCount(params);
-		List<ProjectTypeVo> projectTypeVoList = new ArrayList<ProjectTypeVo>();
+		List<ProjectTypeVo> projectTypeVoList = new ArrayList<>();
 		if (totalRecord > 0) {
 			projectTypeVoList = this.projectTypeDao.selectProjectTypeVoList(params, row);
 		}
@@ -136,13 +132,13 @@ public class ProjectTypeService {
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
 	public String deleteProjectType(Integer id, Users user) {
 		
-		ProjectType projectType = new ProjectType();
-		projectType.setId(id);
-		projectType.setSchemaId(user.getSchemaId());
-		projectType.setIsDelete(Short.valueOf("1"));
+		ProjectType pro = new ProjectType();
+		pro.setId(id);
+		pro.setSchemaId(user.getSchemaId());
+		pro.setIsDelete(Short.valueOf("1"));
 		
 		//delete
-		int result = projectTypeDao.updateByPrimaryKeySelective(projectType);
+		int result = projectTypeDao.updateByPrimaryKeySelective(pro);
 		if (result > 0) {
 			return HttpStatus.OK.name();
 		}

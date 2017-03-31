@@ -38,10 +38,10 @@ public class ProjectTypeStepService {
 		//获取projectType中预警信息
 		ProjectType projectType = new ProjectType();
 		projectType.setId(projectTypeID);
-		projectType.setCycWarningDay(MapUtils.getInteger(projectStepsDetailDto.getCycWarning(), "cycWarningDay"));
-		projectType.setCycWarningEnable(MapUtils.getString(projectStepsDetailDto.getCycWarning(), "cycWarningEnable"));
-		projectType.setStartTimeWarningDay(MapUtils.getInteger(projectStepsDetailDto.getStartTimeWarning(), "startTimeWarningDay"));
-		projectType.setStartTimeWarningEnable(MapUtils.getString(projectStepsDetailDto.getStartTimeWarning(), "startTimeWarningEnable"));
+		projectType.setCycWarningDay(MapUtils.getInteger(projectStepsDetailDto.getCycWarning(), "day"));
+		projectType.setCycWarningEnable(MapUtils.getString(projectStepsDetailDto.getCycWarning(), "isEnable"));
+		projectType.setStartTimeWarningDay(MapUtils.getInteger(projectStepsDetailDto.getStartTimeWarning(), "day"));
+		projectType.setStartTimeWarningEnable(MapUtils.getString(projectStepsDetailDto.getStartTimeWarning(), "isEnable"));
 		
 		//对projectType进行update
 		projectTypeDao.updateParam(projectType);
