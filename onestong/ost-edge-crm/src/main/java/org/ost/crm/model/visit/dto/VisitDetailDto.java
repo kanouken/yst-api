@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.ost.crm.model.visit.VisitApprovalFlow;
 import org.ost.crm.services.visit.VisitService;
+import org.ost.entity.user.dto.UserListDto;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -33,10 +34,48 @@ public class VisitDetailDto {
 	private String userID;
 	private String userName;
 	private List visitContent;
+
+	/**
+	 * 所有外访内容
+	 */
+	private List allVisitContent;
 	private String visitDetail;
 	private Date visitTime;
 	private String visitTimeStr;
 	private String visitType;
+
+	/**
+	 * 支持人员
+	 */
+	private List<UserListDto> supporters;
+	/**
+	 * 考勤记录
+	 */
+	private VisitAttenceDto attence;
+
+	public List getAllVisitContent() {
+		return allVisitContent;
+	}
+
+	public void setAllVisitContent(List allVisitContent) {
+		this.allVisitContent = allVisitContent;
+	}
+
+	public List<UserListDto> getSupporters() {
+		return supporters;
+	}
+
+	public void setSupporters(List<UserListDto> supporters) {
+		this.supporters = supporters;
+	}
+
+	public VisitAttenceDto getAttence() {
+		return attence;
+	}
+
+	public void setAttence(VisitAttenceDto attence) {
+		this.attence = attence;
+	}
 
 	public String getApprovalStatus() {
 		return approvalStatus;

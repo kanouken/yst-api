@@ -52,6 +52,9 @@ public class VisitAttenceService extends BaseService {
 	private VisitAttenceDao visitAttenceDao;
 	@Autowired
 	private VisitSupporterDao visitSupporterDao;
+	
+	
+	
 
 	/**
 	 * 
@@ -144,6 +147,12 @@ public class VisitAttenceService extends BaseService {
 		return visitAttenceDto;
 	}
 
+	@Transactional(readOnly= true)
+	public VisitAttenceDto  queryAttenceBySupport(VisitSupporter supporter ){
+		VisitAttence visitAttence = visitAttenceDao.selectByPrimaryKey(supporter.getAttenceEventID());
+		VisitAttenceDto visitAttenceDto = VisitEntityMapper.INSTANCE.visitAttenceToVisitAttenceDto(visitAttence);
+		return visitAttenceDto;
+	}
 	/**
 	 * 查询当前时间未签退的外访记录
 	 * 

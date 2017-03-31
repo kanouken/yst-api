@@ -70,6 +70,8 @@ public interface VisitEntityMapper {
 
 	@Mapping(expression = "java( org.ost.entity.tools.JsonType.convertToList(vsSupporter.getVisitContent()))", target = "visitContent")
 	@Mapping(target = "id", source = "visit.id")
+	@Mapping(target="userName",source="visit.createBy")
+	@Mapping(target="userID",source="visit.createId")
 	@Mapping(target = "createTime", source = "visit.createTime")
 	@Mapping(target = "createTimeStr", source = "visit.createTime", dateFormat = "yyyy-MM-dd HH:mm:ss")
 	@Mapping(target = "visitTimeStr", source = "visit.visitTime", dateFormat = "yyyy-MM-dd HH:mm:ss")

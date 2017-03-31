@@ -13,6 +13,6 @@ public interface CommonParamDao extends Mapper<CommonParams> {
 	@Select("select paramVal from tbl_common_json where type =#{type} and schemaID =#{schemaID} ")
 	Object selectCommonParamJson(@Param("type") String type, @Param("schemaID") String schemaID);
 
-	@Select("select paramVal \"val\",paramKey \"key\",type from tbl_common_param where instr(type,#{type}) > 0 and schemaID = #{schemaId}")
+	@Select("select paramVal \"val\",paramKey \"key\",type from tbl_common_param where instr(type,#{type}) > 0 and schemaID = #{schemaId} order by createTime asc")
 	List<CommonParams> selectByTypeCode(CommonParams cParams);
 }
