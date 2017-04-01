@@ -56,7 +56,7 @@
 		=(pt.schemaID , pt.id)
 		<include refid="whereCriteria"></include>
 
-		order by ve.create_time
+		order by ve.createTime
 		desc
 
 	</select>

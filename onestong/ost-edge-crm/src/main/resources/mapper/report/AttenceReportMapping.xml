@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="org.ost.crm.dao.report.AttenceReportDao">
+	<select id="selectByList" resultType="java.util.HashMap">
+		select
+		users.`dept_id` as deptId
+		,users.`realname` as userName
+		,date_format(attence_events.`signed_time`, '%Y-%m-%d') as signedDate
+		,attence_events.`signed_time` as signedTime
+		,attence_events.`signed_address` as signedAddress
+		,attence_events.`signout_time` as signoutTime
+		,attence_events.`signout_address` as signoutAddress
+		from attence_events
+		left join `users`
+		on attence_events.`user_id`=users.`user_id`
+		where
+		1=1
+		<if test="start !=null">
+			and attence_events.`signed_time`
+			>=#{start,jdbcType=TIMESTAMP}
+		</if>
+		<if test="end != null">
+		<![CDATA[ and attence_events.`signout_time` <= #{end,jdbcType=TIMESTAMP}]]>
+		</if>
+		<if test="deptId !=null and deptId !=''">
+			and users.`dept_id`=#{deptId}
+		</if>
+		and users.`domain_id`='1'
+		ORDER BY attence_events.`signed_time`
+		,users.`realname` DESC
+	</select>
+
+	<select id="selectApprovalByList" resultType="java.util.HashMap">
+		select
+		users.`dept_id` as deptId
+		,users.`realname` as userName
+		,approval_events.`start_time` as startTime
+		,approval_events.`end_time` as endTime
+		,approval_events.`content` as content
+		,approval_events.`schedules` as schedules
+		,approval_users.`update_by` as updateBy
+		,approval_events.`state` as state
+		,approval_events.`create_time` as createTime
+		from approval_events
+		left join users
+		on users.`user_id`=approval_events.`user_id`
+		left join approval_users
+		on approval_users.`approval_event_id`=approval_events.`ae_id`
+		where
+		1=1
+		<if test="deptId !=null and deptId !=''">
+			and users.`dept_id`=#{deptId}
+		</if>
+		<if test="start !=null">
+			and approval_events.`start_time` >=#{start}
+		</if>
+		<if test="end != null">
+		<![CDATA[ and approval_events.`end_time` <= #{end,jdbcType=TIMESTAMP}]]>
+		</if>
+		order by users.`realname`,approval_events.`create_time` desc
+	</select>
+
+</mapper>
