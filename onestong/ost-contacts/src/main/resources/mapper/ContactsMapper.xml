@@ -205,7 +205,7 @@
 
 
 	<resultMap type="org.ost.entity.contacts.dto.VisitContactsDto"
-		id="visitContactsDto">
+		id="visitContactMap">
 		<id column="visitEventID" property="visitEventId" />
 		<collection property="contacts"
 			ofType="org.ost.entity.contacts.dto.ContactsListDto">
@@ -221,7 +221,7 @@
 	</resultMap>
 
 
-	<select id="selectByVisits" >
+	<select id="selectByVisits" resultMap="visitContactMap">
 
 		select
 		vec.visitEventID,
@@ -234,7 +234,7 @@
 		CONCAT(tc.firstName,tc.lastName) name,
 		tc.position,
 		tc.dept,
-		u.pic headPic,
+		tc.headPic,
 		tcc.customerID 
 
 		from
@@ -242,9 +242,7 @@
 
 		on(tc.id
 		,tc.schemaID) = (vec.contactID,vec.schemaID)
-		left join users u on tc.id = u.user_id 
 		left join tbl_customer_contact  tcc 
-
 		on tc.id = tcc.contactID
 		where vec.visitEventID in
 		<foreach collection="visitIds" item="visitId" separator=","
@@ -253,7 +251,7 @@
 		</foreach>
 		and vec.schemaID = #{schemaId} and vec.isDelete = 0 and
 		tc.isDelete = 0
-
+		order by tc.createTime desc
 	</select>
 
 
