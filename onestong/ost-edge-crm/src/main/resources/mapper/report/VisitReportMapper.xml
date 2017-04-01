@@ -65,15 +65,15 @@
 	<select id="selectSummary" resultType="java.util.HashMap">
 		select
 		sum(
-		case when ifnull(ve.bus_change,'') = '' then 0 else 1 end
+		case when ve.projectTypeID is null then 0 else 1 end
 		)
 		hasBusChance,count(1) totalRecords,
 		(
-		length(replace(GROUP_CONCAT(DISTINCT ve.customer_id),',','--')) -
+		length(replace(GROUP_CONCAT(DISTINCT ve.customerID),',','--')) -
 		length(
-		GROUP_CONCAT(DISTINCT ve.customer_id)) )+1 totalCustomer
+		GROUP_CONCAT(DISTINCT ve.customerID)) )+1 totalCustomer
 		from
-		visit_events ve
+		tbl_visit_event ve
 		<include refid="whereCriteria"></include>
 	</select>
 
@@ -92,12 +92,12 @@
 		FROM
 		(
 		SELECT
-		DATE_FORMAT(ve.create_time ,
+		DATE_FORMAT(ve.createTime ,
 		'%Y年%m月') dateStr ,
 		sum(
 		CASE
 		WHEN
-		ifnull(ve.bus_change , '') = '' THEN
+		ve.projectTypeID = null THEN
 		0
 		ELSE
 		1
@@ -108,26 +108,26 @@
 		(
 		length(
 		REPLACE(
-		GROUP_CONCAT(DISTINCT ve.customer_id) ,
+		GROUP_CONCAT(DISTINCT ve.customerID) ,
 		',' ,
 		'--'
 		)
 		) - length(
-		GROUP_CONCAT(DISTINCT ve.customer_id)
+		GROUP_CONCAT(DISTINCT ve.customerID)
 		)
 		) + 1
 		totalCustomer
 		FROM
-		visit_events ve
+		tbl_visit_event ve
 		WHERE
-		DATE_FORMAT(ve.create_time ,
+		DATE_FORMAT(ve.createTime ,
 		'%Y') =
 		DATE_FORMAT(now() , '%Y')
 		<trim prefixOverrides="where" prefix="and">
 			<include refid="whereCriteria"></include>
 		</trim>
 		GROUP BY
-		DATE_FORMAT(ve.create_time , '%Y年%m月')
+		DATE_FORMAT(ve.createTime , '%Y年%m月')
 		) t
 		ORDER BY
 		t.dateStr
