@@ -18,7 +18,6 @@
 			</foreach>
 
 			)
-		   and (type not in ('2.1','2.2','2.3')  and user_id != #{userId})
 		</if>
 		union all
 		<!-- task -->
