@@ -9,11 +9,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -32,7 +42,6 @@ public class ExcelUtil<T> {
 				workBook = new HSSFWorkbook(new FileInputStream(path + File.separator + fileName));
 			}
 
-
 			for (int numSheet = 0; numSheet < workBook.getNumberOfSheets(); numSheet++) {
 				Sheet sheet = workBook.getSheetAt(numSheet);
 				if (sheet == null) {
@@ -64,7 +73,6 @@ public class ExcelUtil<T> {
 
 		return Row;
 	}
-
 
 	public ArrayList<ArrayList<String>> readExcel(InputStream fis) {
 		ArrayList<ArrayList<String>> Row = new ArrayList<ArrayList<String>>();
@@ -77,7 +85,6 @@ public class ExcelUtil<T> {
 				workBook = new HSSFWorkbook(fis);
 			}
 
-
 			for (int numSheet = 0; numSheet < workBook.getNumberOfSheets(); numSheet++) {
 				Sheet sheet = workBook.getSheetAt(numSheet);
 				if (sheet == null) {
@@ -110,14 +117,12 @@ public class ExcelUtil<T> {
 		return Row;
 	}
 
-
 	public static String getValue(Cell cell) {
 
 		DecimalFormat df = new DecimalFormat("0");
 		if (cell.getCellType() == cell.CELL_TYPE_BOOLEAN) {
 			return String.valueOf(cell.getBooleanCellValue());
 		} else if (cell.getCellType() == cell.CELL_TYPE_NUMERIC) {
-
 
 			return df.format(cell.getNumericCellValue());
 		} else if (cell.getCellType() == cell.CELL_TYPE_ERROR) {
@@ -131,9 +136,8 @@ public class ExcelUtil<T> {
 
 	/**
 	 * 导出集合数据到Excel，单Sheet
-	 * */
-	public ByteArrayOutputStream exportToExcel(String sheetName, List<String[]> head, List<T> data)
-			throws Exception {
+	 */
+	public ByteArrayOutputStream exportToExcel(String sheetName, List<String[]> head, List<T> data) throws Exception {
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 
 		XSSFWorkbook wb = new XSSFWorkbook();
@@ -145,8 +149,7 @@ public class ExcelUtil<T> {
 
 		// 标题
 		XSSFRow header = st.createRow(0);
-		for(int j=0;j<head.size();j++)
-		{
+		for (int j = 0; j < head.size(); j++) {
 			String name = head.get(j)[0];
 			header.createCell(j).setCellValue(name);
 		}
@@ -155,17 +158,16 @@ public class ExcelUtil<T> {
 		int rowIndex = 1;
 		for (T d : data) {
 			XSSFRow row = st.createRow(rowIndex);
-			for(int j=0;j<head.size();j++)
-			{
+			for (int j = 0; j < head.size(); j++) {
 				String key = head.get(j)[1];
 				Object value = null;
 				String className = d.getClass().getName();
 
-				if ("java.util.HashMap".equals(className)){
-					value = ((Map<Object, Object>)d).get(key);
+				if ("java.util.HashMap".equals(className)) {
+					value = ((Map<Object, Object>) d).get(key);
 				}
 
-				if (!"java.util.HashMap".equals(className)){
+				if (!"java.util.HashMap".equals(className)) {
 					Method m = d.getClass().getMethod("get" + key);
 					value = m.invoke(d);
 				}
@@ -178,4 +180,63 @@ public class ExcelUtil<T> {
 		wb.write(output);
 		return output;
 	}
+
+	public ByteArrayOutputStream exportExcel(XSSFWorkbook workbook, int sheetNum, String sheetTitle, String[] headers,
+			List<List<String>> result,OutputStream out) throws Exception {
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		// 第一步，创建一个webbook
+		XSSFSheet sheet = workbook.createSheet();
+		workbook.setSheetName(sheetNum, sheetTitle);
+		// 设置列宽度大小
+		sheet.setDefaultColumnWidth((short) 20);
+		// 第二步， 生成表格第一行的样式和字体
+		XSSFCellStyle style = workbook.createCellStyle();
+		// 设置这些样式
+		style.setFillForegroundColor(HSSFColor.PALE_BLUE.index);
+		style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+		style.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+		style.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+		style.setBorderRight(HSSFCellStyle.BORDER_THIN);
+		style.setBorderTop(HSSFCellStyle.BORDER_THIN);
+		style.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+		// 生成一个字体
+		XSSFFont font = workbook.createFont();
+		font.setColor(HSSFColor.BLACK.index);
+		// 设置字体所在的行高度
+		font.setFontHeightInPoints((short) 20);
+		font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+		// 把字体应用到当前的样式
+		style.setFont(font);
+		// 指定当单元格内容显示不下时自动换行
+		style.setWrapText(true);
+		style.setLocked(true);
+		// 产生表格标题行
+		XSSFRow row = sheet.createRow(0);
+		for (int i = 0; i < headers.length; i++) {
+			XSSFCell cell = row.createCell((short) i);
+			cell.setCellStyle(style);
+			XSSFRichTextString text = new XSSFRichTextString(headers[i]);
+			cell.setCellValue(text.toString());
+		}
+		// 第三步：遍历集合数据，产生数据行，开始插入数据
+		if (result != null) {
+			int index = 1;
+			for (List<String> m : result) {
+				row = sheet.createRow(index);
+				int cellIndex = 0;
+				for (String str : m) {
+					if(str==null){
+						str="";
+					}
+					XSSFCell cell = row.createCell((int) cellIndex);
+					cell.setCellValue(str.toString());
+					cellIndex++;
+				}
+				index++;
+			}	
+		}
+		workbook.write(output);
+		return output;
+	}
+
 }

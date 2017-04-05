@@ -15,31 +15,23 @@ import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("report/approvalReport")
-public class ApprovalReportController extends Action{
-	
+public class ApprovalReportController extends Action {
+
 	@Autowired
 	private ApprovalReportService approvalReportService;
-	
+
 	@ApiOperation(value = "请假_出差报表", notes = "请假_出差报表")
 	@GetMapping(value = "export")
 	public void approvalExport(
-			@RequestParam(value = "approvalType", required = false) String approvalType,
 			@RequestParam(value = "deptId", required = false) Integer deptId,
 			@RequestParam(value = "signedTime", required = false) String signedTime,
-			@RequestParam(value = "signoutTime", required = false) String signoutTime,
+			@RequestParam(value = "signoutTime", required = false) String signoutTime, 
 			HttpServletRequest request,
-			HttpServletResponse response
-			)throws Exception {
-        this.responseWriteFile(
-                response,
-                approvalReportService.approvalExport(
-                		approvalType,
-                		deptId,
-                		signedTime,
-                		signoutTime,
-                		1,
-                		100000),
-                "请假_出差报表.xlsx"
-        );
+			HttpServletResponse response) throws Exception {
+		this.responseWriteFile(
+				response,
+				approvalReportService.approvalExport(deptId, signedTime, signoutTime, 1, 10000),
+				"请假_出差.xlsx"
+				);
 	}
 }

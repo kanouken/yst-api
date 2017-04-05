@@ -31,7 +31,7 @@
 		,users.`realname` DESC
 	</select>
 
-	<select id="selectApprovalByList" resultType="java.util.HashMap">
+	<select id="selectApprovalByList" resultType="org.ost.entity.report.dto.ApprovalReportDto">
 		select
 		users.`dept_id` as deptId
 		,users.`realname` as userName
@@ -42,6 +42,27 @@
 		,approval_users.`update_by` as updateBy
 		,approval_events.`state` as state
 		,approval_events.`create_time` as createTime
+		<include refid="sqlByList"></include>
+		order by users.`realname`,approval_events.`create_time` desc
+	</select>
+	
+	<select id="selectByParam" resultType="org.ost.entity.report.dto.ApprovalReportDto">
+		select
+		users.`dept_id` as deptId
+		,users.`realname` as userName
+		,approval_events.`start_time` as startTime
+		,approval_events.`end_time` as endTime
+		,approval_events.`leave_type` as leaveType
+		,approval_events.`content` as content
+		,approval_users.`update_by` as updateBy
+		,approval_events.`state` as state
+		,approval_events.`create_time` as createTime
+		<include refid="sqlByList"></include>
+		and approval_events.`approval_type`='请假'
+		order by users.`realname`,approval_events.`create_time` desc
+	</select>
+	
+	<sql id="sqlByList">
 		from approval_events
 		left join users
 		on users.`user_id`=approval_events.`user_id`
@@ -58,7 +79,6 @@
 		<if test="end != null">
 		<![CDATA[ and approval_events.`end_time` <= #{end,jdbcType=TIMESTAMP}]]>
 		</if>
-		order by users.`realname`,approval_events.`create_time` desc
-	</select>
+	</sql>
 
 </mapper>
