@@ -1,6 +1,7 @@
 package org.ost.crm.services.report;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -16,12 +17,18 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.poi.hssf.record.VCenterRecord;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.common.tools.OperateResult;
 import org.common.tools.date.DateUtil;
 import org.common.tools.db.Page;
@@ -30,6 +37,10 @@ import org.common.tools.exception.ApiException;
 import org.ost.crm.client.ContactsServiceClient;
 import org.ost.crm.dao.project.ProjectPaymentExample;
 import org.ost.crm.dao.report.VisitReportDao;
+import org.ost.crm.model.visit.VisitSupporter;
+import org.ost.crm.model.visit.dto.VisitReportDetailDto;
+import org.ost.crm.model.visit.dto.VisitSupportDto;
+import org.ost.crm.services.visit.VisitService;
 import org.ost.entity.contacts.dto.VisitContactsDto;
 import org.ost.entity.contacts.visit.VisitContacts;
 import org.ost.entity.project.dto.ProjectContactsDto;
@@ -40,6 +51,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.druid.sql.visitor.functions.If;
+import com.sun.tools.javadoc.Start;
 
 @Service
 public class VisitReportService {
@@ -202,6 +214,122 @@ public class VisitReportService {
 			String contactType) {
 		return this.reportDao.selectByMonth(hasBus, managerOwnerName, contactType, null, null);
 
+	}
+
+	/**
+	 * 外访列表导出 部门名称 姓名 外访客户 外访类型 外访日期 签到时间（销售人员） 签到地点（销售人员） 签退时间（销售人员） 签退地点（销售人员）
+	 * 支持人员 签到时间（支持人员） 签到地点（支持人员） 签退时间（支持人员） 签退地点（支持人员）
+	 * 
+	 * @param departmentId
+	 * @param startTime
+	 * @param endTime
+	 * @throws ParseException
+	 * @throws IOException
+	 */
+	@Transactional(readOnly = true)
+	public ByteArrayOutputStream exportVisit(Integer departmentId, String startTime, String endTime)
+			throws ParseException, IOException {
+		Date start = null, end = null;
+		start = DateUtils.parseDate(startTime, "yyyy/MM/dd");
+		end = DateUtils.parseDate(endTime, "yyyy/MM/dd");
+		start = DateUtil.setDayMinTime(start);
+		end = DateUtil.setDayMaxTime(end);
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("startTime", start);
+		params.put("endTime", end);
+		params.put("departmentId", departmentId);
+		List<VisitReportDetailDto> reportDetailDtos = reportDao.selectByDepartmentAndTime(params);
+
+		HSSFWorkbook workbook = new HSSFWorkbook();
+		Sheet sheet = null;
+		Row head = null;
+		Cell c = null;
+
+		sheet = workbook.createSheet("外访");
+
+		// head
+		// 支持人员 签到时间（支持人员） 签到地点（支持人员） 签退时间（支持人员） 签退地点（支持人员）
+
+		head = sheet.createRow(0);
+		c = head.createCell(0);
+		c.setCellValue("部门名称");
+		c = head.createCell(1);
+		c.setCellValue("姓名");
+		c = head.createCell(2);
+		c.setCellValue("外访客户");
+		c = head.createCell(3);
+		c.setCellValue("外访类型");
+		c = head.createCell(4);
+		c.setCellValue("外访日期");
+		c = head.createCell(5);
+		c.setCellValue("签到时间（销售人员）");
+		c = head.createCell(6);
+		c.setCellValue("签到地点（销售人员）");
+		c = head.createCell(7);
+		c.setCellValue("签退时间（销售人员）");
+		c = head.createCell(8);
+		c.setCellValue("签退地点（销售人员）");
+		VisitReportDetailDto reportDetailDto = null;
+		VisitSupportDto createDto = null;
+		VisitSupportDto supporter = null;
+		Row body = null;
+		for (int i = 0; i < reportDetailDtos.size(); i++) {
+			body = sheet.createRow(i + 1);
+			reportDetailDto = reportDetailDtos.get(i);
+
+			Map<Byte, List<VisitSupportDto>> roleGroup = reportDetailDto.getSupporters().stream()
+					.collect(Collectors.groupingBy(VisitSupportDto::getRole));
+			// 创建者
+			List<VisitSupportDto> supporters = (List<VisitSupportDto>) MapUtils.getObject(roleGroup,
+					VisitService.ROLE_VISIT_CREATOR);
+			createDto = supporters.get(0);
+
+			body.createCell(0).setCellValue(createDto.getOrganizeName());
+			body.createCell(1).setCellValue(createDto.getUserName());
+			body.createCell(2).setCellValue(reportDetailDto.getCustomerName());
+			body.createCell(3).setCellValue(reportDetailDto.getVisitType());
+			body.createCell(4).setCellValue(reportDetailDto.getVisitTimeStr());
+			body.createCell(5)
+					.setCellValue(createDto.getAttence() != null ? createDto.getAttence().getSignInTimeStr() : null);
+			body.createCell(6)
+					.setCellValue(createDto.getAttence() != null ? createDto.getAttence().getSignInAddress() : null);
+			body.createCell(7)
+					.setCellValue(createDto.getAttence() != null ? createDto.getAttence().getSignOutTimeStr() : null);
+			body.createCell(8)
+					.setCellValue(createDto.getAttence() != null ? createDto.getAttence().getSignOutTimeStr() : null);
+
+			// 支持者
+
+			supporters = (List<VisitSupportDto>) MapUtils.getObject(roleGroup, VisitService.ROLE_VISIT_SUPPORT);
+			// 支持人员 签到时间（支持人员） 签到地点（支持人员） 签退时间（支持人员） 签退地点（支持人员）
+			if (CollectionUtils.isNotEmpty(supporters)) {
+				for (int j = 0; j < supporters.size(); j++) {
+					supporter = supporters.get(j);
+					head.createCell(8 + j * 5 + 1).setCellValue("支持人员" + (j + 1));
+					head.createCell(8 + j * 5 + 2).setCellValue("签到时间（支持人员）");
+					head.createCell(8 + j * 5 + 3).setCellValue("签到地点（支持人员）");
+					head.createCell(8 + j * 5 + 4).setCellValue("签退时间（支持人员）");
+					head.createCell(8 + j * 5 + 5).setCellValue("签退地点（支持人员）");
+
+					body.createCell(8 + j * 5 + 1).setCellValue(supporter.getUserName());
+					body.createCell(8 + j * 5 + 2).setCellValue(
+							supporter.getAttence() != null ? supporter.getAttence().getSignInTimeStr() : null);
+					body.createCell(8 + j * 5 + 3).setCellValue(
+							supporter.getAttence() != null ? supporter.getAttence().getSignInAddress() : null);
+					body.createCell(8 + j * 5 + 4).setCellValue(
+							supporter.getAttence() != null ? supporter.getAttence().getSignOutTimeStr() : null);
+					body.createCell(8 + j * 5 + 5).setCellValue(
+							supporter.getAttence() != null ? supporter.getAttence().getSignOutAddress() : null);
+				}
+
+			}
+		}
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+		workbook.write(output);
+
+		return output;
 	}
 
 }

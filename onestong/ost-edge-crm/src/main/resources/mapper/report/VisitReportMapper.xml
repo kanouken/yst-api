@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
 <mapper namespace="org.ost.crm.dao.report.VisitReportDao">
+
+
+
 
 	<sql id="whereCriteria">
 		<where>
@@ -25,7 +29,7 @@
 							ve.projectTypeID is null
 						</when>
 						<when test="hasBus ==1 ">
-							ve.projectTypeID is not null 
+							ve.projectTypeID is not null
 						</when>
 						<otherwise>
 						</otherwise>
@@ -41,19 +45,23 @@
 		ve.visitType contactType ,
 		ve.createTime createTime ,
 		DATE_FORMAT(ve.createTime , '%Y-%m-%d %H:%i') createTimeStr ,
-		ve.id id ,
+		ve.id id
+		,
 		ve.customerName NAME ,
 		CASE
 		WHEN pt. NAME IS NULL THEN
 		'无'
 		ELSE
 		'有'
-		END hasBusStr ,
+		END
+		hasBusStr ,
 		pt. NAME busChange
 		FROM
 		tbl_visit_event ve
-		LEFT JOIN tbl_project_type pt ON(ve.schemaID , ve.projectTypeID)
-		=(pt.schemaID , pt.id)
+		LEFT JOIN
+		tbl_project_type pt ON(ve.schemaID , ve.projectTypeID)
+		=(pt.schemaID ,
+		pt.id)
 		<include refid="whereCriteria"></include>
 
 		order by ve.createTime
@@ -131,6 +139,111 @@
 		) t
 		ORDER BY
 		t.dateStr
+	</select>
+
+	<resultMap type="org.ost.crm.model.visit.dto.VisitAttenceDto"
+		id="supportAttenceMap">
+		<id property="id" column="attenceId" />
+		<result property="signInAddress" column="signInAddress" />
+		<result property="signInTime" column="signInTime" />
+		<result property="signInTimeStr" column="signInTimeStr" />
+		<result property="signOutAddress" column="signOutAddress" />
+		<result property="signOutTime" column="signOutTime" />
+		<result property="signOutTimeStr" column="signOutTimeStr" />
+	</resultMap>
+
+	<resultMap type="org.ost.crm.model.visit.dto.VisitReportDetailDto"
+		id="visitReportMap">
+		<id property="visitId" column="visitEventID" />
+		<result property="visitId" column="visitId" />
+		<result property="customerName" column="customerName" />
+		<result property="visitType" column="visitType" />
+		<result property="visitTime" column="visitTime" />
+		<result property="createTime" column="createTime" />
+		<result property="visitTimeStr" column="visitTimeStr" />
+		<result property="createTimeStr" column="createTimeStr" />
+		<collection property="supporters"
+			ofType="org.ost.crm.model.visit.dto.VisitSupportDto">
+			<id column="veuID" property="id" />
+			<result property="userID" column="userID" />
+			<result property="userName" column="userName" />
+			<result property="organizeID" column="organizeID" />
+			<result property="organizeName" column="organizeName" />
+			<result property="role" column="role" />
+			<association property="attence" resultMap="supportAttenceMap"></association>
+		</collection>
+
+
+	</resultMap>
+	<select id="selectByDepartmentAndTime" resultMap="visitReportMap">
+		select
+		ve.id
+		visitEventID,
+		ve.customerName,
+		ve.visitType,
+		ve.visitTime,
+		date_format(ve.visitTime,
+		'%Y/%m/%d')
+		visitTimeStr,
+		ve.createTime,
+		date_format(ve.createTime,
+		'%Y/%m/%d')
+		createTimeStr,
+		veu.id veuID,
+		veu.organizeID,
+		veu.userID,
+		veu.organizeName,
+		veu.userName,
+		veu.role ,
+
+		ae.id attenceId,
+		ae.signInTime,
+		ae.signInAddress,
+		ae.signOutTime,
+		ae.signOutAddress,
+		date_format(ae.signOutTime,
+		'%Y/%m/%d')
+		signOutTimeStr,
+		date_format(ae.signInTime,
+		'%Y/%m/%d')
+		signInTimeStr
+		from
+		tbl_visit_event
+		ve
+
+
+		left join tbl_visit_event_user veu
+
+		on
+		(ve.id,ve.schemaID) =
+		(veu.visitEventID,veu.schemaID)
+
+		left join
+		tbl_attence_events ae
+
+		on
+		(veu.attenceEventID,veu.schemaID) =
+		(ae.id,ae.schemaID)
+
+		where ve.id in (
+
+		select ve.id from tbl_visit_event
+		ve left join tbl_visit_event_user veu
+		on(ve.id,ve.schemaID) =
+		(veu.visitEventID,veu.schemaID)
+
+		where
+		ve.isDelete = 0 and (veu.role = 0
+		and veu.organizeID = #{departmentId})
+
+		and ve.createTime between
+		#{startTime,jdbcType=TIMESTAMP} and
+		#{endTime,jdbcType=TIMESTAMP}
+		)
+
+		order by
+		ve.createBy,ve.createTime 
+
 	</select>
 
 </mapper>

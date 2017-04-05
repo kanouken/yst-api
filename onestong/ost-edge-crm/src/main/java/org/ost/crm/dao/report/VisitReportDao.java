@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
+import org.ost.crm.model.visit.dto.VisitReportDetailDto;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -21,5 +22,7 @@ public interface VisitReportDao {
 
 	List<Map<String, Object>> selectByMonth(@Param("hasBus") String hasBus,
 			@Param("managerOwnerName") String managerOwnerName, @Param("contactType") String contactType, @Param("start") Date start, @Param("end") Date end);
+
+	List<VisitReportDetailDto> selectByDepartmentAndTime(Map<String, Object> params);
 
 }

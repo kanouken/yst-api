@@ -5,6 +5,8 @@ import java.util.Date;
 import io.swagger.annotations.ApiModelProperty;
 
 public class VisitAttenceDto {
+	private String id;
+	
 	@ApiModelProperty(value = "")
 	private String signInAddress;
 	@ApiModelProperty(value = "签到时间差（分钟） 负数表示比标准时间早 正数表示比标准时间晚")
@@ -38,6 +40,16 @@ public class VisitAttenceDto {
 	@ApiModelProperty(value = "考勤状态 1:没有签退 2:签退 但是 没有签到 3:既签到又签退")
 	private String state;
 	private String userID;
+
+	
+	
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public String getSignInAddress() {
 		return signInAddress;
