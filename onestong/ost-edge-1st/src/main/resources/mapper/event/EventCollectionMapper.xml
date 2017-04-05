@@ -87,7 +87,109 @@
 		au.approval_event_id
 		where au.user_id = #{userId,jdbcType=INTEGER}
 
-
+		union all 
+		<!-- visit supporter -->
+		SELECT
+			`veu`.`userID` AS `user_id` ,
+			`ve`.`id` AS `id` ,
+			`ve`.`createBy` AS `creator` ,
+			`ve`.`createTIme` AS `create_time` ,
+			`ve`.`updateTime` AS `update_time` ,
+			`ve`.`customerName` AS `title` ,
+			NULL AS `content` ,
+			`ae`.`signInAddress` AS `signed_address` ,
+			`ae`.`signOutAddress` AS `signout_address` ,
+			`ae`.`signInTime` AS `signed_time` ,
+			NULL AS `lated_for_time` ,
+			`ae`.`signOutTime` AS `signout_time` ,
+			NULL AS `le_for_time` ,
+			`ve`.`approvalStatus` AS `state` ,
+			2.1 AS `type` ,
+			`ae`.`state` AS `like_count` ,
+			NULL AS `comment_count` ,
+			`ae`.`signInLng` AS `signed_longitude` ,
+			`ae`.`signInLat` AS `signed_latitude` ,
+			`ae`.`signOutLng` AS `signout_longitude` ,
+			`ae`.`signOutLat` AS `signout_latitude`
+		FROM
+			(
+				(
+					`tbl_visit_event` `ve`
+					LEFT JOIN `tbl_visit_event_user` `veu` ON(
+						(`ve`.`id` = `veu`.`visitEventID`)
+					)
+				)
+				LEFT JOIN `tbl_attence_events` `ae` ON(
+					(
+						`veu`.`attenceEventID` = `ae`.`id`
+					)
+				)
+			)
+		WHERE
+			(
+				(`veu`.`role` = 1)
+				AND(`ve`.`approvalStatus` = 1)
+				
+				and veu.userID = #{userId}
+			)
+			
+			
+			UNION ALL
+			SELECT
+				`veau`.`userID` AS `user_id` ,
+				`ve`.`id` AS `id` ,
+				`ve`.`createBy` AS `creator` ,
+				`ve`.`createTIme` AS `create_time` ,
+				`ve`.`updateTime` AS `update_time` ,
+				`ve`.`customerName` AS `title` ,
+				`veu`.`visitDetail` AS `content` ,
+				`ae`.`signInAddress` AS `signed_address` ,
+				`ae`.`signOutAddress` AS `signout_address` ,
+				`ae`.`signInTime` AS `signed_time` ,
+				NULL AS `lated_for_time` ,
+				`ae`.`signOutTime` AS `signout_time` ,
+				NULL AS `le_for_time` ,
+				`veau`.`approvalStatus` AS `state` ,
+				(
+					CASE
+					WHEN(`veau`.`role` = 0) THEN
+						2.3
+					ELSE
+						2.2
+					END
+				) AS `type` ,
+				NULL AS `like_count` ,
+				NULL AS `comment_count` ,
+				`ae`.`signInLng` AS `signed_longitude` ,
+				`ae`.`signInLat` AS `signed_latitude` ,
+				`ae`.`signOutLng` AS `signout_longitude` ,
+				`ae`.`signOutLat` AS `signout_latitude`
+			FROM
+				(
+					(
+						(
+							`tbl_visit_event` `ve`
+							LEFT JOIN `tbl_visit_event_user` `veu` ON(
+								(`ve`.`id` = `veu`.`visitEventID`)
+							)
+						)
+						LEFT JOIN `tbl_attence_events` `ae` ON(
+							(
+								`veu`.`attenceEventID` = `ae`.`id`
+							)
+						)
+					)
+					LEFT JOIN `tbl_visit_event_approval_user` `veau` ON(
+						(
+							`ve`.`id` = `veau`.`visitEventID`
+						)
+					)
+				)
+			WHERE
+				(`veu`.`role` = 0)
+				
+				and veau.userID = #{userId}
+			
 		order by update_time desc
 
 
