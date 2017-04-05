@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.common.tools.OperateResult;
@@ -17,13 +15,11 @@ import org.ost.edge.onestong.model.user.User;
 import org.ost.edge.onestong.services.web.account.AccountService;
 import org.ost.edge.onestong.services.web.user.UsersService;
 import org.ost.edge.onestong.tools.Constants;
-import org.ost.entity.user.dto.UserListDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,6 +38,7 @@ import io.swagger.annotations.Api;
 @Api(tags = "用户相关")
 @RestController
 @RequestMapping("/api/users")
+@SuppressWarnings({"unchecked","rawtypes"})
 public class UsersDataApi extends Action {
 
 	@Autowired

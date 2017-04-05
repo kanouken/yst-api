@@ -18,6 +18,7 @@ import org.ost.crm.dao.visit.VisitApproverDao;
 import org.ost.crm.dao.visit.VisitAttenceDao;
 import org.ost.crm.dao.visit.VisitDao;
 import org.ost.crm.dao.visit.VisitSupporterDao;
+import org.ost.crm.model.auth.Role;
 import org.ost.crm.model.common.CommonParams;
 import org.ost.crm.model.visit.Visit;
 import org.ost.crm.model.visit.VisitApprovalFlow;
@@ -32,10 +33,12 @@ import org.ost.crm.model.visit.dto.UpdateVisitDto;
 import org.ost.crm.model.visit.dto.VisitAttenceDto;
 import org.ost.crm.model.visit.dto.VisitDetailDto;
 import org.ost.crm.model.visit.mapper.VisitEntityMapper;
+import org.ost.crm.services.auth.UsersRole;
 import org.ost.crm.services.base.BaseService;
 import org.ost.entity.contacts.dto.VisitContactsDto;
 import org.ost.entity.user.Users;
 import org.ost.entity.user.dto.UserListDto;
+import org.ost.entity.user.mapper.UsersEntityMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -134,8 +137,21 @@ public class VisitService extends BaseService {
 			createVisitDto.getApprovalUsers().forEach(p -> {
 				vas.add(VisitEntityMapper.INSTANCE.combineUserListDtoAndVisitToVisitApprover(p, visit));
 			});
+			// 观察者 行政
+			Role role = new Role();
+			role.setDomainId(currentUser.getSchemaId());
+			role.setRoleCode(UsersRole.HR.getCode());
+			List<Users> hr = this.authorityService.findUsersByRole(role);
+			if (CollectionUtils.isNotEmpty(hr)) {
+				List<UserListDto> hrDtos = UsersEntityMapper.INSTANCE.usersToUserListDto(hr);
+				hrDtos.forEach(p -> {
+					VisitApprover vApprover = VisitEntityMapper.INSTANCE.combineUserListDtoAndVisitToVisitApprover(p,
+							visit);
+					vApprover.setRole(ROLE_APPROVAL_VIEW);
+					vas.add(vApprover);
+				});
+			}
 			visitDao.insertVisitApprover(vas);
-			// TODO 观察者 行政
 		}
 		// 联系人
 		if (CollectionUtils.isNotEmpty(createVisitDto.getContacts())) {
@@ -276,16 +292,18 @@ public class VisitService extends BaseService {
 			vsSupporter = new VisitSupporter();
 			vsSupporter.setVisitEventID(id);
 			List<VisitSupporter> vsSupporters = visitSupportDao.select(vsSupporter);
-			//创建者
-			Map<Byte,List<VisitSupporter>> roleGroup= vsSupporters.stream().collect(Collectors.groupingBy(VisitSupporter::getRole));
-		    List<VisitSupporter> 	supporters =	 (List<VisitSupporter>) MapUtils.getObject(roleGroup,ROLE_VISIT_SUPPORT);
-		    Optional<VisitSupporter> optional = supporters.stream().filter(s->s.getUserID().equals(currentUser.getUserId())).findFirst();
-		    if(optional.isPresent()){
-		    	vsSupporter = optional.get();
-		    }
-		    List<VisitSupporter> creators = (List<VisitSupporter>) MapUtils.getObject(roleGroup,ROLE_VISIT_CREATOR);
-		    visit.setCreateId(creators.get(0).getUserID());
-		    visitDetailDto = VisitEntityMapper.INSTANCE.combineVisitAndSupporterToVisitDetailDto(visit, vsSupporter);
+			// 创建者
+			Map<Byte, List<VisitSupporter>> roleGroup = vsSupporters.stream()
+					.collect(Collectors.groupingBy(VisitSupporter::getRole));
+			List<VisitSupporter> supporters = (List<VisitSupporter>) MapUtils.getObject(roleGroup, ROLE_VISIT_SUPPORT);
+			Optional<VisitSupporter> optional = supporters.stream()
+					.filter(s -> s.getUserID().equals(currentUser.getUserId())).findFirst();
+			if (optional.isPresent()) {
+				vsSupporter = optional.get();
+			}
+			List<VisitSupporter> creators = (List<VisitSupporter>) MapUtils.getObject(roleGroup, ROLE_VISIT_CREATOR);
+			visit.setCreateId(creators.get(0).getUserID());
+			visitDetailDto = VisitEntityMapper.INSTANCE.combineVisitAndSupporterToVisitDetailDto(visit, vsSupporter);
 			// 考勤
 			if (vsSupporter.getAttenceEventID() != null) {
 				visitDetailDto.setAttence(visitAttenceService.queryAttenceBySupport(vsSupporter));
@@ -312,7 +330,7 @@ public class VisitService extends BaseService {
 			List<CommonParams> params = getParamsEx("visit_event_content_creator");
 			visitDetailDto.setAllVisitContent(params.stream().map(cp -> cp.getVal()).collect(Collectors.toList()));
 		} else if (actionType.trim().equals("2.3")) {
-			//外访审批
+			// 外访审批
 			vsSupporter = new VisitSupporter();
 			vsSupporter.setVisitEventID(id);
 			vsSupporter.setRole(ROLE_VISIT_CREATOR);
@@ -329,12 +347,12 @@ public class VisitService extends BaseService {
 			// 外访内容参数
 			List<CommonParams> params = getParamsEx("visit_event_content_creator");
 			visitDetailDto.setAllVisitContent(params.stream().map(cp -> cp.getVal()).collect(Collectors.toList()));
-			//审批状态
-			VisitApprover  vApprover  = new VisitApprover();
+			// 审批状态
+			VisitApprover vApprover = new VisitApprover();
 			vApprover.setUserID(currentUser.getUserId());
 			vApprover.setVisitEventID(id);
 			vApprover.setRole(ROLE_APPROVAL_APPROVA);
-			vApprover =  visitApproverDao.selectOne(vApprover);
+			vApprover = visitApproverDao.selectOne(vApprover);
 			visitDetailDto.setRoleApprovalStatus(vApprover.getApprovalStatus().toString());
 		} else {
 			throw new IllegalArgumentException("参数异常");

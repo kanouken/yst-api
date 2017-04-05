@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.ost.crm.dao.project.common.CommonParamDao;
 import org.ost.crm.model.common.CommonParams;
+import org.ost.crm.services.auth.AuthorityService;
 import org.ost.entity.tools.JsonType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,8 @@ public class BaseService {
 	public static final Short NO = 0;
 	@Autowired
 	protected ObjectMapper objctMapper;
+	@Autowired
+	protected AuthorityService authorityService;
 	
 	@Autowired
 	private CommonParamDao commonParamDao;
