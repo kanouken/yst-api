@@ -1,7 +1,7 @@
 package org.ost.entity.report.dto;
 
 public class ApprovalReportDto {
-	private Integer deptId;
+	private String departmentName;
 	private String userName;
 	private String startTime;
 	private String endTime;
@@ -11,11 +11,12 @@ public class ApprovalReportDto {
 	private String state;
 	private String createTime;
 	private String leaveType;
-	public Integer getDeptId() {
-		return deptId;
+	
+	public String getDepartmentName() {
+		return departmentName;
 	}
-	public void setDeptId(Integer deptId) {
-		this.deptId = deptId;
+	public void setDepartmentName(String departmentName) {
+		this.departmentName = departmentName;
 	}
 	public String getUserName() {
 		return userName;

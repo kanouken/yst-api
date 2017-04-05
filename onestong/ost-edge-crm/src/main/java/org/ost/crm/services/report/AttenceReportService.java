@@ -24,7 +24,7 @@ public class AttenceReportService {
 	private AttenceReportDao attenceReportDao;
 
 	@Transactional(readOnly = true)
-	public ByteArrayOutputStream attenceExport(Integer deptId, String signedTime, String signoutTime, Integer curPage,
+	public ByteArrayOutputStream attenceExport(String departmentName, String signedTime, String signoutTime, Integer curPage,
 			Integer perPageSum) throws Exception {
 		Date start = null, end = null;
 		if (StringUtils.isNotEmpty(signedTime)) {
@@ -40,7 +40,7 @@ public class AttenceReportService {
 		RowBounds rowBounds = new RowBounds(page.getNextPage(), page.getPerPageSum());
 
 		List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
-		result = attenceReportDao.selectByList(deptId, start, end, rowBounds);
+		result = attenceReportDao.selectByList(departmentName, start, end, rowBounds);
 
 		// 定义表头
 		// 表头每列有2个字段
@@ -48,7 +48,7 @@ public class AttenceReportService {
 		// 2 表头对应字段名
 		// 注意：因为数据源是HashMap格式，所以表头对应字段为HashMap中key值
 		List<String[]> head = new ArrayList<>();
-		head.add("部门名称,deptId".split(","));
+		head.add("部门名称,departmentName".split(","));
 		head.add("姓名,userName".split(","));
 		head.add("刷卡日期,signedDate".split(","));
 		head.add("签到时间,signedTime".split(","));

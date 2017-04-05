@@ -181,40 +181,18 @@ public class ExcelUtil<T> {
 		return output;
 	}
 
-	public ByteArrayOutputStream exportExcel(XSSFWorkbook workbook, int sheetNum, String sheetTitle, String[] headers,
+	public void exportExcel(XSSFWorkbook workbook, int sheetNum, String sheetTitle, String[] headers,
 			List<List<String>> result,OutputStream out) throws Exception {
-		ByteArrayOutputStream output = new ByteArrayOutputStream();
 		// 第一步，创建一个webbook
 		XSSFSheet sheet = workbook.createSheet();
 		workbook.setSheetName(sheetNum, sheetTitle);
 		// 设置列宽度大小
 		sheet.setDefaultColumnWidth((short) 20);
-		// 第二步， 生成表格第一行的样式和字体
-		XSSFCellStyle style = workbook.createCellStyle();
-		// 设置这些样式
-		style.setFillForegroundColor(HSSFColor.PALE_BLUE.index);
-		style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-		style.setBorderBottom(HSSFCellStyle.BORDER_THIN);
-		style.setBorderLeft(HSSFCellStyle.BORDER_THIN);
-		style.setBorderRight(HSSFCellStyle.BORDER_THIN);
-		style.setBorderTop(HSSFCellStyle.BORDER_THIN);
-		style.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		// 生成一个字体
-		XSSFFont font = workbook.createFont();
-		font.setColor(HSSFColor.BLACK.index);
-		// 设置字体所在的行高度
-		font.setFontHeightInPoints((short) 20);
-		font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-		// 把字体应用到当前的样式
-		style.setFont(font);
-		// 指定当单元格内容显示不下时自动换行
-		style.setWrapText(true);
-		style.setLocked(true);
+		//第二步
 		// 产生表格标题行
 		XSSFRow row = sheet.createRow(0);
 		for (int i = 0; i < headers.length; i++) {
 			XSSFCell cell = row.createCell((short) i);
-			cell.setCellStyle(style);
 			XSSFRichTextString text = new XSSFRichTextString(headers[i]);
 			cell.setCellValue(text.toString());
 		}
@@ -235,8 +213,6 @@ public class ExcelUtil<T> {
 				index++;
 			}	
 		}
-		workbook.write(output);
-		return output;
 	}
-
+	
 }

@@ -23,7 +23,7 @@ public class AttenceReportController extends Action{
 	@ApiOperation(value = "考勤报表", notes = "考勤报表")
 	@GetMapping(value = "export")
 	public void attenceExport(
-			@RequestParam(value = "deptId", required = false) Integer deptId,
+			@RequestParam(value = "departmentName", required = false) String departmentName,
 			@RequestParam(value = "signedTime", required = false) String signedTime,
 			@RequestParam(value = "signoutTime", required = false) String signoutTime,
 			HttpServletRequest request,
@@ -32,7 +32,7 @@ public class AttenceReportController extends Action{
         this.responseWriteFile(
                 response,
                 attenceReportService.attenceExport(
-                		deptId,
+                		departmentName,
                 		signedTime,
                 		signoutTime,
                 		1,

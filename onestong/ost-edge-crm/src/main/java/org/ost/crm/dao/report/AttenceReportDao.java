@@ -12,12 +12,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AttenceReportDao {
 
-	List<Map<String, Object>> selectByList(@Param("deptId") Integer deptId,
+	List<Map<String, Object>> selectByList(@Param("departmentName") String departmentName,
 			@Param("start") Date start,@Param("end") Date end,RowBounds rowBounds);
 	
-	List<ApprovalReportDto> selectApprovalByList(@Param("deptId") Integer deptId,
+	List<ApprovalReportDto> selectApprovalByList(@Param("departmentName") String departmentName,
 			@Param("start") Date start,@Param("end") Date end,RowBounds rowBounds);
 	
-	List<ApprovalReportDto> selectByParam(@Param("deptId") Integer deptId,
+	List<ApprovalReportDto> selectByParam(@Param("departmentName") String departmentName,
 			@Param("start") Date start,@Param("end") Date end,RowBounds rowBounds);
 }
