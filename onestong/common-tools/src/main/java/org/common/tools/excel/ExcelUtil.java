@@ -181,8 +181,11 @@ public class ExcelUtil<T> {
 		return output;
 	}
 
+	/**
+	 * 导出集合到excel，双sheet
+	 */
 	public void exportExcel(XSSFWorkbook workbook, int sheetNum, String sheetTitle, String[] headers,
-			List<List<String>> result,OutputStream out) throws Exception {
+			List<List<String>> result,OutputStream outputStream) throws Exception {
 		// 第一步，创建一个webbook
 		XSSFSheet sheet = workbook.createSheet();
 		workbook.setSheetName(sheetNum, sheetTitle);

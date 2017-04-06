@@ -23,9 +23,21 @@ public class AttenceReportService {
 	@Autowired
 	private AttenceReportDao attenceReportDao;
 
+	/**
+	 * 考勤
+	 * @param departmentName
+	 * @param signedTime
+	 * @param signoutTime
+	 * @param curPage
+	 * @param perPageSum
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
 	@Transactional(readOnly = true)
 	public ByteArrayOutputStream attenceExport(String departmentName, String signedTime, String signoutTime, Integer curPage,
 			Integer perPageSum) throws Exception {
+		//日期
 		Date start = null, end = null;
 		if (StringUtils.isNotEmpty(signedTime)) {
 			start = DateUtil.setDayMinTime(DateUtils.parseDate(signedTime, "yyyy-MM-dd"));
@@ -34,13 +46,14 @@ public class AttenceReportService {
 			end = DateUtil.setDayMaxTime(DateUtils.parseDate(signoutTime, "yyyy-MM-dd"));
 		}
 
+		//分页
 		Page page = new Page();
 		page.setCurPage(curPage);
 		page.setPerPageSum(perPageSum);
 		RowBounds rowBounds = new RowBounds(page.getNextPage(), page.getPerPageSum());
 
 		List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
-		result = attenceReportDao.selectByList(departmentName, start, end, rowBounds);
+		result = attenceReportDao.selectAttenceByList(departmentName, start, end, rowBounds);
 
 		// 定义表头
 		// 表头每列有2个字段
@@ -59,7 +72,7 @@ public class AttenceReportService {
 		// 获取excel文件二进制流
 		ByteArrayOutputStream xlsOutput = null;
 		ExcelUtil excelUtil = new ExcelUtil<Map<String, Object>>();
-		xlsOutput = excelUtil.exportToExcel("考勤报表", head, result);
+		xlsOutput = excelUtil.exportToExcel("考勤", head, result);
 		return xlsOutput;
 	}
 }
