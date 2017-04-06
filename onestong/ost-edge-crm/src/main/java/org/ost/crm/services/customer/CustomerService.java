@@ -22,6 +22,7 @@ import org.common.tools.exception.ApiException;
 import org.ost.crm.client.CustomerServiceClient;
 import org.ost.crm.model.common.CommonParams;
 import org.ost.crm.services.base.BaseService;
+import org.ost.crm.services.visit.VisitService;
 import org.ost.entity.base.PageEntity;
 import org.ost.entity.customer.Customer;
 import org.ost.entity.customer.address.vo.AddressVo;
@@ -48,6 +49,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @SuppressWarnings("all")
 @Service
 public class CustomerService extends BaseService {
+	
+	@Autowired
+	VisitService  visitService;
+	
 	@Autowired
 	private ObjectMapper mapper;
 
@@ -383,5 +388,22 @@ public class CustomerService extends BaseService {
 	public String updateMangerOwnersBatch(Users user, List<CustomerListDto> dtos) {
 
 		return null;
+	}
+
+	/**
+	 * 
+	 * @param users
+	 * @param customerId
+	 * @param createBy 
+	 * @param contactDate 
+	 * @param contactType 
+	 * @param page 
+	 * @return
+	 */
+	public Map<String,Object> queryVisits(Users users, Integer customerId, String contactType, String contactDate, String createBy, Page page) {
+		Customer customer  = new Customer();
+		customer.setId(customerId);
+		customer.setSchemaId(users.getSchemaId());
+		return  visitService.queryByCustomer(customer,contactDate,contactType,createBy,page);
 	}
 }

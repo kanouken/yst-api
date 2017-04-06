@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.common.tools.OperateResult;
 import org.common.tools.db.Page;
 import org.ost.crm.controller.base.Action;
+import org.ost.crm.model.visit.dto.VisitDetailDto;
 import org.ost.crm.services.customer.CustomerService;
 import org.ost.entity.customer.dto.CustomerDetailDto;
 import org.ost.entity.customer.dto.CustomerListDto;
@@ -32,6 +33,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("customer")
@@ -145,6 +148,25 @@ public class CustomerController extends Action {
 	public OperateResult<String> updateManagerOwners(@RequestAttribute(value = LOGIN_USER) Users user,
 			@RequestBody List<CustomerListDto> dtos) {
 		return new OperateResult<String>(customerService.updateMangerOwnersBatch(user, dtos));
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	@ApiOperation(value = "客户联系活动", notes = "", code = 200, produces = "application/json")
+	@GetMapping(value = "{id}/visits")
+	public OperateResult<Map<String, Object>> visits(
+			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
+			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
+			@RequestParam(value = "contactType") String contactType,
+			@RequestParam(value = "contactDate") String contactDate, @RequestParam(value = "createBy") String createBy,
+			@PathVariable("id") Integer customerId, @RequestAttribute(value = LOGIN_USER) Users users) {
+		Page page = new Page();
+		page.setCurPage(curPage);
+		page.setPerPageSum(perPageSum);
+		return new OperateResult<Map<String, Object>>(
+				customerService.queryVisits(users, customerId, contactType, contactDate, createBy, page));
 	}
 
 }

@@ -11,7 +11,9 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.session.RowBounds;
 import org.common.tools.OperateResult;
+import org.common.tools.db.Page;
 import org.common.tools.exception.ApiException;
 import org.ost.crm.client.ContactsServiceClient;
 import org.ost.crm.dao.visit.VisitApproverDao;
@@ -32,10 +34,12 @@ import org.ost.crm.model.visit.dto.CreateVisitDto;
 import org.ost.crm.model.visit.dto.UpdateVisitDto;
 import org.ost.crm.model.visit.dto.VisitAttenceDto;
 import org.ost.crm.model.visit.dto.VisitDetailDto;
+import org.ost.crm.model.visit.dto.VisitListDto;
 import org.ost.crm.model.visit.mapper.VisitEntityMapper;
 import org.ost.crm.services.auth.UsersRole;
 import org.ost.crm.services.base.BaseService;
 import org.ost.entity.contacts.dto.VisitContactsDto;
+import org.ost.entity.customer.Customer;
 import org.ost.entity.user.Users;
 import org.ost.entity.user.dto.UserListDto;
 import org.ost.entity.user.mapper.UsersEntityMapper;
@@ -48,6 +52,7 @@ import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.netflix.infix.lang.infix.antlr.EventFilterParser.null_predicate_return;
 
 import sun.tools.tree.ThisExpression;
 
@@ -450,6 +455,45 @@ public class VisitService extends BaseService {
 			}
 		}
 		return HttpStatus.OK.name();
+	}
+
+	@Transactional(readOnly= true)
+	public Map<String,Object> queryByCustomer(Customer customer, String contactDate, String contactType, String createBy, Page page) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("contactDate", contactDate);
+		params.put("createBy", createBy);
+		params.put("contactType", contactType);
+		List<VisitListDto> visitListDtos = new ArrayList<VisitListDto>();
+		RowBounds rBounds = new RowBounds(page.getNextPage(), page.getPerPageSum());
+		Integer totalRecords = visitDao.selectCountByCustomer(customer, params);
+
+		if (totalRecords != null && totalRecords > 0) {
+			visitListDtos = this.visitDao.selectByCustomer(customer, params, rBounds);
+			// 获取关联联系人
+			int[] visitIds = visitListDtos.stream().mapToInt(r -> Integer.valueOf(r.getId())).toArray();
+			OperateResult<List<VisitContactsDto>> contactsOperateResult = this.contactsServiceClient
+					.queryByVisits(customer.getSchemaId(), visitIds);
+			if (contactsOperateResult.success()) {
+				List<VisitContactsDto> vistContactsDtos = contactsOperateResult.getData();
+				visitListDtos.forEach(r -> {
+					Optional<VisitContactsDto> _r = vistContactsDtos.stream()
+							.filter(vc -> vc.getVisitEventId().toString().equals(r.getId())).findFirst();
+					if (_r.isPresent()) {
+						r.setContact(
+								_r.get().getContacts().stream().map(c -> c.getName()).collect(Collectors.joining(",")));
+					}
+				});
+			} else {
+				throw new ApiException("获取外访联系人失败", contactsOperateResult.getInnerException());
+			}
+
+			
+			
+		}
+		
+		page.setTotalRecords(totalRecords);
+		return OperateResult.renderPage(page,visitListDtos);
+
 	}
 
 }

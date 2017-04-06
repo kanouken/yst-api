@@ -113,4 +113,55 @@
 
 	</insert>
 
+	<select id="selectByCustomer" resultType="org.ost.crm.model.visit.dto.VisitListDto">
+		select
+		ve.id,
+		ve.visitType,
+		ve.visitTime,
+		ve.customerID customerId,
+		ve.customerName,
+		pt.`name` busChange
+		from tbl_visit_event ve left join
+
+		tbl_project_type pt
+
+		on (ve.schemaID, ve.projectTypeID) = (pt.schemaID, pt.id)
+
+		where ve.isDelete = 0 and ve.schemaID = #{customer.schemaId} and ve.customerID =#{customer.id}
+		<if test="params.contactDate != null">
+			and date_format(ve.visitTime, '%Y/%m/%d') = #{params.contactDate}
+		</if>
+		<if test="params.contactType != null">
+			and ve.visitType = #{params.contactDate}
+		</if>
+		<if test="params.createBy != null">
+			and ve.createBy = #{params.createBy}
+		</if>
+		order by ve.createTIme
+
+	</select>
+	
+	
+	<select id="selectCountByCustomer" resultType="java.lang.Integer">
+		select
+		count(1)
+		from tbl_visit_event ve left join
+
+		tbl_project_type pt
+
+		on (ve.schemaID, ve.projectTypeID) = (pt.schemaID, pt.id)
+
+		where ve.isDelete = 0 and ve.schemaID = #{customer.schemaId} and ve.customerID =#{customer.id}
+		<if test="params.contactDate != null">
+			and date_format(ve.visitTime, '%Y/%m/%d') = #{params.contactDate}
+		</if>
+		<if test="params.contactType != null">
+			and ve.visitType = #{params.contactDate}
+		</if>
+		<if test="params.createBy != null">
+			and ve.createBy = #{params.createBy}
+		</if>
+	</select>
+	
+
 </mapper>
