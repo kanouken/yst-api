@@ -20,7 +20,7 @@ public class AttenceReportController extends Action{
 	@Autowired
 	private AttenceReportService attenceReportService;
 	
-	@ApiOperation(value = "考勤报表", notes = "考勤报表")
+	@ApiOperation(value = "考勤", notes = "考勤")
 	@GetMapping(value = "export")
 	public void attenceExport(
 			@RequestParam(value = "departmentName", required = false) String departmentName,
@@ -37,7 +37,7 @@ public class AttenceReportController extends Action{
                 		signoutTime,
                 		1,
                 		100000),
-                "考勤报表.xlsx"
+                "考勤.xlsx"
         );
 	}
 }

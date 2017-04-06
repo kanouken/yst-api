@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.common.tools.OperateResult;
+import org.common.tools.md5.Md5Util;
 import org.common.tools.spring.UniqueTokenGenerator;
 import org.ost.crm.dao.web.user.UserDao;
 import org.ost.crm.model.web.user.AccountDto;

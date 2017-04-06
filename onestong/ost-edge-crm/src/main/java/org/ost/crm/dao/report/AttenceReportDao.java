@@ -12,12 +12,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AttenceReportDao {
 
-	List<Map<String, Object>> selectByList(@Param("departmentName") String departmentName,
+	//考勤
+	List<Map<String, Object>> selectAttenceByList(@Param("departmentName") String departmentName,
 			@Param("start") Date start,@Param("end") Date end,RowBounds rowBounds);
 	
-	List<ApprovalReportDto> selectApprovalByList(@Param("departmentName") String departmentName,
+	//出差
+	List<ApprovalReportDto> selectbusinessTripByList(@Param("departmentName") String departmentName,
 			@Param("start") Date start,@Param("end") Date end,RowBounds rowBounds);
 	
-	List<ApprovalReportDto> selectByParam(@Param("departmentName") String departmentName,
+	//请假
+	List<ApprovalReportDto> selectLeaveByList(@Param("departmentName") String departmentName,
 			@Param("start") Date start,@Param("end") Date end,RowBounds rowBounds);
 }

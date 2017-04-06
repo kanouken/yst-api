@@ -1,5 +1,9 @@
 package org.ost.entity.report.dto;
-
+/**
+ * 请假_出差
+ * @author chenyingwen
+ *
+ */
 public class ApprovalReportDto {
 	private String departmentName;
 	private String userName;

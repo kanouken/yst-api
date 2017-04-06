@@ -2,9 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
 <mapper namespace="org.ost.crm.dao.report.AttenceReportDao">
-	<select id="selectByList" resultType="java.util.HashMap">
+	<select id="selectAttenceByList" resultType="java.util.HashMap">
 		select
-		users.`dept_id` as deptId
+		users.`department_name` as departmentName
 		,users.`realname` as userName
 		,date_format(attence_events.`signed_time`, '%Y-%m-%d') as signedDate
 		,attence_events.`signed_time` as signedTime
@@ -23,17 +23,17 @@
 		<if test="end != null">
 		<![CDATA[ and attence_events.`signout_time` <= #{end,jdbcType=TIMESTAMP}]]>
 		</if>
-		<if test="deptId !=null and deptId !=''">
-			and users.`dept_id`=#{deptId}
+		<if test="departmentName !=null and departmentName !=''">
+			and users.`department_name`=#{departmentName}
 		</if>
 		and users.`domain_id`='1'
 		ORDER BY attence_events.`signed_time`
 		,users.`realname` DESC
 	</select>
 
-	<select id="selectApprovalByList" resultType="org.ost.entity.report.dto.ApprovalReportDto">
+	<select id="selectbusinessTripByList" resultType="org.ost.entity.report.dto.ApprovalReportDto">
 		select
-		users.`dept_id` as deptId
+		users.`department_name` as departmentName
 		,users.`realname` as userName
 		,approval_events.`start_time` as startTime
 		,approval_events.`end_time` as endTime
@@ -46,9 +46,9 @@
 		order by users.`realname`,approval_events.`create_time` desc
 	</select>
 	
-	<select id="selectByParam" resultType="org.ost.entity.report.dto.ApprovalReportDto">
+	<select id="selectLeaveByList" resultType="org.ost.entity.report.dto.ApprovalReportDto">
 		select
-		users.`dept_id` as deptId
+		users.`department_name` as departmentName
 		,users.`realname` as userName
 		,approval_events.`start_time` as startTime
 		,approval_events.`end_time` as endTime
@@ -70,8 +70,8 @@
 		on approval_users.`approval_event_id`=approval_events.`ae_id`
 		where
 		1=1
-		<if test="deptId !=null and deptId !=''">
-			and users.`dept_id`=#{deptId}
+		<if test="departmentName !=null and departmentName !=''">
+			and users.`department_name`=#{departmentName}
 		</if>
 		<if test="start !=null">
 			and approval_events.`start_time` >=#{start}

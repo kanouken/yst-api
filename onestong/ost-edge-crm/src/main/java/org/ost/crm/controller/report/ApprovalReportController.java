@@ -20,7 +20,7 @@ public class ApprovalReportController extends Action {
 	@Autowired
 	private ApprovalReportService approvalReportService;
 
-	@ApiOperation(value = "请假_出差报表", notes = "请假_出差报表")
+	@ApiOperation(value = "请假_出差", notes = "请假_出差")
 	@GetMapping(value = "export")
 	public void approvalExport(
 			@RequestParam(value = "departmentName", required = false) String departmentName,
@@ -30,7 +30,12 @@ public class ApprovalReportController extends Action {
 			HttpServletResponse response) throws Exception {
 		this.responseWriteFile(
 				response,
-				approvalReportService.approvalExport(departmentName, signedTime, signoutTime, 1, 10000),
+				approvalReportService.approvalExport(
+						departmentName, 
+						signedTime, 
+						signoutTime, 
+						1, 
+						100000),
 				"请假_出差.xlsx"
 				);
 	}
