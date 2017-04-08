@@ -10,8 +10,10 @@ ENV JAVA_HOME /usr/lib/jvm/default-jvm
 ENV PATH ${PATH}:${JAVA_HOME}/bin
 ENV	PROFILE pro
 ENV JAVA_OPTS="-server -Xmx300M -Xms300M"
-COPY onestong/ost-edge-1st/target/*.jar  /app.jar
+COPY onestong/registry/target/*.jar  /app.jar
+#COPY onestong/registry/start.sh /
+#RUN chmod 777 /start.sh
 RUN bash -c 'touch /app.jar'
 VOLUME /tmp
-EXPOSE 8005
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar","--spring.profiles.active=${PROFILE}"]
+EXPOSE 8081
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]

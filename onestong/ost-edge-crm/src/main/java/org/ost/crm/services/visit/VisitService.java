@@ -17,7 +17,6 @@ import org.common.tools.db.Page;
 import org.common.tools.exception.ApiException;
 import org.ost.crm.client.ContactsServiceClient;
 import org.ost.crm.dao.visit.VisitApproverDao;
-import org.ost.crm.dao.visit.VisitAttenceDao;
 import org.ost.crm.dao.visit.VisitDao;
 import org.ost.crm.dao.visit.VisitSupporterDao;
 import org.ost.crm.model.auth.Role;
@@ -26,13 +25,11 @@ import org.ost.crm.model.visit.Visit;
 import org.ost.crm.model.visit.VisitApprovalFlow;
 import org.ost.crm.model.visit.VisitApprover;
 import org.ost.crm.model.visit.VisitApproverExample;
-import org.ost.crm.model.visit.VisitAttence;
 import org.ost.crm.model.visit.VisitProject;
 import org.ost.crm.model.visit.VisitSupporter;
 import org.ost.crm.model.visit.VisitSupporterExample;
 import org.ost.crm.model.visit.dto.CreateVisitDto;
 import org.ost.crm.model.visit.dto.UpdateVisitDto;
-import org.ost.crm.model.visit.dto.VisitAttenceDto;
 import org.ost.crm.model.visit.dto.VisitDetailDto;
 import org.ost.crm.model.visit.dto.VisitListDto;
 import org.ost.crm.model.visit.mapper.VisitEntityMapper;
@@ -52,9 +49,6 @@ import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.netflix.infix.lang.infix.antlr.EventFilterParser.null_predicate_return;
-
-import sun.tools.tree.ThisExpression;
 
 @Service
 public class VisitService extends BaseService {

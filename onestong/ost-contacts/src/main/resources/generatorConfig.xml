@@ -9,10 +9,10 @@
         <commentGenerator>
             <property name="suppressDate" value="true"/>
             <property name="suppressAllComments" value="true"/>
-            <property name="useActualColumnNames" value="true" />
-        </commentGenerator>
+<!--             <property name="useActualColumnNames" value="true" />
+ -->        </commentGenerator>
         <!--数据库链接地址账号密码-->
-        <jdbcConnection driverClass="org.mariadb.jdbc.Driver" connectionURL="jdbc:mysql://192.168.16.223:3306/ost-customer" userId="root" password="123456">
+        <jdbcConnection driverClass="org.mariadb.jdbc.Driver" connectionURL="jdbc:mysql://192.168.16.223:3306/onestong" userId="root" password="123456">
         </jdbcConnection>
         <javaTypeResolver>
             <property name="forceBigDecimals" value="false"/>
@@ -32,7 +32,7 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
         <!--生成对应表及类名-->
-        <table tableName="tbl_project_customer" domainObjectName="CustomerContacts" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
+        <table tableName="tbl_visit_event_user" domainObjectName="VisitSupporter" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true">
       </table>
 
     </context>
