@@ -4,14 +4,13 @@
 
 	<select id="selectLogin" resultType="org.ost.crm.model.web.user.UserDto">
 		select
-		users.`user_id` as userid
-		,users.`realname`
+		users.`user_id` as userId
+		,users.`realname` as realName
 		, users.`email`
-		,users.`phone_num` as phonenum
-		,users.`department_name` as departmentname
-		,users.`position`
-		,users.`company_name` as companyname
-		,users.`domain_id` as schemaId
+		,users.`dept_id` as deptId
+		,users.`department_name` as deptName
+		,users.`domain_id` as domainId
+		,users.`is_director` as isDirector
 		from
 		`users`
 		where
