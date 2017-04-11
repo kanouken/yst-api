@@ -2,6 +2,7 @@ package com.oz.onestong;
 
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
@@ -34,14 +35,16 @@ import com.oz.onestong.interceptor.PagedInterceptor;
  @EnableEurekaClient
 @EnableFeignClients
 public class App extends WebMvcConfigurerAdapter {
-
+	@Value("${pathStrip}")
+	private String pathStrip;
+	
 	public static void main(String[] args) {
 		SpringApplication.run(App.class, args);
 	}
 
 	public void addInterceptors(InterceptorRegistry registry) {
 		ApplicationIntercepter webApp = new ApplicationIntercepter();
-
+		webApp.setPathStrip(this.pathStrip);
 		registry.addInterceptor(webApp).addPathPatterns("/**");
 		PagedInterceptor page = new PagedInterceptor();
 		registry.addInterceptor(page).addPathPatterns("/**");
