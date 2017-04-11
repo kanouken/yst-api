@@ -756,7 +756,7 @@
 		concat
 		<foreach collection="deptIds" index="deptId" separator=","
 			open="(" close=")">
-			getChildDeptList(7)
+			getChildDeptList(#{deptId})
 		</foreach>
 		)
 	</select>

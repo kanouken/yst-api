@@ -230,8 +230,8 @@ public class VisitReportService {
 	public ByteArrayOutputStream exportVisit(Integer departmentId, String startTime, String endTime)
 			throws ParseException, IOException {
 		Date start = null, end = null;
-		start = DateUtils.parseDate(startTime, "yyyy/MM/dd");
-		end = DateUtils.parseDate(endTime, "yyyy/MM/dd");
+		start = DateUtils.parseDate(startTime, "yyyy-MM-dd");
+		end = DateUtils.parseDate(endTime, "yyyy-MM-dd");
 		start = DateUtil.setDayMinTime(start);
 		end = DateUtil.setDayMaxTime(end);
 
