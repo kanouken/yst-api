@@ -3,6 +3,7 @@ package com.oz.onestong.controller.web;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -171,7 +172,7 @@ public class IndexController extends Action {
 			account.setLoginPassword(password);
 			OperateResult result = (OperateResult) this.login(account, session, Constants.DOMAIN_USER);
 			if (result.getStatusCode().equals(Constants.HTTP_200)) {
-				mView.setViewName("redirect:user/list");
+				mView.setViewName("forward:user/list");
 			} else {
 				this.renderHTML(response, result.getDescription());
 				return null;
@@ -181,7 +182,7 @@ public class IndexController extends Action {
 	}
 
 	@RequestMapping(value = "logout", method = RequestMethod.GET)
-	public String logOut(HttpSession session) {
+	public String logOut(HttpSession session,HttpServletRequest request) {
 		session.removeAttribute(Constants.SESSION_USER);
 		session.invalidate();
 		return "redirect:/index";
