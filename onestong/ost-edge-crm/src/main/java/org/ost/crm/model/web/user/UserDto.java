@@ -1,65 +1,73 @@
 package org.ost.crm.model.web.user;
 
+/**
+ * 
+ * @author chenyingwen
+ *
+ */
 public class UserDto {
-	private Integer userid;
+	private Integer userId;
 	private String email;
-	private String realname;
-	private String phonenum;
-	private String departmentname;
-	private String position;
-	private String companyname;
-	private String schemaId;
-	
-	public Integer getUserid() {
-		return userid;
+	private String realName;
+	private String deptName;
+	private String domainId;
+	private Integer deptId;
+	private Byte isDirector;
+
+	public Integer getUserId() {
+		return userId;
 	}
-	public void setUserid(Integer userid) {
-		this.userid = userid;
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
+
 	public String getEmail() {
 		return email;
 	}
+
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getRealname() {
-		return realname;
+
+	public String getRealName() {
+		return realName;
 	}
-	public void setRealname(String realname) {
-		this.realname = realname;
+
+	public void setRealName(String realName) {
+		this.realName = realName;
 	}
-	
-	public String getPosition() {
-		return position;
+
+	public String getDeptName() {
+		return deptName;
 	}
-	public void setPosition(String position) {
-		this.position = position;
+
+	public void setDeptName(String deptName) {
+		this.deptName = deptName;
 	}
-	public String getPhonenum() {
-		return phonenum;
+
+	public String getDomainId() {
+		return domainId;
 	}
-	public void setPhonenum(String phonenum) {
-		this.phonenum = phonenum;
+
+	public void setDomainId(String domainId) {
+		this.domainId = domainId;
 	}
-	public String getDepartmentname() {
-		return departmentname;
+
+	public Integer getDeptId() {
+		return deptId;
 	}
-	public void setDepartmentname(String departmentname) {
-		this.departmentname = departmentname;
+
+	public void setDeptId(Integer deptId) {
+		this.deptId = deptId;
 	}
-	public String getCompanyname() {
-		return companyname;
+
+	public Byte getIsDirector() {
+		return isDirector;
 	}
-	public void setCompanyname(String companyname) {
-		this.companyname = companyname;
+
+	public void setIsDirector(Byte isDirector) {
+		this.isDirector = isDirector;
 	}
-	public String getSchemaId() {
-		return schemaId;
-	}
-	public void setSchemaId(String schemaId) {
-		this.schemaId = schemaId;
-	}
-	
-	
-	
+
 }
