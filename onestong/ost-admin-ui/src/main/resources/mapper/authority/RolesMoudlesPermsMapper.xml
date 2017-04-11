@@ -45,7 +45,8 @@
 		select DISTINCT m.moudle_id as moudleId ,m.moudle_name as
 		moudleName,m.moudle_uri as moudleUri,
 		m.moudle_tag as
-		moudleTag,m.moudle_ico as moudleIco
+		moudleTag,m.moudle_ico as moudleIco,
+		m.sort
 		from roles_moudles_perms rmp
 		,moudles m where rmp.moudle_id = m.moudle_id
 		and rmp.role_id =

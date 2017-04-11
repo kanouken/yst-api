@@ -224,11 +224,13 @@ var user = function() {
 	var handleLogin = function() {
 
 		$("#customer_login").on("submit", function(event) {
+			
 			 if(event.result){
 			$form = $(this);
 			$url = $.trim($form.attr("action"));
-
-			$.post($url, $.param($form.serializeArray()), function(data) {
+			var paramArray =  $form.serializeArray();
+			paramArray[1].value=md5(paramArray[1].value);
+			$.post($url, $.param(paramArray), function(data) {
 				var code = data.statusCode;
 				if (code != undefined && code == HTTP200) {
 					window.location.href = app.ctx() + "/user/list";
