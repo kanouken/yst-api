@@ -104,7 +104,7 @@ public interface CustomerServiceClient extends BaseClient {
 			@RequestHeader(value = TENANT_ID, required = true) String schemaID,
 			@RequestBody List<CustomerListDto> customerListDtos);
 
-	@PostMapping(value = "customer/queryByDepartmentIds")
+	@RequestMapping(value = "customer/queryByDepartmentIds",method= RequestMethod.POST,consumes = "application/json")
 	public OperateResult<PageEntity<CustomerListDto>> queryCustomerByDept(
 			@RequestHeader(value = TENANT_ID, required = true) String schemaID,
 			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
