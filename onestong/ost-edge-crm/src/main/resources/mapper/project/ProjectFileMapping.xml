@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="org.ost.crm.dao.project.ProjectFileDao">
+	<update id="deleteProjectFile" parameterType="java.util.List">
+         update tbl_project_file set isDelete =1
+         where 
+         fid in
+         <foreach item="fid" collection="fids" open="(" close=")" separator=",">
+             #{fid,jdbcType=VARCHAR}
+         </foreach>
+     </update>
+     
+     <select id="selectProjectFileCount" resultType="java.lang.Integer">
+     	select 
+     	count(1)
+     	<include refid="selectTerm"></include>
+     </select>
+     
+     <select id="selectProjectFileList" resultType="org.ost.entity.project.ProjectFile">
+     	select 
+     	id
+     	,name
+     	,updateBy
+     	,updateTime
+     	<include refid="selectTerm"></include>
+     	order by updateTime desc
+     </select>
+     
+     <sql id="selectTerm">
+     	from tbl_project_file
+     	where 
+     	isDelete='1'
+     	<if test='params.name != null and params.name != ""'>
+			and tbl_project_file.name like CONCAT('%','${params.name}','%')
+		</if>
+		<if test='params.updateBy != null and params.updateBy != ""'>
+			and tbl_project_file.updateBy like CONCAT('%','${params.updateBy}','%')
+		</if>
+		<if test='params.updateTime != null'>
+			and tbl_project_file.updateTime=#{params.updateTime}
+		</if>
+     </sql>
+     
+     <update id="restoreAllProjectFiles" parameterType="java.util.List">
+         update tbl_project_file set isDelete =0
+         where 
+         fid in
+         <foreach item="fid" collection="fids" open="(" close=")" separator=",">
+             #{fid,jdbcType=VARCHAR}
+         </foreach>
+     </update>
+     
+     <delete id="deleteAllProjectFiles" parameterType="java.util.List">
+     	delete from 
+     	tbl_project_file
+     	where 
+     	isDelete='1' 
+     	and
+         fid in
+         <foreach item="fid" collection="fids" open="(" close=")" separator=",">
+             #{fid,jdbcType=VARCHAR}
+         </foreach>
+     </delete>
+     
+</mapper>
