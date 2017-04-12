@@ -7,4 +7,6 @@ public interface BaseClient {
 	public static final String PAGE_PER_SIZE_DEFAULT = "20";
 
 	public static final String TENANT_ID = "schemaID";
+	public static final String ACCOUNT_NAME = "accountName";
+
 }

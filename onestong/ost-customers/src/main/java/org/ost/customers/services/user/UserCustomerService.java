@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
@@ -21,7 +22,9 @@ import org.ost.entity.customer.user.UserCustomers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -78,5 +81,36 @@ public class UserCustomerService {
 		p.setTotalRecord(totalRecord);
 		p.setObjects(records);
 		return p;
+	}
+
+	/**
+	 * 多客户批量修改客户经理
+	 * 
+	 * @param accountName
+	 *            当前操作人
+	 * @param schemaID
+	 *            多租户id
+	 * @param customerListDtos
+	 * @return
+	 */
+	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
+	public String updateUser(String accountName, String schemaID, List<CustomerListDto> customerListDtos) {
+		for (CustomerListDto customerListDto : customerListDtos) {
+			this.customerDao.deleteUserCustomers(customerListDto.getId());
+			// manager owners
+			customerListDto.getManagerOwner().forEach(managerOwner -> {
+				UserCustomers uc = new UserCustomers();
+				uc.setCreateBy(accountName);
+				uc.setUpdateBy(accountName);
+				uc.setSchemaId(schemaID);
+				uc.setCustomerId(customerListDto.getId());
+				uc.setUserId(Integer.parseInt(managerOwner.getId()));
+				uc.setUserName(managerOwner.getName());
+				uc.setOrganizeId(Integer.parseInt(managerOwner.getDeptID()));
+				uc.setOrganizeName(managerOwner.getDeptName());
+				userCustomerDao.insertSelective(uc);
+			});
+		}
+		return HttpStatus.OK.name();
 	}
 }

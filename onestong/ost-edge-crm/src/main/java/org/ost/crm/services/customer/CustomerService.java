@@ -39,7 +39,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -49,10 +51,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @SuppressWarnings("all")
 @Service
 public class CustomerService extends BaseService {
-	
+
 	@Autowired
-	VisitService  visitService;
-	
+	VisitService visitService;
+
 	@Autowired
 	private ObjectMapper mapper;
 
@@ -127,8 +129,7 @@ public class CustomerService extends BaseService {
 	}
 
 	/**
-	 * ✅普通用户只能查看属于自己的客户 
-	 * TODO 部门主管可以看本部门以及下级部门的所有客户
+	 * ✅普通用户只能查看属于自己的客户 TODO 部门主管可以看本部门以及下级部门的所有客户
 	 * 
 	 * @param current
 	 * @param params
@@ -148,7 +149,7 @@ public class CustomerService extends BaseService {
 		OperateResult<PageEntity<CustomerListDto>> result = null;
 		if (isDirector) {
 			// 按部门搜索
-			
+
 		} else {
 			result = this.customerServiceClient.queryCustomerByUser(current.getSchemaId(), page.getCurPage(),
 					page.getPerPageSum(), customerQueryDto);
@@ -382,28 +383,37 @@ public class CustomerService extends BaseService {
 	 * 批量分配客户经理 部门
 	 * 
 	 * @param user
+	 *            当前操作用户
 	 * @param dtos
+	 *            客户、客户经理
 	 * @return
 	 */
+	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
 	public String updateMangerOwnersBatch(Users user, List<CustomerListDto> dtos) {
-
-		return null;
+		Assert.notNull(dtos, "参数不完整");
+		OperateResult<String> result = customerServiceClient.updateUser(user.getRealname(), user.getSchemaId(), dtos);
+		if (result.success()) {
+			return result.getStatusCode();
+		} else {
+			throw new ApiException("更新失败", result.getInnerException());
+		}
 	}
 
 	/**
 	 * 
 	 * @param users
 	 * @param customerId
-	 * @param createBy 
-	 * @param contactDate 
-	 * @param contactType 
-	 * @param page 
+	 * @param createBy
+	 * @param contactDate
+	 * @param contactType
+	 * @param page
 	 * @return
 	 */
-	public Map<String,Object> queryVisits(Users users, Integer customerId, String contactType, String contactDate, String createBy, Page page) {
-		Customer customer  = new Customer();
+	public Map<String, Object> queryVisits(Users users, Integer customerId, String contactType, String contactDate,
+			String createBy, Page page) {
+		Customer customer = new Customer();
 		customer.setId(customerId);
 		customer.setSchemaId(users.getSchemaId());
-		return  visitService.queryByCustomer(customer,contactDate,contactType,createBy,page);
+		return visitService.queryByCustomer(customer, contactDate, contactType, createBy, page);
 	}
 }

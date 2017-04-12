@@ -18,6 +18,7 @@ import org.ost.entity.report.dto.KeHuReportDto;
 import org.ost.entity.user.Users;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
@@ -97,5 +98,11 @@ public interface CustomerServiceClient extends BaseClient {
 			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
 			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
 			@RequestBody CustomerQueryDto customerQueryDto);
+	
+	@RequestMapping(value = "customer/user", method = RequestMethod.PUT, consumes = "application/json")
+	public OperateResult<String> updateUser(
+			@RequestHeader(value=ACCOUNT_NAME,required = true) String accountName,
+			@RequestHeader(value = TENANT_ID, required = true) String schemaID,
+			@RequestBody List<CustomerListDto> customerListDtos);
 
 }

@@ -143,7 +143,8 @@ public class CustomerController extends Action {
 		page.setPerPageSum(perPageSum);
 		return new OperateResult<Map<String, Object>>(this.customerService.queryCustomers(current, params, page));
 	}
-
+	
+	@ApiOperation(value = "批量分配客户经理", notes = "", code = 200, produces = "application/json")
 	@PostMapping(value = "batch/managerOwner")
 	public OperateResult<String> updateManagerOwners(@RequestAttribute(value = LOGIN_USER) Users user,
 			@RequestBody List<CustomerListDto> dtos) {
