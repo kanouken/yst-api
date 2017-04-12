@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -16,6 +17,7 @@ import org.common.tools.OperateResult;
 import org.common.tools.db.Page;
 import org.common.tools.exception.ApiException;
 import org.ost.crm.client.ContactsServiceClient;
+import org.ost.crm.client.NotificationServiceClient;
 import org.ost.crm.dao.visit.VisitApproverDao;
 import org.ost.crm.dao.visit.VisitDao;
 import org.ost.crm.dao.visit.VisitSupporterDao;
@@ -35,8 +37,10 @@ import org.ost.crm.model.visit.dto.VisitListDto;
 import org.ost.crm.model.visit.mapper.VisitEntityMapper;
 import org.ost.crm.services.auth.UsersRole;
 import org.ost.crm.services.base.BaseService;
+import org.ost.crm.services.web.user.UserService;
 import org.ost.entity.contacts.dto.VisitContactsDto;
 import org.ost.entity.customer.Customer;
+import org.ost.entity.notification.PushBody;
 import org.ost.entity.user.Users;
 import org.ost.entity.user.dto.UserListDto;
 import org.ost.entity.user.mapper.UsersEntityMapper;
@@ -49,9 +53,12 @@ import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+@SuppressWarnings("unchecked")
 @Service
 public class VisitService extends BaseService {
+
+	public static final String NEW_VISIT = "您有一条外访申请需要审批，请尽快审批";
+
 	/**
 	 * 角色 审批 审批
 	 */
@@ -81,6 +88,12 @@ public class VisitService extends BaseService {
 
 	@Autowired
 	VisitSupporterDao visitSupportDao;
+
+	@Autowired
+	UserService userService;
+
+	@Autowired
+	NotificationServiceClient notificationServiceClient;
 
 	/**
 	 * 新增外访
@@ -130,9 +143,10 @@ public class VisitService extends BaseService {
 		vs.setSchemaId(visit.getSchemaId());
 		vps.add(vs);
 		visitDao.insertVisitSupporter(vps);
+		List<VisitApprover> vas = new ArrayList<VisitApprover>();
 		// 审批人
 		if (CollectionUtils.isNotEmpty(createVisitDto.getApprovalUsers())) {
-			List<VisitApprover> vas = new ArrayList<VisitApprover>();
+
 			createVisitDto.getApprovalUsers().forEach(p -> {
 				vas.add(VisitEntityMapper.INSTANCE.combineUserListDtoAndVisitToVisitApprover(p, visit));
 			});
@@ -165,6 +179,24 @@ public class VisitService extends BaseService {
 			if (!result.success()) {
 				throw new ApiException("新增外访失败", result.getInnerException());
 			}
+		}
+		// 推送审批人员消息
+		if (CollectionUtils.isNotEmpty(vas)) {
+			// send notification
+			CompletableFuture.runAsync(() -> {
+				List<Integer> approverIds = vas.stream().map(u -> Integer.valueOf(u.getUserID()))
+						.collect(Collectors.toList());
+				List<Users> approveruers = userService.findUsersByIds(approverIds);
+				if (CollectionUtils.isNotEmpty(approveruers)) {
+					PushBody pb = new PushBody();
+					pb.setApplication("onestong-crm");
+					pb.setCids(approveruers.stream().map(u -> u.getcId()).collect(Collectors.toList()));
+					pb.setContent("");
+					String payLoad = NEW_VISIT;
+					pb.setPayLoadBody(payLoad);
+					notificationServiceClient.pushBatch(pb);
+				}
+			});
 		}
 		return HttpStatus.OK.name();
 	}
@@ -451,8 +483,9 @@ public class VisitService extends BaseService {
 		return HttpStatus.OK.name();
 	}
 
-	@Transactional(readOnly= true)
-	public Map<String,Object> queryByCustomer(Customer customer, String contactDate, String contactType, String createBy, Page page) {
+	@Transactional(readOnly = true)
+	public Map<String, Object> queryByCustomer(Customer customer, String contactDate, String contactType,
+			String createBy, Page page) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("contactDate", contactDate);
 		params.put("createBy", createBy);
@@ -481,12 +514,10 @@ public class VisitService extends BaseService {
 				throw new ApiException("获取外访联系人失败", contactsOperateResult.getInnerException());
 			}
 
-			
-			
 		}
-		
+
 		page.setTotalRecords(totalRecords);
-		return OperateResult.renderPage(page,visitListDtos);
+		return OperateResult.renderPage(page, visitListDtos);
 
 	}
 

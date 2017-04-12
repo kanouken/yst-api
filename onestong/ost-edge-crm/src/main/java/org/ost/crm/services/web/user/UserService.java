@@ -2,14 +2,15 @@ package org.ost.crm.services.web.user;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.common.tools.OperateResult;
-import org.common.tools.md5.Md5Util;
 import org.common.tools.spring.UniqueTokenGenerator;
 import org.ost.crm.dao.web.user.UserDao;
 import org.ost.crm.model.web.user.AccountDto;
 import org.ost.crm.model.web.user.UserDto;
+import org.ost.entity.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -17,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-
+@SuppressWarnings("rawtypes")
 @Service
 public class UserService {
 
@@ -66,6 +67,13 @@ public class UserService {
 
 		operateResult.setData(resultMap);
 		return operateResult;
+	}
+	
+	
+	@Transactional(readOnly = true)
+	public List<Users> findUsersByIds(List<Integer> userIds) {
+		List<Users> users =  this.userDao.selectByIds(userIds);
+		return users;
 	}
 
 }

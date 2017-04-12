@@ -4,12 +4,15 @@
 
 	<select id="selectLogin" resultType="org.ost.crm.model.web.user.UserDto">
 		select
-		users.`user_id` as userId
+		users.`user_id` as
+		userId
 		,users.`realname` as realName
 		, users.`email`
-		,users.`dept_id` as deptId
+		,users.`dept_id` as
+		deptId
 		,users.`department_name` as deptName
-		,users.`domain_id` as domainId
+		,users.`domain_id` as
+		domainId
 		,users.`is_director` as isDirector
 		from
 		`users`
@@ -28,8 +31,19 @@
 	<select id="selectByEmail" resultType="org.ost.crm.model.web.user.UserDto">
 		select
 		users.`email`
-		from `users`
+		from
+		`users`
 		where users.`email`=#{email}
+	</select>
+
+
+	<select id="selectByIds" resultType="org.ost.entity.user.Users">
+		select user_id userId,realname , c_id cId from users where user_id in
+		<foreach item="id" collection="userIds" open="(" separator=","
+			close=")">
+			#{id}
+		</foreach>
+		and valid = 0
 	</select>
 
 </mapper>
