@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.ost.crm.dao.department.DepartmentDao">
+	<select id="selectByDept" resultType="org.ost.entity.org.department.Departments">
+		select
+		dept_id deptId,name
+		from departments where FIND_IN_SET(dept_id, getChildDeptList(76))
+		and valid = 0
+	</select>
+
+
+</mapper>

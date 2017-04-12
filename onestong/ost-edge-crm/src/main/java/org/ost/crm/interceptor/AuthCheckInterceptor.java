@@ -1,10 +1,14 @@
 package org.ost.crm.interceptor;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.collections.MapUtils;
 import org.ost.crm.controller.base.Action;
+import org.ost.entity.auth.Role;
 import org.ost.entity.user.Users;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -44,8 +48,18 @@ public class AuthCheckInterceptor extends HandlerInterceptorAdapter {
 				currentUser.setEmail(body.get("email").toString());
 				currentUser.setSchemaId(String.valueOf(body.get("schemaId").toString()));
 				currentUser.setDeptId(Integer.parseInt(body.get("deptId").toString()));
-				currentUser.setDepartmentName(body.get("deptName") == null?"":body.get("deptName").toString());
+				currentUser.setDepartmentName(body.get("deptName") == null ? "" : body.get("deptName").toString());
 				currentUser.setIsDirector(Byte.parseByte(body.get("isDirector").toString()));
+				Object roleObject = body.get("role");
+				if(null != roleObject) {
+					Map    roleMap =  (Map) roleObject;
+					Role role = new Role();
+					role.setRoleCode(MapUtils.getString(roleMap,"roleCode"));
+					role.setRoleName(MapUtils.getString(roleMap,"roleName"));
+					role.setRoleId(MapUtils.getInteger(roleMap,"roleId"));
+					currentUser.setRole(role);
+				}
+				
 				request.setAttribute(Action.LOGIN_USER, currentUser);
 			} else {
 				throw new IllegalAccessException();

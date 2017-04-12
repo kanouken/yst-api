@@ -6,7 +6,7 @@ import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 import org.ost.crm.dao.auth.RolesMoudlesPermsMapper;
 import org.ost.crm.dao.auth.UsersRolesMapper;
-import org.ost.crm.model.auth.Role;
+import org.ost.entity.auth.Role;
 import org.ost.entity.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

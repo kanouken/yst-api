@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +23,7 @@ import org.common.tools.exception.ApiException;
 import org.ost.crm.client.CustomerServiceClient;
 import org.ost.crm.model.common.CommonParams;
 import org.ost.crm.services.base.BaseService;
+import org.ost.crm.services.department.DepartmentService;
 import org.ost.crm.services.visit.VisitService;
 import org.ost.entity.base.PageEntity;
 import org.ost.entity.customer.Customer;
@@ -32,8 +34,10 @@ import org.ost.entity.customer.dto.CustomerListDto;
 import org.ost.entity.customer.dto.CustomerQueryDto;
 import org.ost.entity.customer.mapper.CustomerEntityMapper;
 import org.ost.entity.customer.vo.CustomerCreateVo;
+import org.ost.entity.org.department.Departments;
 import org.ost.entity.org.department.dto.DepartmentListDto;
 import org.ost.entity.user.Users;
+import org.ost.entity.user.UsersRole;
 import org.ost.entity.user.dto.UserListDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +58,8 @@ public class CustomerService extends BaseService {
 
 	@Autowired
 	VisitService visitService;
-
+	@Autowired
+	DepartmentService departmentService;
 	@Autowired
 	private ObjectMapper mapper;
 
@@ -137,7 +142,12 @@ public class CustomerService extends BaseService {
 	 * @return
 	 */
 	public Map<String, Object> queryCustomersByUserScope(Users current, Map<String, String> params, Page page) {
-		Boolean isDirector = current.getIsDirector().equals(Byte.parseByte("0")) ? false : true;
+		Boolean isDirector = false;
+		if(current.getRole() != null){
+			if(current.getRole().getRoleCode().equals(UsersRole.DEPARTMENT_MANAGER.getCode())){
+				isDirector = true;
+			}
+		}
 		CustomerQueryDto customerQueryDto = new CustomerQueryDto();
 		customerQueryDto.setSchemaId(current.getSchemaId());
 		String name = null;
@@ -149,8 +159,19 @@ public class CustomerService extends BaseService {
 		OperateResult<PageEntity<CustomerListDto>> result = null;
 		if (isDirector) {
 			// 按部门搜索
-
+			Departments dept = new Departments();
+			dept.setDeptId(current.getDeptId());
+			List<Departments> deptsDepartments = departmentService.queryDepartmentRecursion(dept);
+			if(CollectionUtils.isNotEmpty(deptsDepartments)){
+				deptsDepartments.stream().map(d->d.getDeptId()).collect(Collectors.toList());
+				customerQueryDto.setDeptIds(null);
+			}else{
+				throw new ApiException("参数错误",""+current.getUserId());
+			}
+			
+			result = this.customerServiceClient.queryCustomerByDept(current.getSchemaId(),page.getCurPage(),page.getPerPageSum(),customerQueryDto);
 		} else {
+			customerQueryDto.setUserId(current.getUserId());
 			result = this.customerServiceClient.queryCustomerByUser(current.getSchemaId(), page.getCurPage(),
 					page.getPerPageSum(), customerQueryDto);
 		}

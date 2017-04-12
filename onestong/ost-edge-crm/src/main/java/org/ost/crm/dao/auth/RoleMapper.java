@@ -3,8 +3,8 @@ package org.ost.crm.dao.auth;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
-import org.ost.crm.model.auth.Role;
-import org.ost.crm.model.auth.RoleExample;
+import org.ost.entity.auth.Role;
+import org.ost.entity.auth.RoleExample;
 
 public interface RoleMapper {
     /**

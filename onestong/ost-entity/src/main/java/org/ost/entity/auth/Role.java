@@ -1,4 +1,4 @@
-package org.ost.crm.model.auth;
+package org.ost.entity.auth;
 
 import java.io.Serializable;
 import java.util.Date;

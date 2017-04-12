@@ -2,15 +2,19 @@ package org.ost.entity.user;
 
 import java.util.Date;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
+
+import org.ost.entity.auth.Role;
 
 @Entity
 public class Users {
-
+	@Transient
+	private Role role;
+	
 	private String schemaId;
 
 	/**
@@ -29,6 +33,14 @@ public class Users {
 
 	public void setcId(String cId) {
 		this.cId = cId;
+	}
+
+	public Role getRole() {
+		return role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
 	}
 
 	public String getAliasName() {

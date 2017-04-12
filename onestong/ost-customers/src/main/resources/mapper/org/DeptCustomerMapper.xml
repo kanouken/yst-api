@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.ost.customers.dao.CustomerOrgDao">
+	<select id="selectCustomerCount" resultType="java.lang.Integer">
+		select
+		count(1)
+		from tbl_customer
+		<where>
+			<trim prefixOverrides="AND |OR">
+				id in (
+				select customerID from tbl_organize_customer where organizeID 
+				in 
+				<foreach collection="customer.deptIds" item="deptId" open="(" close=")">
+					#{deptId}
+				</foreach>
+				 and schemaID  = #{customer.schemaId}
+				)
+				<if test="customer.name != null and customer.name != ''">
+					and instr(name,#{customer.name}) > 0
+				</if>
+				<if test="customer.py != null and customer.py != ''">
+					and instr(py,#{customer.py}) > 0
+				</if>
+				<if test="customer.szm != null and customer.szm != ''">
+					and instr(szm,#{customer.szm}) > 0
+				</if>
+				<if test="keyword != null and keyword !=''">
+					and instr(name,#{keyword}) >0
+				</if>
+				<if test="params != null">
+					<trim prefix="and">
+						<foreach item="key" collection="params.keys" open="("
+							separator="and" close=")">
+							property ->
+							'$.${key}' =
+							#{params[${key}],jdbcType=VARCHAR}
+						</foreach>
+					</trim>
+				</if>
+				and schemaId = #{customer.schemaId,jdbcType=VARCHAR}
+				and isDelete = 0
+			</trim>
+		</where>
+
+	</select>
+
+
+
+	<select id="selectCustomers" resultType="org.ost.entity.customer.Customer">
+		select
+		id,
+		name,
+		py,
+		szm,
+		parentId,
+		property ,
+		createTime,
+		createBy,
+		updateTime,
+		isDelete,
+		schemaId
+		from tbl_customer
+		<where>
+			<trim prefixOverrides="AND |OR">
+				id in (
+				select customerID from tbl_organize_customer where organizeID 
+				in 
+				<foreach collection="customer.deptIds" item="deptId" open="(" close=")">
+					#{deptId}
+				</foreach>
+				 and schemaID  = #{customer.schemaId}
+				)
+				<if test="customer.name != null and customer.name != ''">
+					and instr(name,#{customer.name}) > 0
+				</if>
+				<if test="customer.py != null and customer.py != ''">
+					and instr(py,#{customer.py}) > 0
+				</if>
+				<if test="customer.szm != null and customer.szm != ''">
+					and instr(szm,#{customer.szm}) > 0
+				</if>
+				<if test="keyword != null and keyword != ''">
+					and instr(name,#{keyword}) > 0
+				</if>
+				<if test="paramsMap != null">
+					<trim prefix="and">
+						<foreach item="key" collection="paramsMap.keys" open="("
+							separator="and" close=")">
+							property ->
+							'$.${key}' =
+							#{paramsMap[${key}],jdbcType=VARCHAR}
+						</foreach>
+					</trim>
+				</if>
+				and schemaId = #{customer.schemaId,jdbcType=VARCHAR}
+				and isDelete = 0
+			</trim>
+
+		</where>
+	</select>
+</mapper>
