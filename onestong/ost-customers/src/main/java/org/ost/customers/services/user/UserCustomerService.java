@@ -43,7 +43,7 @@ public class UserCustomerService {
 	private UserCustomersDao userCustomerDao;
 
 	/**
-	 * 
+	 * FIXME 客户关联的客户经理只需要查询一次
 	 * @param params
 	 * @return
 	 * @throws JsonProcessingException

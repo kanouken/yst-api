@@ -5,11 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.common.tools.OperateResult;
-import org.common.tools.spring.UniqueTokenGenerator;
+import org.common.tools.exception.ApiException;
+import org.ost.crm.dao.auth.RolesMoudlesPermsMapper;
+import org.ost.crm.dao.auth.UsersRolesMapper;
 import org.ost.crm.dao.web.user.UserDao;
 import org.ost.crm.model.web.user.AccountDto;
 import org.ost.crm.model.web.user.UserDto;
+import org.ost.crm.services.auth.AuthorityService;
+import org.ost.entity.auth.Role;
 import org.ost.entity.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,38 +21,45 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-@SuppressWarnings("rawtypes")
+
 @Service
 public class UserService {
 
+	
+	
+	
 	@Autowired
 	private UserDao userDao;
-
+	
+	@Autowired
+	UsersRolesMapper  userRoleMapper;
+	@Autowired
+	RolesMoudlesPermsMapper   rolePermsMapper;
+	
+	/**
+	 * 管理后台web登录
+	 * 
+	 * @param email
+	 *            登录用户名
+	 * @param password
+	 *            登录密码 md5
+	 * @return 用户信息
+	 * @author chenyingwen
+	 */
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public OperateResult queryLogin(String email, String password) throws Exception {
+	public Map<String, Object> login(String email, String password) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserDto userDto = this.userDao.selectByEmail(email);
-		OperateResult operateResult = new OperateResult();
-		if (userDto == null) {
-			operateResult.setStatusCode("500");
-			operateResult.setDescription("未知用户!");
-			operateResult.setData(null);
-			return operateResult;
+		if (null == userDto) {
+			throw new ApiException("用户不存在", "");
 		}
 		AccountDto accountDto = new AccountDto();
 		accountDto.setLoginName(userDto.getEmail());
 		accountDto.setLoginPassword(password);
 		if (!accountDto.getLoginPassword().equals(password)) {
-			operateResult.setStatusCode("500");
-			operateResult.setDescription("密码不正确！");
-			operateResult.setData(null);
-			return operateResult;
+			throw new ApiException("密码不正确", "");
 		}
-		// 更新token
-		String token = UniqueTokenGenerator.generateUniqueToken();
-		accountDto.setToken(token);
 		userDto = this.userDao.selectLogin(email, password);
-		operateResult.setDescription("login success");
 		resultMap.put("userId", userDto.getUserId());
 		resultMap.put("realName", userDto.getRealName());
 		resultMap.put("email", userDto.getEmail());
@@ -57,24 +67,25 @@ public class UserService {
 		resultMap.put("deptName", userDto.getDeptName());
 		resultMap.put("schemaId", userDto.getDomainId());
 		resultMap.put("isDirector", userDto.getIsDirector());
-		
+		//角色 &权限
+		Role  role = userRoleMapper.selectRolesByUser(userDto.getUserId()).get(0);
+		List<Map<String, Object>> perms = this.rolePermsMapper
+				.selectPermsByRoleAndType(role.getRoleId(), AuthorityService.MOUDLE_ADMIN);
 		resultMap.put("token",
 				Jwts.builder().setSubject("1st").claim("userId", userDto.getUserId())
 						.claim("realName", userDto.getRealName()).claim("email", userDto.getEmail())
 						.claim("deptId", userDto.getDeptId()).claim("deptName", userDto.getDeptName())
 						.claim("schemaId", userDto.getDomainId()).claim("isDirector", userDto.getIsDirector())
+						.claim("role",role)
+						.claim("perms",perms)
 						.setIssuedAt(new Date()).signWith(SignatureAlgorithm.HS256, "1stapp").compact());
-
-		operateResult.setData(resultMap);
-		return operateResult;
+		return resultMap;
 	}
-	
-	
+
 	@Transactional(readOnly = true)
 	public List<Users> findUsersByIds(List<Integer> userIds) {
-		List<Users> users =  this.userDao.selectByIds(userIds);
+		List<Users> users = this.userDao.selectByIds(userIds);
 		return users;
 	}
-	
 
 }

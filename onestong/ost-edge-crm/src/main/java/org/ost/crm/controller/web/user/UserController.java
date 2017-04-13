@@ -1,5 +1,8 @@
 package org.ost.crm.controller.web.user;
 
+import java.util.Map;
+
+import org.common.tools.OperateResult;
 import org.ost.crm.controller.base.Action;
 import org.ost.crm.services.web.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +19,9 @@ public class UserController extends Action {
 	private UserService userService;
 
 	@PostMapping("login")
-	public Object queryLogin(
+	public OperateResult<Map<String,Object>> queryLogin(
 			@RequestParam(value="email") String email,
 			@RequestParam(value="password")String password) throws Exception{
-		return this.userService.queryLogin(email, password);
+		return new OperateResult<Map<String,Object>>(this.userService.login(email, password));
 	}
 }

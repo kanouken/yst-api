@@ -89,7 +89,8 @@ public class CustomerController extends Action {
 	}
 
 	/**
-	 * FIXME YSTCRM-280 1. 普通员工-客户列表只能显示归属自己的客户。 2. 部门主管可以查看本部门所有客户，以及下级部门所有客户。
+	 * ✅ YSTCRM-280 1. 普通员工-客户列表只能显示归属自己的客户。
+	 * 2. 部门主管可以查看本部门所有客户，以及下级部门所有客户。
 	 * 
 	 * @param curPage
 	 * @param perPageSum
@@ -141,7 +142,7 @@ public class CustomerController extends Action {
 		Page page = new Page();
 		page.setCurPage(curPage);
 		page.setPerPageSum(perPageSum);
-		return new OperateResult<Map<String, Object>>(this.customerService.queryCustomers(current, params, page));
+		return new OperateResult<Map<String, Object>>(this.customerService.queryCustomersByUserScope(current, params, page));
 	}
 	
 	@ApiOperation(value = "批量分配客户经理", notes = "", code = 200, produces = "application/json")

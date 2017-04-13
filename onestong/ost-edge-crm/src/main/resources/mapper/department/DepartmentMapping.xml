@@ -5,7 +5,7 @@
 	<select id="selectByDept" resultType="org.ost.entity.org.department.Departments">
 		select
 		dept_id deptId,name
-		from departments where FIND_IN_SET(dept_id, getChildDeptList(76))
+		from departments where FIND_IN_SET(dept_id, getChildDeptList(#{deptId}))
 		and valid = 0
 	</select>
 

@@ -24,7 +24,6 @@ import com.oz.onestong.interceptor.AuthCheckInterceptor;
 import com.oz.onestong.interceptor.LoginRequiredIntercepter;
 import com.oz.onestong.interceptor.PagedInterceptor;
 
-
 /**
  * 
  * @author xnq
@@ -32,12 +31,10 @@ import com.oz.onestong.interceptor.PagedInterceptor;
  */
 
 @SpringBootApplication
- @EnableEurekaClient
-@EnableFeignClients
 public class App extends WebMvcConfigurerAdapter {
 	@Value("${pathStrip}")
 	private String pathStrip;
-	
+
 	public static void main(String[] args) {
 		SpringApplication.run(App.class, args);
 	}

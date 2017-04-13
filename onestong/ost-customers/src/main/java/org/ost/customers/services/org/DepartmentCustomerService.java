@@ -44,7 +44,7 @@ public class DepartmentCustomerService {
 	private CustomerOrgDao deptCustomerDao;
 
 	/**
-	 * 
+	 * FIXME 客户关联的部门可以只查询一次
 	 * @param params
 	 * @return
 	 * @throws JsonProcessingException

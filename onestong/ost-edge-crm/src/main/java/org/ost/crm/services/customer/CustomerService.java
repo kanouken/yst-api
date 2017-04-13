@@ -163,8 +163,8 @@ public class CustomerService extends BaseService {
 			dept.setDeptId(current.getDeptId());
 			List<Departments> deptsDepartments = departmentService.queryDepartmentRecursion(dept);
 			if(CollectionUtils.isNotEmpty(deptsDepartments)){
-				deptsDepartments.stream().map(d->d.getDeptId()).collect(Collectors.toList());
-				customerQueryDto.setDeptIds(null);
+				List<Integer> deptIds = deptsDepartments.stream().map(d->d.getDeptId()).collect(Collectors.toList());
+				customerQueryDto.setDeptIds(deptIds);
 			}else{
 				throw new ApiException("参数错误",""+current.getUserId());
 			}
