@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "contactsService")
 public interface ContactsServiceClient extends BaseClient {
 
-	@RequestMapping(value = "contacts/{id}", method = RequestMethod.POST, consumes = "application/json")
+	@RequestMapping(value = "contacts/{id}", method = RequestMethod.DELETE, consumes = "application/json")
 	public OperateResult<String> deleteContacts(@PathVariable(value = "id") Integer id,
 			@RequestParam(value = TENANT_ID) String schemaId, @RequestParam(value = "realName") String realName
 

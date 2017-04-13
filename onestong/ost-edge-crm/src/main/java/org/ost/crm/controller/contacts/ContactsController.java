@@ -34,7 +34,7 @@ public class ContactsController extends Action {
 	}
 
 	@RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-	public OperateResult<String> createContacts(@PathVariable(value = "id") Integer id,
+	public OperateResult<String> deleteContacts(@PathVariable(value = "id") Integer id,
 			@RequestAttribute(value = LOGIN_USER) Users users) {
 		return new OperateResult<String>(this.contactsService.deleteContacts(id, users));
 	}
