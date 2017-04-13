@@ -22,6 +22,7 @@
      <select id="selectProjectFileList" resultType="org.ost.entity.project.ProjectFile">
      	select 
      	id
+     	,fid
      	,name
      	,updateBy
      	,updateTime
