@@ -293,35 +293,35 @@ public class ContactsService {
 	}
 
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public String deleteContacts(Integer id, Users users) {
+	public String deleteContacts(Integer id, String schemaId,String accountName) {
 		Contacts contacts = new Contacts();
-		contacts.setUpdateBy(users.getRealname());
+		contacts.setUpdateBy(accountName);
 		contacts.setUpdateTime(new Date());
 		contacts.setIsDelete(Short.parseShort("1"));
 		ContactsExample ce = new ContactsExample();
-		ce.createCriteria().andIdEqualTo(id).andSchemaidEqualTo(users.getSchemaId());
+		ce.createCriteria().andIdEqualTo(id).andSchemaidEqualTo(schemaId);
 		this.contactDao.updateByExampleSelective(contacts, ce);
 		// update address and info
 		ContactsAddress ca = new ContactsAddress();
 		ca.setIsDelete(Short.parseShort("1"));
-		ca.setUpdateBy(users.getRealname());
+		ca.setUpdateBy(accountName);
 		ca.setUpdateTime(new Date());
 		ContactsAddressExample cae = new ContactsAddressExample();
-		cae.createCriteria().andContactidEqualTo(id).andSchemaidEqualTo(users.getSchemaId());
+		cae.createCriteria().andContactidEqualTo(id).andSchemaidEqualTo(schemaId);
 		this.addressDao.updateByExample(ca, cae);
 		ContactsInfo ci = new ContactsInfo();
 		ci.setIsDelete(Short.parseShort("1"));
-		ci.setUpdateBy(users.getRealname());
+		ci.setUpdateBy(accountName);
 		ci.setUpdateTime(new Date());
 		ContactsInfoExample cie = new ContactsInfoExample();
-		cie.createCriteria().andContactidEqualTo(id).andSchemaidEqualTo(users.getSchemaId());
+		cie.createCriteria().andContactidEqualTo(id).andSchemaidEqualTo(schemaId);
 		this.infoDao.updateByExample(ci, cie);
 		ContactsFile cf = new ContactsFile();
 		cf.setIsDelete(Short.parseShort("1"));
-		cf.setUpdateBy(users.getRealname());
+		cf.setUpdateBy(accountName);
 		cf.setUpdateTime(new Date());
 		ContactsFileExample cfe = new ContactsFileExample();
-		cfe.createCriteria().andSchemaidEqualTo(users.getSchemaId()).andContactidEqualTo(id);
+		cfe.createCriteria().andSchemaidEqualTo(schemaId).andContactidEqualTo(id);
 		this.fileDao.updateByExample(cf, cfe);
 
 		return HttpStatus.OK.name();

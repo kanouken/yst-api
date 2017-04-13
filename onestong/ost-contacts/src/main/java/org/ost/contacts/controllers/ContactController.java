@@ -28,8 +28,11 @@ public class ContactController extends Action {
 	private ContactsService contactService;
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-	public OperateResult<String> deleteContacts(@PathVariable(value = "id") Integer id, Users users) {
-		return new OperateResult<String>(this.contactService.deleteContacts(id, users));
+	public OperateResult<String> deleteContacts(@PathVariable(value = "id") Integer id, 
+			@RequestParam(value=TENANT_ID) String tenantId,
+			@RequestParam(value=ACCOUNT_NAME) String accountName
+			) {
+		return new OperateResult<String>(this.contactService.deleteContacts(id, tenantId,accountName));
 	}
 
 	@RequestMapping(value = "", method = RequestMethod.POST)
