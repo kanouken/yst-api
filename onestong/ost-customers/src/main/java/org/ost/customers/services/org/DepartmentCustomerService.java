@@ -44,7 +44,7 @@ public class DepartmentCustomerService {
 	private CustomerOrgDao deptCustomerDao;
 
 	/**
-	 * 
+	 * FIXME 客户关联的部门可以只查询一次
 	 * @param params
 	 * @return
 	 * @throws JsonProcessingException
@@ -67,15 +67,17 @@ public class DepartmentCustomerService {
 			List<Customer> customers = this.deptCustomerDao.selectCustomers(params, customer, keyword, rb);
 			records = CustomerEntityMapper.INSTANCE.customersToCustomerListDtos(customers);
 
-			int[] customerIds = customers.stream().mapToInt(c -> c.getId()).toArray();
-			List<CustomerOrg> cos = this.customerDao.selectCustomerOrg(customerIds);
-			List<UserCustomers> ucs = this.customerDao.selectCustomerUsers(customerIds);
-			records.forEach(record -> {
-				record.setDeptOwner(CustomerEntityMapper.INSTANCE.CustomerOrgToDepartMentListDto(cos.stream()
-						.filter(co -> co.getCustomerId().equals(record.getId())).collect(Collectors.toList())));
-				record.setManagerOwner(CustomerEntityMapper.INSTANCE.UserCustomerToUserListDto(ucs.stream()
-						.filter(uc -> uc.getCustomerId().equals(record.getId())).collect(Collectors.toList())));
-			});
+			if(CollectionUtils.isNotEmpty(records)){
+				int[] customerIds = customers.stream().mapToInt(c -> c.getId()).toArray();
+				List<CustomerOrg> cos = this.customerDao.selectCustomerOrg(customerIds);
+				List<UserCustomers> ucs = this.customerDao.selectCustomerUsers(customerIds);
+				records.forEach(record -> {
+					record.setDeptOwner(CustomerEntityMapper.INSTANCE.CustomerOrgToDepartMentListDto(cos.stream()
+							.filter(co -> co.getCustomerId().equals(record.getId())).collect(Collectors.toList())));
+					record.setManagerOwner(CustomerEntityMapper.INSTANCE.UserCustomerToUserListDto(ucs.stream()
+							.filter(uc -> uc.getCustomerId().equals(record.getId())).collect(Collectors.toList())));
+				});
+			}
 		}
 		PageEntity<CustomerListDto> p = new PageEntity<CustomerListDto>();
 		p.setCurPage(page.getCurPage());

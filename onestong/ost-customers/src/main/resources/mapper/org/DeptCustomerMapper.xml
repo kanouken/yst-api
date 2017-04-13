@@ -82,13 +82,13 @@
 				<if test="keyword != null and keyword != ''">
 					and instr(name,#{keyword}) > 0
 				</if>
-				<if test="paramsMap != null">
+				<if test="params != null">
 					<trim prefix="and">
-						<foreach item="key" collection="paramsMap.keys" open="("
+						<foreach item="key" collection="params.keys" open="("
 							separator="and" close=")">
 							property ->
 							'$.${key}' =
-							#{paramsMap[${key}],jdbcType=VARCHAR}
+							#{params[${key}],jdbcType=VARCHAR}
 						</foreach>
 					</trim>
 				</if>

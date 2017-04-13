@@ -123,6 +123,9 @@ public class AuthorityService {
 		return users;
 	}
 
+	public static final Byte MOUDLE_ADMIN = 0;//后台 模块
+	public static final Byte MOUDLE_APP = 1;// app 模块
+	
 	public enum OST_APP_PERM {
 		self_below_events, // 自己以及下属的事件 ，例如部门管理员 或其他
 		all_events, // 所有事件 ，例如总经理 等等

@@ -9,11 +9,8 @@ RUN apk --update add curl bash openjdk8-jre-base && \
 ENV JAVA_HOME /usr/lib/jvm/default-jvm
 ENV PATH ${PATH}:${JAVA_HOME}/bin
 ENV	PROFILE pro
-ENV JAVA_OPTS="-server -Xmx300M -Xms300M"
 COPY onestong/ost-gateway/target/*.jar  /app.jar
-#COPY onestong/ost-gateway/start.sh /
-#RUN chmod 777 /start.sh
 RUN bash -c 'touch /app.jar'
 VOLUME /tmp
 EXPOSE 8002
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar","--spring.profiles.active=${PROFILE}"]
+ENTRYPOINT ["java","-server","-Xmx500M","-Xms500M","-Duser.timezone=GMT+08", "-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar","--spring.profiles.active=${PROFILE}"]

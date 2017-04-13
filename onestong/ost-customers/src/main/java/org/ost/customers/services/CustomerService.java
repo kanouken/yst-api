@@ -168,20 +168,21 @@ public class CustomerService {
 		if (totalRecord > 0) {
 			List<Customer> customers = this.customerDao.selectCustomers(params, customer, keyword, rb);
 			records = CustomerEntityMapper.INSTANCE.customersToCustomerListDtos(customers);
+			if(CollectionUtils.isNotEmpty(records)){
+				int[] customerIds = customers.stream().mapToInt(c -> c.getId()).toArray();
+				//
 
-			int[] customerIds = customers.stream().mapToInt(c -> c.getId()).toArray();
-			//
+				List<CustomerOrg> cos = this.customerDao.selectCustomerOrg(customerIds);
+				List<UserCustomers> ucs = this.customerDao.selectCustomerUsers(customerIds);
+				records.forEach(record -> {
 
-			List<CustomerOrg> cos = this.customerDao.selectCustomerOrg(customerIds);
-			List<UserCustomers> ucs = this.customerDao.selectCustomerUsers(customerIds);
-			records.forEach(record -> {
-
-				record.setDeptOwner(CustomerEntityMapper.INSTANCE.CustomerOrgToDepartMentListDto(cos.stream()
-						.filter(co -> co.getCustomerId().equals(record.getId())).collect(Collectors.toList())));
-				;
-				record.setManagerOwner(CustomerEntityMapper.INSTANCE.UserCustomerToUserListDto(ucs.stream()
-						.filter(uc -> uc.getCustomerId().equals(record.getId())).collect(Collectors.toList())));
-			});
+					record.setDeptOwner(CustomerEntityMapper.INSTANCE.CustomerOrgToDepartMentListDto(cos.stream()
+							.filter(co -> co.getCustomerId().equals(record.getId())).collect(Collectors.toList())));
+					;
+					record.setManagerOwner(CustomerEntityMapper.INSTANCE.UserCustomerToUserListDto(ucs.stream()
+							.filter(uc -> uc.getCustomerId().equals(record.getId())).collect(Collectors.toList())));
+				});
+			}
 		}
 		PageEntity<CustomerListDto> p = new PageEntity<CustomerListDto>();
 		p.setCurPage(curPage);
