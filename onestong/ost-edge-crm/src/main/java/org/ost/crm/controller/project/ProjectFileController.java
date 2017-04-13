@@ -50,15 +50,16 @@ public class ProjectFileController extends Action {
 	}
 
 	@ApiOperation(value = "批量逻辑删除", notes = "批量逻辑删除")
-	@PutMapping(value = "project/{id}/file")
+	@DeleteMapping(value = "project/{id}/file")
 	public OperateResult<String> deleteFile(
 			@RequestAttribute(value = LOGIN_USER) Users user,
+			@PathVariable(value = "id") Integer projectId,
 			@RequestParam(value = "ids") String fids) {
-		return new OperateResult<String>(this.projectFileService.deleteFile(user, fids));
+		return new OperateResult<String>(this.projectFileService.deleteFile(user,projectId,fids));
 	}
 
 	@ApiOperation(value = "回收站列表", notes = "回收站列表")
-	@GetMapping(value = "project/{id}/file")
+	@GetMapping(value = "project/file/list")
 	public OperateResult<Map<String, Object>> queryDeleteProjectFiles(
 			@RequestAttribute(value = LOGIN_USER) Users user,
 			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
@@ -71,7 +72,7 @@ public class ProjectFileController extends Action {
 	}
 
 	@ApiOperation(value = "彻底删除", notes = "彻底删除")
-	@DeleteMapping(value = "project/{id}/file")
+	@DeleteMapping(value = "project/file/delete")
 	public OperateResult<String> deleteProjectFiles(
 			@RequestAttribute(value = LOGIN_USER) Users user,
 			@PathVariable(value = "id") Integer id
@@ -80,24 +81,24 @@ public class ProjectFileController extends Action {
 	}
 	
 	@ApiOperation(value = "还原", notes = "还原")
-	@PutMapping(value = "project/{id}/file/restore")
-	public OperateResult<String> restoreProjectFiles(
+	@PutMapping(value = "project/file/update")
+	public OperateResult<String> updateProjectFiles(
 			@RequestAttribute(value = LOGIN_USER) Users user,
 			@PathVariable(value = "id") Integer id
 			){
-		return new OperateResult<String>(this.projectFileService.restoreProjectFiles(user, id));
+		return new OperateResult<String>(this.projectFileService.updateProjectFiles(user, id));
 	}
 	
 	@ApiOperation(value = "全部还原", notes = "全部还原")
-	@PutMapping(value = "project/{id}/file/restoreAll")
-	public OperateResult<String> restoreAllProjectFiles(
+	@PutMapping(value = "project/file/updateAll")
+	public OperateResult<String> updateAllProjectFiles(
 			@RequestAttribute(value = LOGIN_USER) Users user,
 			@RequestParam(value = "ids") String fids) {
-		return new OperateResult<String>(this.projectFileService.restoreAllProjectFiles(user, fids));
+		return new OperateResult<String>(this.projectFileService.updateAllProjectFiles(user, fids));
 	}
 	
 	@ApiOperation(value = "全部清空", notes = "全部清空")
-	@DeleteMapping(value = "project/{id}/file/deleteAll")
+	@DeleteMapping(value = "project/file/deleteAll")
 	public OperateResult<String> deleteAllProjectFiles(
 			@RequestAttribute(value = LOGIN_USER) Users user,
 			@RequestParam(value = "ids") String fids

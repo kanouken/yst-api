@@ -66,9 +66,9 @@ public class ProjectFileService {
 	 * @return
 	 */
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public String deleteFile(Users user, String fids) {
+	public String deleteFile(Users user,Integer projectId, String fids) {
 		List<String> list = getList(fids);
-		int result = this.pfDao.deleteProjectFile(list);
+		int result = this.pfDao.deleteProjectFile(projectId,list);
 		if (result > 0) {
 			return HttpStatus.OK.name();
 		}
@@ -140,7 +140,7 @@ public class ProjectFileService {
 	 * @param id
 	 * @return
 	 */
-	public String restoreProjectFiles(Users user, Integer id){
+	public String updateProjectFiles(Users user, Integer id){
 		ProjectFile projectFile = new ProjectFile();
 		projectFile.setId(id);
 		projectFile.setIsDelete(Short.valueOf("0"));
@@ -159,9 +159,9 @@ public class ProjectFileService {
 	 * @return
 	 */
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
-	public String restoreAllProjectFiles(Users user,String fids) {
+	public String updateAllProjectFiles(Users user,String fids) {
 		List<String> list = getList(fids);
-		int result = this.pfDao.restoreAllProjectFiles(list);
+		int result = this.pfDao.updateAllProjectFiles(list);
 		if (result > 0) {
 			return HttpStatus.OK.name();
 		}

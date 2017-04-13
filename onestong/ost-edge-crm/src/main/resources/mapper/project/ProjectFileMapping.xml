@@ -5,6 +5,8 @@
 	<update id="deleteProjectFile" parameterType="java.util.List">
          update tbl_project_file set isDelete =1
          where 
+         projectId=#{projectId}
+         and
          fid in
          <foreach item="fid" collection="fids" open="(" close=")" separator=",">
              #{fid,jdbcType=VARCHAR}
@@ -42,7 +44,7 @@
 		</if>
      </sql>
      
-     <update id="restoreAllProjectFiles" parameterType="java.util.List">
+     <update id="updateAllProjectFiles" parameterType="java.util.List">
          update tbl_project_file set isDelete =0
          where 
          fid in

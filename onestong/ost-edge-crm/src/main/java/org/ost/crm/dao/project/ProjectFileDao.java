@@ -12,7 +12,7 @@ import tk.mybatis.mapper.common.Mapper;
 public interface ProjectFileDao extends Mapper<ProjectFile> {
 
 	// 批量逻辑删除
-	public int deleteProjectFile(@Param("fids") List<String> fids);
+	public int deleteProjectFile(Integer projectId,@Param("fids") List<String> fids);
 
 	// public int deleteProjectFile(@Param("fids")String fid);
 
@@ -23,7 +23,7 @@ public interface ProjectFileDao extends Mapper<ProjectFile> {
 	List<ProjectFile> selectProjectFileList(@Param("params") Map<String, Object> params, RowBounds row);
 
 	// 全部还原
-	public int restoreAllProjectFiles(@Param("fids") List<String> fids);
+	public int updateAllProjectFiles(@Param("fids") List<String> fids);
 
 	// 全部还原
 	public int deleteAllProjectFiles(@Param("fids") List<String> fids);
