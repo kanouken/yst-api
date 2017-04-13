@@ -72,7 +72,7 @@ public class ProjectFileController extends Action {
 	}
 
 	@ApiOperation(value = "彻底删除", notes = "彻底删除")
-	@DeleteMapping(value = "project/file/delete")
+	@DeleteMapping(value = "project/file/delete/{id}")
 	public OperateResult<String> deleteProjectFiles(
 			@RequestAttribute(value = LOGIN_USER) Users user,
 			@PathVariable(value = "id") Integer id
@@ -81,7 +81,7 @@ public class ProjectFileController extends Action {
 	}
 	
 	@ApiOperation(value = "还原", notes = "还原")
-	@PutMapping(value = "project/file/update")
+	@PutMapping(value = "project/file/update/{id}")
 	public OperateResult<String> updateProjectFiles(
 			@RequestAttribute(value = LOGIN_USER) Users user,
 			@PathVariable(value = "id") Integer id
