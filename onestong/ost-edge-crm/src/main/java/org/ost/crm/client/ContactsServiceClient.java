@@ -22,7 +22,7 @@ public interface ContactsServiceClient extends BaseClient {
 
 	@RequestMapping(value = "contacts/{id}", method = RequestMethod.DELETE, consumes = "application/json")
 	public OperateResult<String> deleteContacts(@PathVariable(value = "id") Integer id,
-			@RequestParam(value = TENANT_ID) String schemaId, @RequestParam(value = "realName") String realName
+			@RequestParam(value = TENANT_ID) String schemaId, @RequestParam(value = ACCOUNT_NAME) String realName
 
 	);
 

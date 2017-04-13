@@ -44,6 +44,7 @@ public class App extends WebMvcConfigurerAdapter {
 		webApp.setPathStrip(this.pathStrip);
 		registry.addInterceptor(webApp).addPathPatterns("/**");
 		PagedInterceptor page = new PagedInterceptor();
+		page.setPathStrip(this.pathStrip);
 		registry.addInterceptor(page).addPathPatterns("/**");
 
 		LoginRequiredIntercepter loginIntercepter = new LoginRequiredIntercepter();
