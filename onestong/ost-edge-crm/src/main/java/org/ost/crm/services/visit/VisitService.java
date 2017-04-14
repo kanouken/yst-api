@@ -457,7 +457,7 @@ public class VisitService extends BaseService {
 			visitDao.insertVisitProject(vps);
 		}
 
-		if (updateVisitDto.getProjectTypeID() != null) {
+		if (StringUtils.isNotEmpty(updateVisitDto.getProjectTypeID())) {
 			Assert.notNull(creator, "参数异常");
 			Visit visit = new Visit();
 			visit.setId(id);
