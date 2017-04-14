@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.ost.entity.customer.vo.CustomerVo;
 import org.ost.entity.org.department.dto.DepartmentListDto;
+import org.ost.entity.project.ProjectState;
 import org.ost.entity.user.dto.UserListDto;
 
 public class ProjectListDto {
@@ -139,7 +140,12 @@ public class ProjectListDto {
 	}
 
 	public String getStateName() {
-		return stateName;
+		if(this.state != null){
+			 return  ProjectState.getProjectState(Byte.parseByte(this.state)).getName();
+		}else{
+			return stateName;
+		}
+		
 	}
 
 	public void setStateName(String stateName) {
