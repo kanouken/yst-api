@@ -267,7 +267,9 @@
 		(tp.id,tp.schemaID) =
 		(top.projectID,top.schemaID)
 
-
+		left join tbl_user_project tup
+		on (tp.id,tp.schemaID) =
+		(tup.projectID,tup.schemaID)
 		<where>
 			<trim prefixOverrides="AND |OR">
 				tp.schemaId = #{schemaId}
