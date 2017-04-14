@@ -32,12 +32,14 @@ import org.ost.crm.dao.project.ProjectTypeStepDao;
 import org.ost.crm.dao.project.UserProjectDao;
 import org.ost.crm.model.common.CommonParams;
 import org.ost.crm.services.base.BaseService;
+import org.ost.crm.services.department.DepartmentService;
 import org.ost.entity.contacts.dto.ContactsListDto;
 import org.ost.entity.contacts.mapper.ContactsEntityMapper;
 import org.ost.entity.customer.CustomerProject;
 import org.ost.entity.customer.dto.CustomerDetailDto;
 import org.ost.entity.customer.dto.CustomerListDto;
 import org.ost.entity.customer.vo.CustomerVo;
+import org.ost.entity.org.department.Departments;
 import org.ost.entity.project.Project;
 import org.ost.entity.project.ProjectOrg;
 import org.ost.entity.project.ProjectPayment;
@@ -57,6 +59,7 @@ import org.ost.entity.project.dto.ProjectStepsDto;
 import org.ost.entity.project.mapper.ProjectEntityMapper;
 import org.ost.entity.project.vo.ProjectVo;
 import org.ost.entity.user.Users;
+import org.ost.entity.user.UsersRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -89,10 +92,13 @@ public class ProjectService extends BaseService {
 
 	@Autowired
 	private ProjectPaymentDao ppDao;
+	
+	@Autowired
+	private DepartmentService departmentService;
 
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
 	public String createProject(Users user, ProjectCreateOrUpdateDto dto) {
-		if(StringUtils.isEmpty(dto.getStartTimeStr())){
+		if (StringUtils.isEmpty(dto.getStartTimeStr())) {
 			dto.setStartTimeStr(null);
 		}
 		Project project = ProjectEntityMapper.INSTANCE.createOrUpateDtoToProject(dto);
@@ -394,8 +400,10 @@ public class ProjectService extends BaseService {
 
 	/**
 	 * ✅ FIXME YSTCRM-272 项目-列表，排序按创建时间倒序
-	 * @param visitEventID 
 	 * 
+	 * @param visitEventID
+	 * @see #queryProjectsUserScoped(String, Users, Integer, String, String,
+	 *      String, String, Integer, Integer)
 	 * @param user
 	 * @param customerId
 	 * @param keyword
@@ -408,13 +416,15 @@ public class ProjectService extends BaseService {
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
+	@Deprecated
 	@Transactional(readOnly = true)
-	public Map<String, Object> queryProjects(String visitEventID, Users user, Integer customerId, String keyword, String name, String state,
-			String typeId, Integer curPage, Integer perPageSum) throws InterruptedException, ExecutionException {
-		if(StringUtils.isNotEmpty(visitEventID)){
-			return queryProjectsByVisit(visitEventID,user);
+	public Map<String, Object> queryProjects(String visitEventID, Users user, Integer customerId, String keyword,
+			String name, String state, String typeId, Integer curPage, Integer perPageSum)
+			throws InterruptedException, ExecutionException {
+		if (StringUtils.isNotEmpty(visitEventID)) {
+			return queryProjectsByVisit(visitEventID, user);
 		}
-		
+
 		List<ProjectListDto> projectListDtos = new ArrayList<>();
 		Map<String, Object> params = new HashMap<String, Object>();
 
@@ -460,13 +470,107 @@ public class ProjectService extends BaseService {
 		page.setTotalRecords(totalRecords);
 		return OperateResult.renderPage(page, projectListDtos);
 	}
-	
+
+	/**
+	 * ✅ FIXME YSTCRM-272 项目-列表，排序按创建时间倒序
+	 * 
+	 * @param visitEventID
+	 *            FIXME 项目列表 FIXME YSTCRM-280 3. 项目列表 1. 普通员工-项目列表只能显示归属自己的项目。
+	 *            2. 部门主管可以查看本部门所有项目，以及下级部门所有项目。
+	 * @param user
+	 * @param customerId
+	 * @param keyword
+	 * @param name
+	 * @param state
+	 * @param typeId
+	 * @param curPage
+	 * @param perPageSum
+	 * @return
+	 * @throws InterruptedException
+	 * @throws ExecutionException
+	 */
+	@Transactional(readOnly = true)
+	public Map<String, Object> queryProjectsUserScoped(String visitEventID, Users user, Integer customerId,
+			String keyword, String name, String state, String typeId, Integer curPage, Integer perPageSum)
+			throws InterruptedException, ExecutionException {
+		if (StringUtils.isNotEmpty(visitEventID)) {
+			return queryProjectsByVisit(visitEventID, user);
+		}
+
+		Boolean isDirector = false;
+		if (user.getRole() != null) {
+			if (user.getRole().getRoleCode().equals(UsersRole.DEPARTMENT_MANAGER.getCode())) {
+				isDirector = true;
+			}
+		}
+
+		List<ProjectListDto> projectListDtos = new ArrayList<>();
+		Map<String, Object> params = new HashMap<String, Object>();
+
+		Page page = new Page();
+		page.setCurPage(curPage);
+		page.setPerPageSum(perPageSum);
+
+		params.put("customerId", customerId);
+		params.put("keyword", keyword);
+		params.put("name", name);
+		params.put("state", state);
+		params.put("typeId", typeId);
+		params.put("schemaId", user.getSchemaId());
+		params.put("page", page);
+		if (isDirector) {
+			// 按部门搜索
+			Departments dept = new Departments();
+			dept.setDeptId(user.getDeptId());
+			List<Departments> deptsDepartments = departmentService.queryDepartmentRecursion(dept);
+			if (CollectionUtils.isNotEmpty(deptsDepartments)) {
+				List<Integer> deptIds = deptsDepartments.stream().map(d -> d.getDeptId()).collect(Collectors.toList());
+			params.put("deptIds",deptIds);
+			} else {
+				throw new ApiException("参数错误", "" + user.getUserId());
+			}
+		} else {
+			params.put("userId", user.getUserId());
+		}
+		Integer totalRecords = this.projectDao.selectCountBy(params);
+
+		if (totalRecords > 0) {
+			projectListDtos = this.projectDao.selectProjectBy(params);
+			int[] projectIds = projectListDtos.stream().mapToInt(dto -> Integer.valueOf(dto.getId())).toArray();
+			int[] customerIds = projectListDtos.stream().filter(dto -> dto.getCustomer() != null)
+					.mapToInt(dto -> dto.getCustomer().getId()).toArray();
+			List<Project> projects = this.projectDao.selectProjectConfigStepsAndHistorySetps(user.getSchemaId(),
+					projectIds);
+
+			CompletableFuture<OperateResult<List<CustomerListDto>>> customerFuture = CompletableFuture
+					.supplyAsync(() -> this.customerServiceClient.queryByIds(user.getSchemaId(), customerIds));
+			this.configCurrentStepForProject(projects, projectListDtos);
+			// customer
+			OperateResult<List<CustomerListDto>> result = customerFuture.get();
+			if (result.success()) {
+				projectListDtos.forEach(dto -> {
+					if (dto.getCustomer() != null) {
+						Optional<CustomerListDto> _result = result.getData().stream()
+								.filter(customer -> customer.getId().equals(Integer.valueOf(dto.getCustomer().getId())))
+								.findFirst();
+						if (_result.isPresent()) {
+							dto.setCustomer(new CustomerVo(dto.getCustomer().getId(), _result.get().getName()));
+						}
+					}
+				});
+			}
+		}
+		page.setTotalRecords(totalRecords);
+		return OperateResult.renderPage(page, projectListDtos);
+	}
+
 	/*
 	 * 根据外访查询关联项目
 	 */
 	@Transactional(readOnly = true)
-	public Map<String, Object> queryProjectsByVisit(String visitEventID, Users currentUser) throws InterruptedException, ExecutionException {
-		
+	public Map<String, Object> queryProjectsByVisit(String visitEventID, Users currentUser)
+			throws InterruptedException, ExecutionException {
+
 		List<ProjectListDto> projectListDtos = new ArrayList<>();
 		Map<String, Object> params = new HashMap<String, Object>();
 
@@ -474,7 +578,7 @@ public class ProjectService extends BaseService {
 		page.setCurPage(1);
 		page.setPerPageSum(1000);
 		params.put("schemaId", currentUser.getSchemaId());
-		params.put("visitId",visitEventID);
+		params.put("visitId", visitEventID);
 		params.put("page", page);
 		Integer totalRecords = this.projectDao.selectCountByVisit(params);
 
@@ -507,8 +611,6 @@ public class ProjectService extends BaseService {
 		page.setTotalRecords(totalRecords);
 		return OperateResult.renderPage(page, projectListDtos);
 	}
-	
-	
 
 	private void configCurrentStepForProject(List<Project> infos, List<ProjectListDto> listDtos) {
 		DateFormat dFormat = new SimpleDateFormat("yyyy-MM-dd");

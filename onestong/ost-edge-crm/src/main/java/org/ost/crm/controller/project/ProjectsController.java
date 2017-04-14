@@ -40,8 +40,8 @@ public class ProjectsController extends Action {
 	 * 
 	 * @param projectId
 	 * @return
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
+	 * @throws ExecutionException
+	 * @throws InterruptedException
 	 */
 	@GetMapping(value = "{id}")
 	public OperateResult<ProjectDetailDto> queryDetail(@PathVariable(value = "id") Integer projectId,
@@ -50,7 +50,8 @@ public class ProjectsController extends Action {
 	}
 
 	/**
-	 * 项目列表
+	 * 项目列表 FIXME YSTCRM-280 3. 项目列表 1. 普通员工-项目列表只能显示归属自己的项目。 2.
+	 * 部门主管可以查看本部门所有项目，以及下级部门所有项目。
 	 * 
 	 * @param projectId
 	 * @return
@@ -67,11 +68,10 @@ public class ProjectsController extends Action {
 			@RequestParam(value = "name", required = false) String name,
 			@RequestParam(value = "state", required = false) String state,
 			@RequestParam(value = "typeID", required = false) String typeId,
-			@RequestParam(value="visitEventID" ,required = false) String visitEventID
-			)
+			@RequestParam(value = "visitEventID", required = false) String visitEventID)
 			throws InterruptedException, ExecutionException {
-		return new OperateResult<Map<String, Object>>(
-				projectService.queryProjects(visitEventID,user, customerId, keyword, name, state, typeId, curPage, perPageSum));
+		return new OperateResult<Map<String, Object>>(projectService.queryProjectsUserScoped(visitEventID, user, customerId,
+				keyword, name, state, typeId, curPage, perPageSum));
 	}
 
 	/**
