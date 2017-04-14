@@ -14,6 +14,7 @@ import org.common.tools.db.Page;
 import org.common.tools.exception.ApiException;
 import org.ost.crm.client.ContactsServiceClient;
 import org.ost.crm.client.CustomerServiceClient;
+import org.ost.crm.services.department.DepartmentService;
 import org.ost.entity.base.PageEntity;
 import org.ost.entity.contacts.dto.ContactsCreateDto;
 import org.ost.entity.contacts.dto.ContactsDetailDto;
@@ -22,8 +23,11 @@ import org.ost.entity.contacts.dto.ContactsListDto;
 import org.ost.entity.contacts.mapper.ContactsEntityMapper;
 import org.ost.entity.customer.dto.CustomerDetailDto;
 import org.ost.entity.customer.dto.CustomerListDto;
+import org.ost.entity.customer.dto.CustomerQueryDto;
 import org.ost.entity.customer.vo.CustomerVo;
+import org.ost.entity.org.department.Departments;
 import org.ost.entity.user.Users;
+import org.ost.entity.user.UsersRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +43,9 @@ public class ContactsService {
 	private ContactsServiceClient contactsServiceClient;
 	@Autowired
 	private CustomerServiceClient customerServiceClient;
+
+	@Autowired
+	private DepartmentService departmentService;
 
 	/**
 	 * 创建联系人
@@ -78,8 +85,10 @@ public class ContactsService {
 		}
 
 	}
+
 	/**
 	 * FIXME 无分页
+	 * 
 	 * @param visitId
 	 * @param currentUser
 	 * @return
@@ -115,8 +124,8 @@ public class ContactsService {
 	}
 
 	/**
-	 * 联系人列表
-	 * 
+	 * @see #queryContactsByCustomer(Integer, Integer, String, String, String,
+	 *      Users, Integer, Integer)
 	 * @param customerID
 	 * @param customerId
 	 * @param keyword
@@ -127,6 +136,7 @@ public class ContactsService {
 	 * @param perPageSum
 	 * @return
 	 */
+	@Deprecated
 	public Map<String, Object> queryContacts(Integer visitId, Integer customerID, String keyword, String name,
 			String phone, Users users, Integer curPage, Integer perPageSum) {
 		logger.info("调用参数 keyword " + keyword + "-name " + name);
@@ -162,6 +172,91 @@ public class ContactsService {
 			throw new ApiException("获取联系人列表失败", result.getInnerException());
 		}
 
+	}
+
+	/**
+	 * 联系人列表 FIXME YSTCRM-280 1. 普通员工-联系人列表只能显示归属自己客户下的联系人。 2.
+	 * 部门主管可以查看本部门所有客户，以及下级部门所有客户下的联系人。
+	 * 
+	 * @param visitId
+	 * @param customerID
+	 * @param keyword
+	 * @param name
+	 * @param phone
+	 * @param users
+	 * @param curPage
+	 * @param perPageSum
+	 * @return
+	 */
+	public Map<String, Object> queryContactsUserScoped(Integer visitId, Integer customerID, String keyword, String name,
+			String phone, Users current, Integer curPage, Integer perPageSum) {
+		logger.info("调用参数 keyword " + keyword + "-name " + name);
+		if (visitId != null) {
+			return this.queryContactsByVisit(visitId, current);
+		}
+
+		Boolean isDirector = false;
+		if (current.getRole() != null) {
+			if (current.getRole().getRoleCode().equals(UsersRole.DEPARTMENT_MANAGER.getCode())) {
+				isDirector = true;
+			}
+		}
+		OperateResult<PageEntity<CustomerListDto>> customerResult = null;
+		OperateResult<PageEntity<ContactsListDto>> contactsResult = null;
+		CustomerQueryDto queryDto = new CustomerQueryDto();
+		List<ContactsListDto> records = new ArrayList<ContactsListDto>();
+		Integer totalRecords = 0;
+		if (isDirector) {
+			// 部门主管可以查看本部门所有客户，以及下级部门所有客户下的联系人。
+			Departments dept = new Departments();
+			dept.setDeptId(current.getDeptId());
+			List<Departments> deptsDepartments = departmentService.queryDepartmentRecursion(dept);
+			if (CollectionUtils.isNotEmpty(deptsDepartments)) {
+				List<Integer> deptIds = deptsDepartments.stream().map(d -> d.getDeptId()).collect(Collectors.toList());
+				queryDto.setDeptIds(deptIds);
+			} else {
+				throw new ApiException("参数错误", "" + current.getUserId());
+			}
+			customerResult = this.customerServiceClient.queryCustomerByDept(current.getSchemaId(), 1, Integer.MAX_VALUE,
+					queryDto);
+		} else {
+			// 普通员工-联系人列表只能显示归属自己客户下的联系人
+			queryDto.setUserId(current.getUserId());
+			customerResult = this.customerServiceClient.queryCustomerByUser(current.getSchemaId(), 1, Integer.MAX_VALUE,
+					queryDto);
+		}
+		if (customerResult.success()) {
+			if (CollectionUtils.isNotEmpty(customerResult.getData().getObjects())) {
+				String customerIds = customerResult.getData().getObjects().stream().map(c -> String.valueOf(c.getId()))
+						.collect(Collectors.joining(","));
+				contactsResult = contactsServiceClient.queryByCustomer(curPage, current.getSchemaId(), perPageSum, null,
+						name, phone, keyword, customerIds);
+				List<CustomerListDto> customers = customerResult.getData().getObjects();
+				if (contactsResult.success()) {
+					records = contactsResult.getData().getObjects();
+					totalRecords = contactsResult.getData().getTotalRecord();
+					if (CollectionUtils.isNotEmpty(contactsResult.getData().getObjects())) {
+						records.forEach(contact -> {
+							Optional<CustomerListDto> _rOptional = customers.stream()
+									.filter(c -> c.getId() == contact.getCustomerID()).findFirst();
+							if (_rOptional.isPresent()) {
+								contact.setCustomer(
+										new CustomerVo(_rOptional.get().getId(), _rOptional.get().getName()));
+							}
+						});
+					}
+
+				} else {
+					throw new ApiException("获取联系人列表失败", contactsResult.getInnerException());
+				}
+			}
+		} else {
+			throw new ApiException("获取联系人列表失败", customerResult.getInnerException());
+		}
+		Page page = new Page();
+		page.setCurPage(curPage);
+		page.setTotalRecords(totalRecords);
+		return OperateResult.renderPage(page,records);
 	}
 
 	/**

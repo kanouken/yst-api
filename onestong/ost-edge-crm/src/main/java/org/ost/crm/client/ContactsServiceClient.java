@@ -80,8 +80,19 @@ public interface ContactsServiceClient extends BaseClient {
 	public OperateResult<List<ContactsListDto>> queryByVisit(@RequestHeader(value = TENANT_ID) String schemaID,
 			@RequestParam(value = "visitId") Integer id);
 
-	
 	@RequestMapping(value = "contacts/queryByVisits", method = RequestMethod.GET)
 	public OperateResult<List<VisitContactsDto>> queryByVisits(@RequestHeader(value = TENANT_ID) String schemaID,
 			@RequestParam(value = "visitId") int[] ids);
+
+	@RequestMapping(value = "contacts/queryByCustomer", method = RequestMethod.GET)
+	public OperateResult<PageEntity<ContactsListDto>> queryByCustomer(
+			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
+			@RequestHeader(value = TENANT_ID) String schemaID,
+			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
+			@RequestParam(value = "email", required = false) String email,
+			@RequestParam(value = "name", required = false) String name,
+			@RequestParam(value = "phone", required = false) String phone,
+			@RequestParam(value = "keyword", required = false) String keyword,
+			@RequestParam(value = "customerIds", required = false) String customerIds);
+
 }

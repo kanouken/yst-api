@@ -44,7 +44,20 @@ public class ContactsController extends Action {
 			@RequestAttribute(value = LOGIN_USER) Users users) {
 		return new OperateResult<ContactsDetailDto>(this.contactsService.queryDetail(contactsId, users));
 	}
-
+	/**
+	 * 联系人列表
+	 * FIXME YSTCRM-280 
+	 * 1. 普通员工-联系人列表只能显示归属自己客户下的联系人。 2. 部门主管可以查看本部门所有客户，以及下级部门所有客户下的联系人。
+	 * @param curPage
+	 * @param perPageSum
+	 * @param users
+	 * @param customerID
+	 * @param keyword
+	 * @param name
+	 * @param phone
+	 * @param visitId
+	 * @return
+	 */
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public OperateResult<Map<String, Object>> queryContacts(
 			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
@@ -57,7 +70,7 @@ public class ContactsController extends Action {
 			@RequestParam(value="visitEventID",required = false) Integer visitId
 			) {
 		return new OperateResult<>(
-				this.contactsService.queryContacts(visitId,customerID, keyword, name, phone, users, curPage, perPageSum));
+				this.contactsService.queryContactsUserScoped(visitId,customerID, keyword, name, phone, users, curPage, perPageSum));
 	}
 
 	/**
