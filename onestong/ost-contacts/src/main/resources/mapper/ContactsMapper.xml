@@ -63,25 +63,27 @@
 		tc.lastName ,
 		tci.type ,
 		tci.val,
-		tcc.customerID
+		tcc.customerID,
+		tc.isDelete
 		FROM
 		tbl_contact tc
 		LEFT
 		JOIN
 		tbl_contact_info tci ON(tc.id , tc.schemaID)
 		=(tci.contactID ,
-		tci.schemaID)
-		and tci.type = 'email'
+		tci.schemaID) 
+		and tci.type = 'email' 
 		left join
 		tbl_customer_contact tcc
 		on (tc.id,tc.schemaID) =
 		(tcc.contactID ,
-		tcc.schemaID)
+		tcc.schemaID) 
 		) t
 		<where>
 			<trim prefixOverrides="and |or">
+					t.isDelete = 0
 				<if test="name != null and name != ''">
-					INSTR(CONCAT(t.firstName,t.lastName),#{name}) >0
+				   and INSTR(CONCAT(t.firstName,t.lastName),#{name}) >0
 				</if>
 				<if test="phone != null and phone != ''">
 					and instr(t.val,#{phone}) >0
@@ -119,24 +121,25 @@
 		tc.lastName,
 		tci.type,
 		tci.val,
-		tcc.customerID
-
+		tcc.customerID,
+		tc.isDelete
 		from tbl_contact tc
 		left
 		join
 		tbl_contact_info tci
 		on (tc.id,tc.schemaID) =
 		(tci.contactID
-		,tci.schemaID)
+		,tci.schemaID) 
 		left join tbl_customer_contact tcc
-		on(tc.id ,tc.schemaID)
+		on (tc.id ,tc.schemaID)
 		=
-		(tcc.contactID,tcc.schemaID)
+		(tcc.contactID,tcc.schemaID) 
 		) t
 		<where>
 			<trim prefixOverrides="AND |or">
+				 t.isDelete = 0
 				<if test="name != null and name != ''">
-					INSTR(CONCAT(t.firstName,t.lastName),#{name}) >0
+				and  INSTR(CONCAT(t.firstName,t.lastName),#{name}) >0
 				</if>
 				<if test="phone != null and phone != ''">
 					and instr(t.val,#{phone}) >0

@@ -6,8 +6,9 @@
 	<sql id="searchCriteria">
 		<where>
 			<trim prefixOverrides="and |or">
+				   t.isDelete = 0  
 				<if test="name != null and name != ''">
-					INSTR(CONCAT(t.firstName,t.lastName),#{name}) >0
+				    and INSTR(CONCAT(t.firstName,t.lastName),#{name}) >0
 				</if>
 				<if test="phone != null and phone != ''">
 					and instr(t.val,#{phone}) >0
@@ -89,7 +90,8 @@
 		tc.lastName ,
 		tci.type ,
 		tci.val,
-		tcc.customerID
+		tcc.customerID,
+		tc.isDelete
 		FROM
 		tbl_contact tc
 		LEFT
@@ -127,8 +129,8 @@
 		tc.lastName,
 		tci.type,
 		tci.val,
-		tcc.customerID
-
+		tcc.customerID,
+		tc.isDelete
 		from tbl_contact tc
 		left
 		join
