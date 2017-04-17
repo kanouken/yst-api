@@ -46,4 +46,13 @@
 		and valid = 0
 	</select>
 
+	<select id="selectByID" resultType="org.ost.crm.model.web.user.UserDto">
+		select
+		user_id as userId,
+		realname as realName
+		from users
+		where user_id = #{id}
+		and valid = 0
+	</select>
+
 </mapper>

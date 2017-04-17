@@ -13,7 +13,8 @@ public interface UserDao extends Mapper<Users>{
 	//登录
 	UserDto selectLogin(@Param(value = "email") String email,@Param(value = "password") String password);
 	UserDto selectByEmail(@Param(value = "email") String email);
-	
+	UserDto selectByID(@Param(value = "id") Integer id);
+
 	List<Users> selectByIds(@Param("userIds") List<Integer> userIds);
 	
 }

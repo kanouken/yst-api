@@ -18,6 +18,7 @@ import org.ost.crm.client.CustomerServiceClient;
 import org.ost.crm.dao.auth.UsersRolesMapper;
 import org.ost.crm.dao.report.XiangMuReportDao;
 import org.ost.crm.dao.web.user.UserDao;
+import org.ost.crm.model.web.user.UserDto;
 import org.ost.crm.services.base.BaseService;
 import org.ost.crm.services.project.ProjectService;
 import org.ost.entity.auth.Role;
@@ -133,14 +134,14 @@ public class XiangMuReportService extends BaseService {
 			throws Exception {
 		if (null != userId) {
 			// check role
-			Users currentUser = this.userDao.selectByPrimaryKey(userId);
+			UserDto currentUser = this.userDao.selectByID(userId);
 			Role role = this.userRoleMapper.selectRolesByUser(userId).get(0);
 			Boolean isDirector = false;
 			if (role.getRoleCode().equals(UsersRole.DEPARTMENT_MANAGER.getCode())) {
 				isDirector = true;
 			}
 			if (!isDirector) {
-				params.put("managerOwnerName", currentUser.getRealname());
+				params.put("managerOwnerName", currentUser.getRealName());
 			}
 		}
 
