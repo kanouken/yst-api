@@ -12,6 +12,19 @@
         group by createTimeStr
     </select>
 
+    <select id="searchListChart1" resultType="org.ost.entity.report.dto.XiaoShouReportDto.Chart1">
+        select
+        count(1) as value
+        ,case tbl_project.state
+        when 0 then '正常进展项目'
+        when 1 then '长期跟进项目'
+        when 2 then '不确定性项目'
+        when 3 then '失败项目'
+        end as name
+        <include refid="searchListSQL"></include>
+        group by tbl_project.state
+    </select>
+
     <select id="searchListCount" resultType="java.lang.Integer">
         SELECT
         count(1)

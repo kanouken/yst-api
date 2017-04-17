@@ -62,7 +62,7 @@
 		tbl_visit_event ve
 		LEFT JOIN tbl_project_type pt ON(ve.schemaID , ve.projectTypeID) = (pt.schemaID , pt.id)
 		<include refid="whereCriteria"></include>
-		order by ve.createTime
+		order by ve.visitTime
 		desc
 	</select>
 

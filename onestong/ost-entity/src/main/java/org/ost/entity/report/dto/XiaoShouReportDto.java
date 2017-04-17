@@ -10,6 +10,29 @@ import java.util.List;
  * Created by lugia on 2017/3/14.
  */
 public class XiaoShouReportDto {
+    public static class Chart1{
+        private Integer value;
+        private String name;
+
+        public Integer getValue() {
+            return value;
+        }
+
+        public void setValue(Integer value) {
+            this.value = value;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
+
+    private List<Chart1> chart1;
+
     private Integer id;
     private Integer customerID;
     private String customerName;
@@ -30,6 +53,14 @@ public class XiaoShouReportDto {
     private Integer totalProjectPaymentRate;
     private Integer totalConversionRate;
     private Integer totalCount;
+
+    public List<Chart1> getChart1() {
+        return chart1;
+    }
+
+    public void setChart1(List<Chart1> chart1) {
+        this.chart1 = chart1;
+    }
 
     public String getManagerOwnerName() {
         return managerOwnerName;
