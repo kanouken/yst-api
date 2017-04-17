@@ -158,7 +158,23 @@
 
 	</select>
 
-	<select id="selectByProject" resultType="org.ost.entity.contacts.dto.ContactsListDto">
+	<resultMap type="org.ost.entity.contacts.dto.ContactsListDto"
+		id="contactsListMap">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="projectId" column="projectID" />
+		<result property="sex" column="sex" />
+		<result property="position" column="position" />
+		<result property="dept" column="dept" />
+		<result property="role" column="role" />
+		<collection property="contactsInfoList"
+			ofType="org.ost.entity.contacts.contactsinfo.dto.ContactsInfoDto">
+			<id column="ontactInfoId" property="contactsInfoId" />
+			<result property="val" column="contactInfoVals" />
+		</collection>
+	</resultMap>
+
+	<select id="selectByProject" resultMap="contactsListMap">
 		select
 		tc.id,
 		tc.sex,
@@ -167,15 +183,20 @@
 		CONCAT(tc.firstName,tc.lastName) name,
 		tc.position,
 		tc.dept,
-		tpc.role
+		tpc.role,
+		tci.id ontactInfoId,
+		tci.val contactInfoVals
+		
 		from tbl_contact tc left join tbl_project_contact tpc
 
 		on(tc.id
 		,tc.schemaID) = (tpc.contactID,tpc.schemaID)
-
+		
+		left join tbl_contact_info tci on (tc.id=tci.contactID)
+		
 		where tpc.projectID =
 		#{projectId} and tpc.schemaID = #{schemaId} and tpc.isDelete = 0 and
-		tc.isDelete = 0
+		tc.isDelete = 0 and tci.isDelete=0
 
 	</select>
 

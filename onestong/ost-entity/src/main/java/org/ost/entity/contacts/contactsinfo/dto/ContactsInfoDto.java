@@ -1,16 +1,15 @@
 package org.ost.entity.contacts.contactsinfo.dto;
 
 public class ContactsInfoDto {
+	private Integer contactsInfoId;
 	private String type;
 	private String custName;
 	private String val;
 
-	public ContactsInfoDto(){
+	public ContactsInfoDto() {
 		super();
 	}
-	
-	
-	
+
 	public ContactsInfoDto(String type, String custName, String val) {
 		super();
 		this.type = type;
@@ -18,7 +17,13 @@ public class ContactsInfoDto {
 		this.val = val;
 	}
 
+	public Integer getContactsInfoId() {
+		return contactsInfoId;
+	}
 
+	public void setContactsInfoId(Integer contactsInfoId) {
+		this.contactsInfoId = contactsInfoId;
+	}
 
 	public String getType() {
 		return type;
