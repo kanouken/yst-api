@@ -124,8 +124,8 @@ public interface VisitEventMapper extends EventBaseMapper {
 	List<Map<String, Object>> selectMapTrackingDetailReportByUserAndMonth(@Param("userId") Integer userId,
 			@Param("start") Date start, @Param("end") Date end);
 
-	@Update("update tbl_visit_event a,(select tveu.id ,#{realname} createBy from tbl_visit_event_user tveu where tveu.userID = #{userId} and tveu.role = 0 ) b"
-			+ " set a.createBy  =  b.createBy  where a.id = b.id")
+	@Update("update tbl_visit_event a,(select tveu.visitEventID ,#{realname} createBy from tbl_visit_event_user tveu where tveu.userID = #{userId} and tveu.role = 0 ) b"
+			+ " set a.createBy  =  b.createBy  where a.id = b.visitEventID")
 	void updateCreator(User user);
 
 	@Update("update tbl_visit_event_user  set userName = #{realname} where userID = #{userId}")
