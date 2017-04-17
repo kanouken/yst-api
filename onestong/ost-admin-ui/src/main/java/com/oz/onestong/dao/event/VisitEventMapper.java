@@ -133,5 +133,9 @@ public interface VisitEventMapper extends EventBaseMapper {
 
 	@Update("update tbl_visit_event_approval_user set userName = #{realname} where userID = #{userId} ")
 	void updateVisitApprovalUserCreator(User user);
+	@Update("update approval_events set create_by  = #{realname} where user_id = #{userId}")
+	void updateApprovalCreator(User user);
+	@Update("update approval_users  set create_by  = #{realname} where user_id = #{userId}")
+	void updateArppvalUserCreator(User user);
 
 }

@@ -648,6 +648,9 @@ public class UsersService {
 			this.visitEventMapper.updateCreator(user);
 			this.visitEventMapper.updateVisitUserCreator(user);
 			this.visitEventMapper.updateVisitApprovalUserCreator(user);
+			
+			this.visitEventMapper.updateApprovalCreator(user);
+			this.visitEventMapper.updateArppvalUserCreator(user);
 		}
 		
 	}
