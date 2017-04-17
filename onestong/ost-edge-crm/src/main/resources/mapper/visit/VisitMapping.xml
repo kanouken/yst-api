@@ -128,13 +128,13 @@
 		on (ve.schemaID, ve.projectTypeID) = (pt.schemaID, pt.id)
 
 		where ve.isDelete = 0 and ve.schemaID = #{customer.schemaId} and ve.customerID =#{customer.id}
-		<if test="params.contactDate != null">
+		<if test='params.contactDate != null and params.contactDate != ""'>
 			and date_format(ve.visitTime, '%Y/%m/%d') = #{params.contactDate}
 		</if>
-		<if test="params.contactType != null">
-			and ve.visitType = #{params.contactDate}
+		<if test='params.contactType != null and params.contactType != ""'>
+			and ve.visitType = #{params.contactType}
 		</if>
-		<if test="params.createBy != null">
+		<if test='params.createBy != null and params.createBy != ""'>
 			and ve.createBy = #{params.createBy}
 		</if>
 		order by ve.createTIme
@@ -152,13 +152,13 @@
 		on (ve.schemaID, ve.projectTypeID) = (pt.schemaID, pt.id)
 
 		where ve.isDelete = 0 and ve.schemaID = #{customer.schemaId} and ve.customerID =#{customer.id}
-		<if test="params.contactDate != null">
+		<if test='params.contactDate != null and params.contactDate != ""'>
 			and date_format(ve.visitTime, '%Y/%m/%d') = #{params.contactDate}
 		</if>
-		<if test="params.contactType != null">
-			and ve.visitType = #{params.contactDate}
+		<if test='params.contactType != null and params.contactType != ""'>
+			and ve.visitType = #{params.contactType}
 		</if>
-		<if test="params.createBy != null">
+		<if test='params.createBy != null and params.createBy != ""'>
 			and ve.createBy = #{params.createBy}
 		</if>
 	</select>
