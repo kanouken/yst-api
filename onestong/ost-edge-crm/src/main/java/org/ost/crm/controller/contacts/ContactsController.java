@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import sun.tools.tree.ThisExpression;
+
 @RestController
 @RequestMapping(value = "contacts")
 public class ContactsController extends Action {
@@ -44,10 +46,11 @@ public class ContactsController extends Action {
 			@RequestAttribute(value = LOGIN_USER) Users users) {
 		return new OperateResult<ContactsDetailDto>(this.contactsService.queryDetail(contactsId, users));
 	}
+
 	/**
-	 * 联系人列表
-	 * FIXME YSTCRM-280 
-	 * 1. 普通员工-联系人列表只能显示归属自己客户下的联系人。 2. 部门主管可以查看本部门所有客户，以及下级部门所有客户下的联系人。
+	 * 联系人列表 FIXME YSTCRM-280 1. 普通员工-联系人列表只能显示归属自己客户下的联系人。 2.
+	 * 部门主管可以查看本部门所有客户，以及下级部门所有客户下的联系人。
+	 * 
 	 * @param curPage
 	 * @param perPageSum
 	 * @param users
@@ -67,10 +70,15 @@ public class ContactsController extends Action {
 			@RequestParam(value = "keyword", required = false) String keyword,
 			@RequestParam(value = "name", required = false) String name,
 			@RequestParam(value = "phone", required = false) String phone,
-			@RequestParam(value="visitEventID",required = false) Integer visitId
-			) {
-		return new OperateResult<>(
-				this.contactsService.queryContactsUserScoped(visitId,customerID, keyword, name, phone, users, curPage, perPageSum));
+			@RequestParam(value = "visitEventID", required = false) Integer visitId) {
+		if (null != customerID) {
+			return new OperateResult<Map<String, Object>>(this.contactsService.queryContacts(visitId, customerID, keyword, name, phone,
+					users, curPage, perPageSum));
+		} else {
+			return new OperateResult<Map<String, Object>>(this.contactsService.queryContactsUserScoped(visitId, customerID, keyword, name,
+					phone, users, curPage, perPageSum));
+
+		}
 	}
 
 	/**
