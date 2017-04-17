@@ -45,9 +45,10 @@
 		ve.visitType contactType ,
 		ve.createTime createTime ,
 		DATE_FORMAT(ve.createTime , '%Y-%m-%d %H:%i') createTimeStr ,
-		ve.id id
-		,
-		ve.customerName NAME ,
+		ve.visitTime,
+		date_format(ve.visitTime, '%Y/%m/%d') visitTimeStr,
+		ve.id id ,
+		ve.customerName name ,
 		CASE
 		WHEN pt. NAME IS NULL THEN
 		'无'
@@ -55,18 +56,14 @@
 		'有'
 		END
 		hasBusStr ,
-		pt. NAME busChange
+		pt. NAME busChange,
+		ve.createBy
 		FROM
 		tbl_visit_event ve
-		LEFT JOIN
-		tbl_project_type pt ON(ve.schemaID , ve.projectTypeID)
-		=(pt.schemaID ,
-		pt.id)
+		LEFT JOIN tbl_project_type pt ON(ve.schemaID , ve.projectTypeID) = (pt.schemaID , pt.id)
 		<include refid="whereCriteria"></include>
-
 		order by ve.createTime
 		desc
-
 	</select>
 
 
