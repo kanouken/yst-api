@@ -162,7 +162,8 @@ public class CustomerController extends Action {
 			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
 			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
 			@RequestParam(value = "contactType") String contactType,
-			@RequestParam(value = "contactDate") String contactDate, @RequestParam(value = "createBy") String createBy,
+			@RequestParam(value = "contactDate") String contactDate,
+			@RequestParam(value = "createBy") String createBy,
 			@PathVariable("id") Integer customerId, @RequestAttribute(value = LOGIN_USER) Users users) {
 		Page page = new Page();
 		page.setCurPage(curPage);

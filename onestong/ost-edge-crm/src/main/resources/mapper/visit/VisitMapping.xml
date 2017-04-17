@@ -118,6 +118,8 @@
 		ve.id,
 		ve.visitType,
 		ve.visitTime,
+		date_format(ve.visitTime, '%Y/%m/%d') visitTimeStr,
+		ve.createBy,
 		ve.customerID customerId,
 		ve.customerName,
 		pt.`name` busChange

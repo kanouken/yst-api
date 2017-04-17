@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8" inherit-compiler-output="false">
+  <component name="FacetManager">
+    <facet type="Spring" name="Spring">
+      <configuration />
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
@@ -12,6 +17,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="gexin-rp-sdk-base-4.0.0.3" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-web:1.4.2.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter:1.4.2.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot:1.4.2.RELEASE" level="project" />
@@ -95,8 +101,6 @@
     <orderEntry type="library" name="Maven: org.springframework.cloud:spring-cloud-starter-eureka:1.2.3.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.cloud:spring-cloud-starter:1.1.6.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.cloud:spring-cloud-context:1.1.6.RELEASE" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-crypto:4.1.3.RELEASE" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.cloud:spring-cloud-commons:1.1.6.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.security:spring-security-rsa:1.0.3.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.bouncycastle:bcpkix-jdk15on:1.55" level="project" />
     <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk15on:1.55" level="project" />
@@ -144,8 +148,6 @@
     <orderEntry type="library" scope="RUNTIME" name="Maven: com.netflix.ribbon:ribbon-transport:2.2.0" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: io.reactivex:rxnetty-contexts:0.4.9" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: io.reactivex:rxnetty-servo:0.4.9" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: com.netflix.hystrix:hystrix-core:1.5.6" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: org.hdrhistogram:HdrHistogram:2.1.9" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: io.reactivex:rxnetty:0.4.9" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: io.netty:netty-codec-http:4.0.27.Final" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: io.netty:netty-codec:4.0.27.Final" level="project" />
@@ -189,5 +191,17 @@
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.8.4" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-beans:4.3.4.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-context:4.3.4.RELEASE" level="project" />
+    <orderEntry type="module" module-name="ost-entity" />
+    <orderEntry type="library" name="Maven: org.mapstruct:mapstruct-jdk8:1.1.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: javax.persistence:persistence-api:1.0.2" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.cloud:spring-cloud-starter-feign:1.2.3.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.cloud:spring-cloud-commons:1.1.6.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-crypto:4.1.3.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: io.github.openfeign:feign-core:9.3.1" level="project" />
+    <orderEntry type="library" name="Maven: org.jvnet:animal-sniffer-annotation:1.0" level="project" />
+    <orderEntry type="library" name="Maven: io.github.openfeign:feign-slf4j:9.3.1" level="project" />
+    <orderEntry type="library" name="Maven: io.github.openfeign:feign-hystrix:9.3.1" level="project" />
+    <orderEntry type="library" name="Maven: com.netflix.hystrix:hystrix-core:1.5.6" level="project" />
+    <orderEntry type="library" name="Maven: org.hdrhistogram:HdrHistogram:2.1.9" level="project" />
   </component>
 </module>
