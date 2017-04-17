@@ -78,6 +78,7 @@ public class UserService {
 						.claim("role",role)
 						.claim("perms",perms)
 						.setIssuedAt(new Date()).signWith(SignatureAlgorithm.HS256, "1stapp").compact());
+		resultMap.put("role", role);
 		return resultMap;
 	}
 
