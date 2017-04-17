@@ -1,6 +1,7 @@
 package org.ost.crm.dao.report;
 
 import org.apache.ibatis.annotations.Param;
+import org.ost.entity.report.dto.XiangMuChartReport;
 import org.ost.entity.report.dto.XiaoShouReportDto;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public interface XiangMuReportDao {
 
     List<XiaoShouReportDto> searchList(@Param("params") Map<String, Object> params);
 
-    List<XiaoShouReportDto.Chart1> searchListChart1(@Param("params") Map<String, Object> params);
+    List<XiangMuChartReport> searchListChart1(@Param("params") Map<String, Object> params);
 
     List<XiaoShouReportDto> searchListChart(@Param("params") Map<String, Object> params);
 }

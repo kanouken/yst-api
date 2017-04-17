@@ -10,27 +10,6 @@ import java.util.List;
  * Created by lugia on 2017/3/14.
  */
 public class XiaoShouReportDto {
-    public static class Chart1{
-        private Integer value;
-        private String name;
-
-        public Integer getValue() {
-            return value;
-        }
-
-        public void setValue(Integer value) {
-            this.value = value;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-    }
-
     private Integer id;
     private Integer customerID;
     private String customerName;

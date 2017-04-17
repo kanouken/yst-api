@@ -12,7 +12,7 @@
         group by createTimeStr
     </select>
 
-    <select id="searchListChart1" resultType="org.ost.entity.report.dto.XiaoShouReportDto.Chart1">
+    <select id="searchListChart1" resultType="org.ost.entity.report.dto.XiangMuChartReport">
         select
         count(1) as value
         ,case tbl_project.state

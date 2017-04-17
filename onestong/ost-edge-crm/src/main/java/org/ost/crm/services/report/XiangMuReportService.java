@@ -27,6 +27,7 @@ import org.ost.entity.customer.dto.CustomerListDto;
 import org.ost.entity.project.dto.ProjectDetailDto;
 import org.ost.entity.project.dto.ProjectPaymentDto;
 import org.ost.entity.project.dto.ProjectStepsDto;
+import org.ost.entity.report.dto.XiangMuChartReport;
 import org.ost.entity.report.dto.XiaoShouReportDto;
 import org.ost.entity.user.Users;
 import org.ost.entity.user.UsersRole;
@@ -118,7 +119,7 @@ public class XiangMuReportService extends BaseService {
 
 		//两张图形报表
 		//项目状态饼图
-		List<XiaoShouReportDto.Chart1> result = _XiangMuReportDao.searchListChart1(params);
+		List<XiangMuChartReport> result = _XiangMuReportDao.searchListChart1(params);
 		//项目状态漏斗图
 		return result;
 	}
