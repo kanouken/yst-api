@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.common.tools.db.Page;
 import org.ost.customers.dao.CustomerDao;
+import org.ost.customers.dao.CustomerOrgDao;
 import org.ost.customers.dao.UserCustomersDao;
 import org.ost.entity.base.PageEntity;
 import org.ost.entity.customer.Customer;
@@ -41,6 +42,8 @@ public class UserCustomerService {
 
 	@Autowired
 	private UserCustomersDao userCustomerDao;
+	@Autowired
+	private CustomerOrgDao customerOrgDao;
 
 	/**
 	 * FIXME 客户关联的客户经理只需要查询一次
@@ -97,6 +100,22 @@ public class UserCustomerService {
 	 */
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
 	public String updateUser(String accountName, String schemaID, List<CustomerListDto> customerListDtos) {
+		//所属部门
+		for (CustomerListDto customerListDto : customerListDtos) {
+			this.customerDao.deleteCustomerOrg(customerListDto.getId());
+			// manager owners
+			customerListDto.getDeptOwner().forEach(deptOwner -> {
+				CustomerOrg org = new CustomerOrg();
+				org.setCreateBy(accountName);
+				org.setUpdateBy(accountName);
+				org.setSchemaId(schemaID);
+				org.setCustomerId(customerListDto.getId());
+				org.setOrganizeId(Integer.parseInt(deptOwner.getId()));
+				org.setOrganizeName(deptOwner.getName());
+				customerOrgDao.insertSelective(org);
+			});
+		}
+		//所属人员
 		for (CustomerListDto customerListDto : customerListDtos) {
 			this.customerDao.deleteUserCustomers(customerListDto.getId());
 			// manager owners
