@@ -2,6 +2,7 @@ package org.ost.entity.contacts.dto;
 
 import java.util.List;
 
+import org.ost.entity.contacts.contactsinfo.dto.ContactsInfoDto;
 import org.ost.entity.customer.vo.CustomerVo;
 
 public class ContactsListDto {
@@ -25,6 +26,7 @@ public class ContactsListDto {
 	private String sexName;
 	private String szm;
 	private String role;
+	List<ContactsInfoDto> contactsInfoList;
 
 	public String getRole() {
 		return role;
@@ -154,6 +156,14 @@ public class ContactsListDto {
 
 	public void setSzm(String szm) {
 		this.szm = szm;
+	}
+
+	public List<ContactsInfoDto> getContactsInfoList() {
+		return contactsInfoList;
+	}
+
+	public void setContactsInfoList(List<ContactsInfoDto> contactsInfoList) {
+		this.contactsInfoList = contactsInfoList;
 	}
 
 }

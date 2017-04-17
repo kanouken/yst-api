@@ -3,6 +3,7 @@ package org.ost.entity.project.dto;
 import java.util.Date;
 import java.util.List;
 
+import org.ost.entity.contacts.dto.ContactInfoDto;
 import org.ost.entity.contacts.dto.ContactsListDto;
 import org.ost.entity.customer.vo.CustomerVo;
 import org.ost.entity.org.department.dto.DepartmentListDto;
@@ -174,5 +175,6 @@ public class ProjectDetailDto {
 	public void setTypeName(String typeName) {
 		this.typeName = typeName;
 	}
+
 
 }

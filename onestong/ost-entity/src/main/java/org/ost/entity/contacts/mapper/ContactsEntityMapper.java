@@ -44,7 +44,7 @@ public interface ContactsEntityMapper {
 	ContactsAddress contactsAddressDtoToContactsAddress(ContactsAddressDto dto, ContactsDto contacts);
 
 	@Mappings({
-
+			
 			@Mapping(source = "dto.type", target = "type"), @Mapping(source = "dto.custName", target = "custName"),
 			@Mapping(source = "dto.val", target = "val"), @Mapping(source = "contacts.schemaId", target = "schemaId"),
 			@Mapping(source = "contacts.currentUserName", target = "createBy"),
