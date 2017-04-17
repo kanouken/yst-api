@@ -34,7 +34,6 @@ import org.ost.crm.dao.web.user.UserDao;
 import org.ost.crm.model.visit.dto.VisitReportDetailDto;
 import org.ost.crm.model.visit.dto.VisitSupportDto;
 import org.ost.crm.services.visit.VisitService;
-import org.ost.crm.services.web.user.UserService;
 import org.ost.entity.auth.Role;
 import org.ost.entity.contacts.dto.VisitContactsDto;
 import org.ost.entity.user.Users;
@@ -42,8 +41,6 @@ import org.ost.entity.user.UsersRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.netflix.infix.lang.infix.antlr.EventFilterParser.null_predicate_return;
 
 @Service
 public class VisitReportService {
