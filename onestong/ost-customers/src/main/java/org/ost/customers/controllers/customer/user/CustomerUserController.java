@@ -12,6 +12,7 @@ import org.ost.entity.customer.dto.CustomerQueryDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,7 +39,7 @@ public class CustomerUserController extends Action {
 				userCustomerService.queryCustomerByUser(customerQueryDto, page));
 	}
 
-	@PatchMapping(value = "user")
+	@PutMapping(value = "user")
 	public OperateResult<String> updateUser(
 			@RequestHeader(value=ACCOUNT_NAME,required = true) String accountName,
 			@RequestHeader(value = TENANT_ID, required = true) String schemaID,
