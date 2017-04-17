@@ -111,13 +111,14 @@ public class VisitReportController extends Action {
 	 */
 	@GetMapping(value = "report/cLianXiHuoDongReport/export")
 	public void export(@RequestParam(value = "schemaID", required = false) String schemaID,
+			@RequestParam(value = "userId",required = false) Integer userId,
 			@RequestParam(value = "hasBus", required = false) String hasBus,
 			@RequestParam(value = "managerOwnerName", required = false) String managerOwnerName,
 			@RequestParam(value = "contactType", required = false) String contactType,
 			@RequestParam(value = "startDate", required = false) String startDate,
 			@RequestParam(value = "endDate", required = false) String endDate, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		this.responseWriteFile(response, visitReportService.export(schemaID, hasBus, managerOwnerName, contactType,
+		this.responseWriteFile(response, visitReportService.export(userId,schemaID, hasBus, managerOwnerName, contactType,
 				startDate, endDate, 1, 100000), "联系活动报表.xlsx");
 	}
 

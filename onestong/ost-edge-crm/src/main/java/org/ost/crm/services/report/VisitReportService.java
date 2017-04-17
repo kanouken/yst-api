@@ -2,14 +2,10 @@ package org.ost.crm.services.report;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.lang.annotation.Retention;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Currency;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -20,38 +16,34 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.ibatis.session.RowBounds;
-import org.apache.poi.hssf.record.VCenterRecord;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.common.tools.OperateResult;
 import org.common.tools.date.DateUtil;
 import org.common.tools.db.Page;
 import org.common.tools.excel.ExcelUtil;
 import org.common.tools.exception.ApiException;
 import org.ost.crm.client.ContactsServiceClient;
-import org.ost.crm.dao.project.ProjectPaymentExample;
+import org.ost.crm.dao.auth.UsersRolesMapper;
 import org.ost.crm.dao.report.VisitReportDao;
-import org.ost.crm.model.visit.VisitSupporter;
+import org.ost.crm.dao.web.user.UserDao;
 import org.ost.crm.model.visit.dto.VisitReportDetailDto;
 import org.ost.crm.model.visit.dto.VisitSupportDto;
 import org.ost.crm.services.visit.VisitService;
+import org.ost.crm.services.web.user.UserService;
+import org.ost.entity.auth.Role;
 import org.ost.entity.contacts.dto.VisitContactsDto;
-import org.ost.entity.contacts.visit.VisitContacts;
-import org.ost.entity.project.dto.ProjectContactsDto;
-import org.ost.entity.report.dto.XiaoShouReportDto;
 import org.ost.entity.user.Users;
+import org.ost.entity.user.UsersRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.alibaba.druid.sql.visitor.functions.If;
-import com.sun.tools.javadoc.Start;
+import com.netflix.infix.lang.infix.antlr.EventFilterParser.null_predicate_return;
 
 @Service
 public class VisitReportService {
@@ -61,6 +53,11 @@ public class VisitReportService {
 
 	@Autowired
 	ContactsServiceClient contactsServiceClient;
+
+	@Autowired
+	private UserDao userDao;
+	@Autowired
+	UsersRolesMapper userRoleMapper;
 
 	/**
 	 * 
@@ -82,7 +79,16 @@ public class VisitReportService {
 	@Transactional(readOnly = true)
 	public Map<String, Object> queryList(Users user, Page page, String hasBus, String managerOwnerName,
 			String contactType, String startDate, String endDate) throws Exception {
-		// TODO 非部门主管 managerOwnerName 是他自己
+
+		Boolean isDirector = false;
+		if (user.getRole() != null) {
+			if (user.getRole().getRoleCode().equals(UsersRole.DEPARTMENT_MANAGER.getCode())) {
+				isDirector = true;
+			}
+		}
+		if (!isDirector) {
+			managerOwnerName = user.getRealname();
+		}
 		Date start = null, end = null;
 		List<Map<String, Object>> records = new ArrayList<Map<String, Object>>();
 		if (StringUtils.isNotEmpty(startDate)) {
@@ -125,11 +131,37 @@ public class VisitReportService {
 
 	/**
 	 * 联系活动报表 导出数据
-	 *
+	 * 
+	 * @param userId
+	 *            当前用户id
+	 * @param schemaID
+	 * @param hasBus
+	 * @param managerOwnerName
+	 * @param contactType
+	 * @param startDate
+	 * @param endDate
+	 * @param curPage
+	 * @param perPageSum
+	 * @return
+	 * @throws Exception
 	 */
 	@Transactional(readOnly = true)
-	public ByteArrayOutputStream export(String schemaID, String hasBus, String managerOwnerName, String contactType,
-			String startDate, String endDate, Integer curPage, Integer perPageSum) throws Exception {
+	public ByteArrayOutputStream export(Integer userId, String schemaID, String hasBus, String managerOwnerName,
+			String contactType, String startDate, String endDate, Integer curPage, Integer perPageSum)
+			throws Exception {
+		if (null != userId) {
+			// check role
+			Users currentUser = this.userDao.selectByPrimaryKey(userId);
+			Role role = this.userRoleMapper.selectRolesByUser(userId).get(0);
+			Boolean isDirector = false;
+			if (role.getRoleCode().equals(UsersRole.DEPARTMENT_MANAGER.getCode())) {
+				isDirector = true;
+			}
+			if (!isDirector) {
+				managerOwnerName = currentUser.getRealname();
+			}
+		}
+
 		ByteArrayOutputStream xlsOutput = null;
 		// 检索数据
 		Date start = null, end = null;
@@ -181,6 +213,15 @@ public class VisitReportService {
 	@Transactional(readOnly = true)
 	public Map<String, Object> querySummary(Users user, String hasBus, String managerOwnerName, String contactType,
 			String startDate, String endDate) throws ParseException {
+		Boolean isDirector = false;
+		if (user.getRole() != null) {
+			if (user.getRole().getRoleCode().equals(UsersRole.DEPARTMENT_MANAGER.getCode())) {
+				isDirector = true;
+			}
+		}
+		if (!isDirector) {
+			managerOwnerName = user.getRealname();
+		}
 		Date start = null, end = null;
 		Map<String, Object> result = new HashMap<String, Object>();
 		if (StringUtils.isNotEmpty(startDate)) {
@@ -212,6 +253,16 @@ public class VisitReportService {
 	@Transactional(readOnly = true)
 	public List<Map<String, Object>> queryChart(Users user, String hasBus, String managerOwnerName,
 			String contactType) {
+		Boolean isDirector = false;
+		if (user.getRole() != null) {
+			if (user.getRole().getRoleCode().equals(UsersRole.DEPARTMENT_MANAGER.getCode())) {
+				isDirector = true;
+			}
+		}
+		if (!isDirector) {
+			managerOwnerName = user.getRealname();
+		}
+
 		return this.reportDao.selectByMonth(hasBus, managerOwnerName, contactType, null, null);
 
 	}

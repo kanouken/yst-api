@@ -111,7 +111,7 @@
 		SELECT id,`name`,state,startTime
 		isCyc,cyc,amount,detail,schemaID,projectTypeID,createTime
 		from
-		tbl_project) tp left join tbl_user_project tup
+		tbl_project where isDelete = 0) tp left join tbl_user_project tup
 		on (tp.id,tp.schemaID) =
 		(tup.projectID,tup.schemaID)
 
@@ -132,7 +132,7 @@
 		<where>
 
 			<trim prefixOverrides="AND |OR">
-				tp.schemaId = #{schemaId}
+				tp.schemaId = #{schemaId} 
 				<if test="customerId != null">
 					and tpc.customerID =#{customerId}
 				</if>
@@ -272,7 +272,7 @@
 		(tup.projectID,tup.schemaID)
 		<where>
 			<trim prefixOverrides="AND |OR">
-				tp.schemaId = #{schemaId}
+				tp.schemaId = #{schemaId} and tp.isDelete = 0
 				<if test="typeId != null">
 					and projectTypeID =#{typeId}
 				</if>

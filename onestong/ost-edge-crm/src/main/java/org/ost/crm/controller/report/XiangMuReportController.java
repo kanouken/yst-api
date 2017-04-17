@@ -110,6 +110,7 @@ public class XiangMuReportController extends Action {
 	 */
 	@GetMapping(value = "export")
 	public void export(@RequestParam(value = "schemaID", required = false) String schemaID,
+			@RequestParam(value="userId",required = false) Integer userId,
 			@RequestParam(value = "managerOwnerName", required = false) String managerOwnerName,
 			@RequestParam(value = "projectType", required = false) String projectType,
 			@RequestParam(value = "startDate", required = false) String startDate,
@@ -118,7 +119,7 @@ public class XiangMuReportController extends Action {
 			@RequestParam(value = "projectStep", required = false) String projectStep, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		Map<String, Object> params = this.getRequestParam(request);
-		this.responseWriteFile(response, sXiangMuReportService.export(params, 1, 100000), "项目报表.xlsx");
+		this.responseWriteFile(response, sXiangMuReportService.export(userId,params, 1, 100000), "项目报表.xlsx");
 	}
 
 	/**

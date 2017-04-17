@@ -7,13 +7,17 @@ import org.common.tools.excel.ExcelUtil;
 import org.common.tools.exception.ApiException;
 import org.common.tools.string.StringUtil;
 import org.ost.crm.client.CustomerServiceClient;
+import org.ost.crm.dao.auth.UsersRolesMapper;
 import org.ost.crm.dao.report.XiangMuReportDao;
 import org.ost.crm.dao.report.XiaoShouReportDao;
+import org.ost.crm.dao.web.user.UserDao;
 import org.ost.crm.services.base.BaseService;
+import org.ost.entity.auth.Role;
 import org.ost.entity.customer.dto.CustomerListDto;
 import org.ost.entity.project.dto.ProjectContactsDto;
 import org.ost.entity.report.dto.XiaoShouReportDto;
 import org.ost.entity.user.Users;
+import org.ost.entity.user.UsersRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +42,11 @@ public class XiangMuReportService extends BaseService {
 	@Autowired
 	private XiangMuReportDao _XiangMuReportDao;
 
+	@Autowired
+	private UserDao userDao;
+	@Autowired
+	UsersRolesMapper userRoleMapper;
+
 	/**
 	 * 项目报表 获取统计数据
 	 *
@@ -45,9 +54,17 @@ public class XiangMuReportService extends BaseService {
 	@Transactional(readOnly = true)
 	public Object count(Users user, Map<String, Object> params, Integer curPage, Integer perPageSum)
 			throws InterruptedException, ExecutionException {
+		Boolean isDirector = false;
+		if (user.getRole() != null) {
+			if (user.getRole().getRoleCode().equals(UsersRole.DEPARTMENT_MANAGER.getCode())) {
+				isDirector = true;
+			}
+		}
+		if (!isDirector) {
+			params.put("managerOwnerName", user.getRealname());
+		}
 		XiaoShouReportDto result = new XiaoShouReportDto();
 		params.put("schemaID", user.getSchemaId());
-
 		// 总筛选数量
 		Integer totalRecords = _XiangMuReportDao.searchListCount(params);
 		// 其中失败的项目数量
@@ -68,6 +85,15 @@ public class XiangMuReportService extends BaseService {
 	@Transactional(readOnly = true)
 	public Object chart(Users user, Map<String, Object> params, Integer curPage, Integer perPageSum)
 			throws InterruptedException, ExecutionException {
+		Boolean isDirector = false;
+		if (user.getRole() != null) {
+			if (user.getRole().getRoleCode().equals(UsersRole.DEPARTMENT_MANAGER.getCode())) {
+				isDirector = true;
+			}
+		}
+		if (!isDirector) {
+			params.put("managerOwnerName", user.getRealname());
+		}
 		List<XiaoShouReportDto> result = new ArrayList<XiaoShouReportDto>();
 
 		params.put("schemaID", user.getSchemaId());
@@ -81,8 +107,21 @@ public class XiangMuReportService extends BaseService {
 	 *
 	 */
 	@Transactional(readOnly = true)
-	public ByteArrayOutputStream export(Map<String, Object> params, Integer curPage, Integer perPageSum)
+	public ByteArrayOutputStream export(Integer userId, Map<String, Object> params, Integer curPage, Integer perPageSum)
 			throws Exception {
+		if (null != userId) {
+			// check role
+			Users currentUser = this.userDao.selectByPrimaryKey(userId);
+			Role role = this.userRoleMapper.selectRolesByUser(userId).get(0);
+			Boolean isDirector = false;
+			if (role.getRoleCode().equals(UsersRole.DEPARTMENT_MANAGER.getCode())) {
+				isDirector = true;
+			}
+			if (!isDirector) {
+				params.put("managerOwnerName",currentUser.getRealname());
+			}
+		}
+
 		ByteArrayOutputStream xlsOutput = null;
 		// 检索数据
 		List<XiaoShouReportDto> result = new ArrayList<XiaoShouReportDto>();
@@ -119,6 +158,15 @@ public class XiangMuReportService extends BaseService {
 	@Transactional(readOnly = true)
 	public Map<String, Object> list(Users user, Map<String, Object> params, Integer curPage, Integer perPageSum)
 			throws InterruptedException, ExecutionException {
+		Boolean isDirector = false;
+		if (user.getRole() != null) {
+			if (user.getRole().getRoleCode().equals(UsersRole.DEPARTMENT_MANAGER.getCode())) {
+				isDirector = true;
+			}
+		}
+		if (!isDirector) {
+			params.put("managerOwnerName", user.getRealname());
+		}
 		List<XiaoShouReportDto> result = new ArrayList<XiaoShouReportDto>();
 		Page page = new Page();
 		page.setCurPage(curPage);

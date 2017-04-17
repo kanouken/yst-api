@@ -35,7 +35,6 @@ public class UserService {
 	UsersRolesMapper  userRoleMapper;
 	@Autowired
 	RolesMoudlesPermsMapper   rolePermsMapper;
-	
 	/**
 	 * 管理后台web登录
 	 * 

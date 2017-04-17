@@ -1,5 +1,6 @@
 package org.ost.crm.controller.report;
 
+import org.apache.commons.io.filefilter.FalseFileFilter;
 import org.common.tools.OperateResult;
 import org.ost.crm.controller.base.Action;
 import org.ost.crm.services.project.ProjectService;
@@ -91,6 +92,7 @@ public class XiaoShouReportController extends Action {
     @GetMapping(value = "export")
     public void export(
             @RequestParam(value = "schemaID", required = false) String schemaID,
+            @RequestParam(value= "userID" ,required = false) Integer userID,
             @RequestParam(value = "managerOwnerName", required = false) String managerOwnerName,
             @RequestParam(value = "projectType", required = false) String projectType,
             @RequestParam(value = "startDate", required = false) String startDate,
@@ -102,7 +104,7 @@ public class XiaoShouReportController extends Action {
         Map<String, Object> params = this.getRequestParam(request);
         this.responseWriteFile(
                 response,
-                sXiaoShouReportService.export(params, 1, 100000),
+                sXiaoShouReportService.export(userID,params, 1, 100000),
                 "销售（金额）报表.xlsx"
         );
     }
