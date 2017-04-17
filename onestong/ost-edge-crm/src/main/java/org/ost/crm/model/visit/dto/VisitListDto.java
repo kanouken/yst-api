@@ -16,6 +16,16 @@ public class VisitListDto {
 	private String customerId;
 	private String customerName;
 
+	private String visitDetail;
+
+	public String getVisitDetail() {
+		return visitDetail;
+	}
+
+	public void setVisitDetail(String visitDetail) {
+		this.visitDetail = visitDetail;
+	}
+
 	public String getCustomerId() {
 		return customerId;
 	}

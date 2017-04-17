@@ -122,12 +122,13 @@
 		ve.createBy,
 		ve.customerID customerId,
 		ve.customerName,
-		pt.`name` busChange
-		from tbl_visit_event ve left join
-
-		tbl_project_type pt
-
+		pt.`name` busChange,
+		tbl_visit_event_user.visitDetail
+		from tbl_visit_event ve
+		left join tbl_project_type pt
 		on (ve.schemaID, ve.projectTypeID) = (pt.schemaID, pt.id)
+		left join tbl_visit_event_user
+		on ve.id = tbl_visit_event_user.visitEventID
 
 		where ve.isDelete = 0 and ve.schemaID = #{customer.schemaId} and ve.customerID =#{customer.id}
 		<if test='params.contactDate != null and params.contactDate != ""'>
