@@ -10,7 +10,7 @@
 				id in (
 				select customerID from tbl_organize_customer where organizeID 
 				in 
-				<foreach collection="customer.deptIds" item="deptId" open="(" close=")">
+				<foreach collection="customer.deptIds" item="deptId" separator="," open="(" close=")">
 					#{deptId}
 				</foreach>
 				 and schemaID  = #{customer.schemaId}
@@ -65,7 +65,7 @@
 				id in (
 				select customerID from tbl_organize_customer where organizeID 
 				in 
-				<foreach collection="customer.deptIds" item="deptId" open="(" close=")">
+				<foreach collection="customer.deptIds" separator="," item="deptId" open="(" close=")">
 					#{deptId}
 				</foreach>
 				 and schemaID  = #{customer.schemaId}
