@@ -67,10 +67,8 @@ public class UserController extends Action {
 	@SuppressWarnings("all")
 	@PageRequired
 	@RequestMapping("list")
-	public ModelAndView userList(HttpServletRequest request, User user,
-			HttpSession session) {
-		Map<String, Object> sessionLocal = (Map<String, Object>) sessionStroe(
-				session, Constants.SESSION_USER);
+	public ModelAndView userList(HttpServletRequest request, User user, HttpSession session) {
+		Map<String, Object> sessionLocal = (Map<String, Object>) sessionStroe(session, Constants.SESSION_USER);
 		User sessionUser = (User) sessionLocal.get("user");
 		user.setDomainId(sessionUser.getDomainId());
 		Page page = (Page) request.getAttribute(PAGE);
@@ -80,14 +78,12 @@ public class UserController extends Action {
 		ModelAndView mv = new ModelAndView("user/user_list");
 		user.setDeptId(sessionUser.getDeptId());
 		int totalRecords = usersService.findAllUsersCount(user,
-				(List<Map<String, Object>>) sessionLocal
-						.get(Constants.SESSION_PERM_TIP));
+				(List<Map<String, Object>>) sessionLocal.get(Constants.SESSION_PERM_TIP));
 		page.setTotalRecords(totalRecords);
 		page.setPageCount(getPageCount(page));
 		RowBounds rb = new RowBounds(page.getNextPage(), page.getPerPageSum());
 		mv.addObject("users", usersService.findAllUsers(user, rb,
-				(List<Map<String, Object>>) sessionLocal
-						.get(Constants.SESSION_PERM_TIP)));
+				(List<Map<String, Object>>) sessionLocal.get(Constants.SESSION_PERM_TIP)));
 		return mv;
 
 	}
@@ -97,13 +93,11 @@ public class UserController extends Action {
 	public ModelAndView preAddUser(HttpSession session) {
 
 		// roles
-		Map<String, Object> sessionLocal = (Map<String, Object>) sessionStroe(
-				session, Constants.SESSION_USER);
+		Map<String, Object> sessionLocal = (Map<String, Object>) sessionStroe(session, Constants.SESSION_USER);
 		User sessionUser = (User) sessionLocal.get("user");
 		Department dept = new Department();
 		dept.setDomainId(sessionUser.getDomainId());
-		List<Department> depts = this.departmentService
-				.findAllDepartments(dept);
+		List<Department> depts = this.departmentService.findAllDepartments(dept);
 		Role role = (Role) sessionLocal.get("role");
 		if (null == role) {
 			role = new Role();
@@ -122,8 +116,7 @@ public class UserController extends Action {
 
 	@AuthTarget(value = { "updateUser" })
 	@RequestMapping(value = "update/{userId}", method = RequestMethod.GET)
-	public ModelAndView preUpdateUser(HttpSession session,
-			@PathVariable("userId") Integer userId) {
+	public ModelAndView preUpdateUser(HttpSession session, @PathVariable("userId") Integer userId) {
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("user/user_update");
 
@@ -135,15 +128,13 @@ public class UserController extends Action {
 		} else {
 
 			// roles
-			Map<String, Object> sessionLocal = (Map<String, Object>) sessionStroe(
-					session, Constants.SESSION_USER);
+			Map<String, Object> sessionLocal = (Map<String, Object>) sessionStroe(session, Constants.SESSION_USER);
 
 			User sessionUser = (User) sessionLocal.get("user");
 			Department dept = new Department();
 			dept.setDomainId(sessionUser.getDomainId());
 
-			List<Department> depts = this.departmentService
-					.findAllDepartments(dept);
+			List<Department> depts = this.departmentService.findAllDepartments(dept);
 
 			Role role = (Role) sessionLocal.get("role");
 			if (null == role) {
@@ -169,18 +160,14 @@ public class UserController extends Action {
 	@SuppressWarnings("all")
 	@ResponseBody
 	@RequestMapping(value = "addUser", method = RequestMethod.POST)
-	public Object addUser(User user, Account account, Role role,
-			HttpSession session) {
+	public Object addUser(User user, Account account, Role role, HttpSession session) {
 		// ModelAndView mv = new ModelAndView("user/user_add");
 		boolean flag = false;
 		OperateResult op = new OperateResult();
-		Map<String, Object> sessionLocal = (Map<String, Object>) sessionStroe(
-				session, Constants.SESSION_USER);
+		Map<String, Object> sessionLocal = (Map<String, Object>) sessionStroe(session, Constants.SESSION_USER);
 		User sessionUser = (User) sessionLocal.get("user");
-		if (StringUtils.isBlank(user.getEmail()) || null == user.getDeptId()
-				|| null == user.getDomainId()
-				|| StringUtils.isBlank(account.getLoginPassword())
-				|| null == role.getRoleId()
+		if (StringUtils.isBlank(user.getEmail()) || null == user.getDeptId() || null == user.getDomainId()
+				|| StringUtils.isBlank(account.getLoginPassword()) || null == role.getRoleId()
 				|| StringUtils.isBlank(account.getOptional1())) {
 
 			op.setStatusCode(Constants.PARAMTERS_NOT_COMPLETE);
@@ -198,8 +185,7 @@ public class UserController extends Action {
 		else {
 			// 检查 激活码是否可用
 
-			if (!this.domainOrderService.isValidActiveCodeNumValid(user
-					.getDomainId())) {
+			if (!this.domainOrderService.isValidActiveCodeNumValid(user.getDomainId())) {
 				op.setStatusCode(Constants.ACTIVE_CODE_INVALID);
 				op.setDescription("您的激活码不够用了！");
 				op.setData(null);
@@ -241,8 +227,7 @@ public class UserController extends Action {
 	@RequestMapping(value = "deleteUser", method = RequestMethod.POST)
 	public Object deleteUser(User user, HttpSession session) {
 		OperateResult op = new OperateResult();
-		Map<String, Object> sessionLocal = (Map<String, Object>) sessionStroe(
-				session, Constants.SESSION_USER);
+		Map<String, Object> sessionLocal = (Map<String, Object>) sessionStroe(session, Constants.SESSION_USER);
 		User sessionUser = (User) sessionLocal.get("user");
 		if (null == user.getUserId()) {
 
@@ -273,21 +258,26 @@ public class UserController extends Action {
 
 	}
 
+	/**
+	 * FIXED YSTCRM-346 我的界面名字修改好了，外访里面名字还是不一致
+	 * 
+	 * @param user
+	 * @param account
+	 * @param role
+	 * @param session
+	 * @return
+	 */
 	@SuppressWarnings("all")
 	@ResponseBody
 	@RequestMapping(value = "updateUser", method = RequestMethod.POST)
-	public Object updateUser(User user, Account account, Role role,
-			HttpSession session) {
+	public Object updateUser(User user, Account account, Role role, HttpSession session) {
 		// ModelAndView mv = new ModelAndView("user/user_add");
 		boolean flag = false;
 		OperateResult op = new OperateResult();
-		Map<String, Object> sessionLocal = (Map<String, Object>) sessionStroe(
-				session, Constants.SESSION_USER);
+		Map<String, Object> sessionLocal = (Map<String, Object>) sessionStroe(session, Constants.SESSION_USER);
 		User sessionUser = (User) sessionLocal.get("user");
-		if (StringUtils.isBlank(user.getEmail()) || null == user.getDeptId()
-				|| StringUtils.isBlank(user.getRealname())
-				|| StringUtils.isBlank(user.getPhoneNum())
-				|| null == role.getRoleId()) {
+		if (StringUtils.isBlank(user.getEmail()) || null == user.getDeptId() || StringUtils.isBlank(user.getRealname())
+				|| StringUtils.isBlank(user.getPhoneNum()) || null == role.getRoleId()) {
 			op.setStatusCode(Constants.PARAMTERS_NOT_COMPLETE);
 			op.setDescription("参数填写不完整！");
 			op.setData(null);
@@ -335,8 +325,7 @@ public class UserController extends Action {
 	@RequestMapping(value = "unBindUser", method = RequestMethod.POST)
 	public Object unBindUser(HttpSession session, User user) {
 		OperateResult op = new OperateResult();
-		Map<String, Object> sessionLocal = (Map<String, Object>) sessionStroe(
-				session, Constants.SESSION_USER);
+		Map<String, Object> sessionLocal = (Map<String, Object>) sessionStroe(session, Constants.SESSION_USER);
 		User sessionUser = (User) sessionLocal.get("user");
 		try {
 			user = this.usersService.findOneById(user.getUserId());

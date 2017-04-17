@@ -26,6 +26,7 @@ import com.oz.onestong.dao.authority.RolesMoudlesPermsMapper;
 import com.oz.onestong.dao.authority.UsersRolesMapper;
 import com.oz.onestong.dao.department.DepartmentMapper;
 import com.oz.onestong.dao.domain.DomainMapper;
+import com.oz.onestong.dao.event.VisitEventMapper;
 import com.oz.onestong.dao.resources.ResourceMapper;
 import com.oz.onestong.dao.scoreSystem.LikeMapper;
 import com.oz.onestong.dao.system.ibeacon.IbeaconInfoMapper;
@@ -615,9 +616,13 @@ public class UsersService {
 		accountMapper.updateByExample(a, ae);
 
 	}
-
+	
+	@Autowired
+	private VisitEventMapper  visitEventMapper;
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
 	public void updateUser(User user, Account account, Role role) throws NoSuchAlgorithmException {
+		User   oldUser =  this.userMapper.selectByPrimaryKey(user.getUserId());
+		
 		List<Map<String, Object>> perms = this.authorityService.findPermsByRoleAndType(role, Constants.MOUDLE_ADMIN);
 		if (StringUtils.isBlank(account.getLoginPassword())) {
 			account.setLoginPassword(null);
@@ -638,6 +643,13 @@ public class UsersService {
 		this.usersRolesMapper.deleteRolesAndUser(user.getUserId());
 		// new
 		this.usersRolesMapper.insertRolesAndUser(user.getUserId(), role.getRoleId());
+		//更新外访记录历史事件
+		if(!oldUser.getRealname().equals(user.getRealname())){
+			this.visitEventMapper.updateCreator(user);
+			this.visitEventMapper.updateVisitUserCreator(user);
+			this.visitEventMapper.updateVisitApprovalUserCreator(user);
+		}
+		
 	}
 
 	@Transactional(rollbackFor = { Exception.class }, propagation = Propagation.REQUIRED)
