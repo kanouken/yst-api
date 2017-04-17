@@ -103,7 +103,6 @@ public class XiangMuReportService extends BaseService {
 	@Transactional(readOnly = true)
 	public Object chart(Users user, Map<String, Object> params, Integer curPage, Integer perPageSum)
 			throws InterruptedException, ExecutionException {
-		XiaoShouReportDto result = new XiaoShouReportDto();
 
 		//权限
 		Boolean isDirector = false;
@@ -119,7 +118,7 @@ public class XiangMuReportService extends BaseService {
 
 		//两张图形报表
 		//项目状态饼图
-		result.setChart1(_XiangMuReportDao.searchListChart1(params));
+		List<XiaoShouReportDto.Chart1> result = _XiangMuReportDao.searchListChart1(params);
 		//项目状态漏斗图
 		return result;
 	}

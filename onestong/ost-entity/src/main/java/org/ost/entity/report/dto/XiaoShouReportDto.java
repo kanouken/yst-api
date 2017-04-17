@@ -31,8 +31,6 @@ public class XiaoShouReportDto {
         }
     }
 
-    private List<Chart1> chart1;
-
     private Integer id;
     private Integer customerID;
     private String customerName;
@@ -53,14 +51,6 @@ public class XiaoShouReportDto {
     private Integer totalProjectPaymentRate;
     private Integer totalConversionRate;
     private Integer totalCount;
-
-    public List<Chart1> getChart1() {
-        return chart1;
-    }
-
-    public void setChart1(List<Chart1> chart1) {
-        this.chart1 = chart1;
-    }
 
     public String getManagerOwnerName() {
         return managerOwnerName;
