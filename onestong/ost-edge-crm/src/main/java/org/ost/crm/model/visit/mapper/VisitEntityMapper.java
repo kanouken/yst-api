@@ -27,7 +27,7 @@ public interface VisitEntityMapper {
 	@Mapping(target = "createBy", source = "currentUser.realname")
 	@Mapping(target = "updateBy", source = "currentUser.realname")
 	@Mapping(target = "isDelete", constant = "0")
-	@Mapping(target = "visitTime", source = "createVisitDto.visitTime", dateFormat = "yyyy-MM-dd HH:MM")
+	@Mapping(target = "visitTime", source = "createVisitDto.visitTime", dateFormat = "yyyy-MM-dd HH:mm")
 	@Mapping(target = "createId", source = "currentUser.userId")
 	@Mapping(target = "updateId", source = "currentUser.userId")
 	@Mapping(target = "approvalStatus", expression = "java(org.ost.crm.model.visit.VisitApprovalFlow.NOT_COMPLETE.getState())")
