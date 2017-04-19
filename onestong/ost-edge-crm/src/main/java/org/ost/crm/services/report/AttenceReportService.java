@@ -61,8 +61,7 @@ public class AttenceReportService {
 		Departments departments=new Departments();
 		departments.setDeptId(deptId);
 		List<Departments> depts = departmentDao.selectByDept(departments);
-		result = attenceReportDao.selectAttenceByList(depts.get(0).getDeptId(), start, end, rowBounds);
-
+		result = attenceReportDao.selectAttenceByList(depts, start, end, rowBounds);
 		// 定义表头
 		// 表头每列有2个字段
 		// 1 表头中文名
@@ -83,4 +82,5 @@ public class AttenceReportService {
 		xlsOutput = excelUtil.exportToExcel("考勤", head, result);
 		return xlsOutput;
 	}
+	
 }

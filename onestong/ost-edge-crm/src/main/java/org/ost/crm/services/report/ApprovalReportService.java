@@ -45,8 +45,8 @@ public class ApprovalReportService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly = true)
-	public ByteArrayOutputStream approvalExport(Integer deptId, String signedTime, String signoutTime,
-			Integer curPage, Integer perPageSum) throws Exception {
+	public ByteArrayOutputStream approvalExport(Integer deptId, String signedTime, String signoutTime, Integer curPage,
+			Integer perPageSum) throws Exception {
 		// 日期
 		Date start = null, end = null;
 		if (StringUtils.isNotEmpty(signedTime)) {
@@ -67,43 +67,44 @@ public class ApprovalReportService {
 		// 2、sheet表中的标题行内容，需要输入excel的汇总数据
 		String[] businessTrip = { "部门名称", "姓名", "出差开始时间", "出差结束时间", "出差事由", "行程安排", "审批人", "审批结果", "创建时间" };
 		List<List<String>> businessTripData = new ArrayList<List<String>>();
-		Departments departments=new Departments();
+
+		Departments departments = new Departments();
 		departments.setDeptId(deptId);
 		List<Departments> depts = departmentDao.selectByDept(departments);
-		List<ApprovalReportDto> _listBusinessTrip = attenceReportDao.selectbusinessTripByList(depts.get(0).getDeptId(),
-					start, end, rowBounds);
-			for (ApprovalReportDto businessTripARDto : _listBusinessTrip) {
-				List<String> rowData = new ArrayList<String>();
-				rowData.add(businessTripARDto.getDepartmentName());
-				rowData.add(businessTripARDto.getUserName());
-				rowData.add(businessTripARDto.getStartTime());
-				rowData.add(businessTripARDto.getEndTime());
-				rowData.add(businessTripARDto.getContent());
-				rowData.add(businessTripARDto.getSchedules());
-				rowData.add(businessTripARDto.getUpdateBy());
-				rowData.add(businessTripARDto.getState());
-				rowData.add(businessTripARDto.getCreateTime());
-				businessTripData.add(rowData);
-			}
-			// 请假
-			String[] leave = { "部门名称", "姓名", "请假开始时间", "请假结束时间", "请假类型", "请假原因", "审批人", "审批结果", "创建时间" };
-			List<List<String>> leaveData = new ArrayList<List<String>>();
-			List<ApprovalReportDto> _listLeave = attenceReportDao.selectLeaveByList(depts.get(0).getDeptId(), start,
-					end, rowBounds);
-			for (ApprovalReportDto leaveARDto : _listLeave) {
-				List<String> rowData = new ArrayList<String>();
-				rowData.add(leaveARDto.getDepartmentName());
-				rowData.add(leaveARDto.getUserName());
-				rowData.add(leaveARDto.getStartTime());
-				rowData.add(leaveARDto.getEndTime());
-				rowData.add(leaveARDto.getLeaveType());
-				rowData.add(leaveARDto.getContent());
-				rowData.add(leaveARDto.getUpdateBy());
-				rowData.add(leaveARDto.getState());
-				rowData.add(leaveARDto.getCreateTime());
-				leaveData.add(rowData);
-			}
-		
+		List<ApprovalReportDto> _listBusinessTrip = attenceReportDao.selectbusinessTripByList(depts, start, end,
+				rowBounds);
+		for (ApprovalReportDto businessTripARDto : _listBusinessTrip) {
+			List<String> rowData = new ArrayList<String>();
+			rowData.add(businessTripARDto.getDepartmentName());
+			rowData.add(businessTripARDto.getUserName());
+			rowData.add(businessTripARDto.getStartTime());
+			rowData.add(businessTripARDto.getEndTime());
+			rowData.add(businessTripARDto.getContent());
+			rowData.add(businessTripARDto.getSchedules());
+			rowData.add(businessTripARDto.getUpdateBy());
+			rowData.add(businessTripARDto.getState());
+			rowData.add(businessTripARDto.getCreateTime());
+			businessTripData.add(rowData);
+		}
+
+		// 请假
+		String[] leave = { "部门名称", "姓名", "请假开始时间", "请假结束时间", "请假类型", "请假原因", "审批人", "审批结果", "创建时间" };
+		List<List<String>> leaveData = new ArrayList<List<String>>();
+		List<ApprovalReportDto> _listLeave = attenceReportDao.selectLeaveByList(depts, start, end, rowBounds);
+		for (ApprovalReportDto leaveARDto : _listLeave) {
+			List<String> rowData = new ArrayList<String>();
+			rowData.add(leaveARDto.getDepartmentName());
+			rowData.add(leaveARDto.getUserName());
+			rowData.add(leaveARDto.getStartTime());
+			rowData.add(leaveARDto.getEndTime());
+			rowData.add(leaveARDto.getLeaveType());
+			rowData.add(leaveARDto.getContent());
+			rowData.add(leaveARDto.getUpdateBy());
+			rowData.add(leaveARDto.getState());
+			rowData.add(leaveARDto.getCreateTime());
+			leaveData.add(rowData);
+		}
+
 		// 3、写入
 		ExcelUtil excelUtil = new ExcelUtil<Map<String, Object>>();
 		ByteArrayOutputStream xlsOutput = new ByteArrayOutputStream();

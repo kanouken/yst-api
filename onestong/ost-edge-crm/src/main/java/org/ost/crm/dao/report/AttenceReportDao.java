@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
+import org.ost.entity.org.department.Departments;
 import org.ost.entity.report.dto.ApprovalReportDto;
 import org.springframework.stereotype.Repository;
 
@@ -13,14 +14,14 @@ import org.springframework.stereotype.Repository;
 public interface AttenceReportDao {
 
 	//考勤
-	List<Map<String, Object>> selectAttenceByList(@Param("deptId") Integer deptId,
+	List<Map<String, Object>> selectAttenceByList(@Param("deptId") List<Departments> deptId,
 			@Param("start") Date start,@Param("end") Date end,RowBounds rowBounds);
 	
 	//出差
-	List<ApprovalReportDto> selectbusinessTripByList(@Param("deptId") Integer deptId,
+	List<ApprovalReportDto> selectbusinessTripByList(@Param("deptId") List<Departments> deptId,
 			@Param("start") Date start,@Param("end") Date end,RowBounds rowBounds);
 	
 	//请假
-	List<ApprovalReportDto> selectLeaveByList(@Param("deptId") Integer deptId,
+	List<ApprovalReportDto> selectLeaveByList(@Param("deptId") List<Departments> deptId,
 			@Param("start") Date start,@Param("end") Date end,RowBounds rowBounds);
 }
