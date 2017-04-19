@@ -49,7 +49,7 @@
 		,approval_events.`schedules` as schedules
 		,approval_users.`update_by` as updateBy
 		,case approval_events.`state`
-		when 0 then '未审批' when 1 then '审批通过' when 1 then '审批不通过' end as state
+		when 0 then '未审批' when 1 then '审批通过' when 2 then '审批不通过' end as state
 		,approval_events.`create_time` as createTime
 		<include refid="sqlByList"></include>
 		order by users.`realname`,approval_events.`create_time` desc
@@ -67,7 +67,7 @@
 		,approval_events.`content` as content
 		,approval_users.`update_by` as updateBy
 		,case approval_events.`state`
-		when 0 then '未审批' when 1 then '审批通过' when 1 then '审批不通过' end as state
+		when 0 then '未审批' when 1 then '审批通过' when 2 then '审批不通过' end as state
 		,approval_events.`create_time` as createTime
 		<include refid="sqlByList"></include>
 		and approval_events.`approval_type`='请假'

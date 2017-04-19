@@ -29,6 +29,7 @@ import org.common.tools.excel.ExcelUtil;
 import org.common.tools.exception.ApiException;
 import org.ost.crm.client.ContactsServiceClient;
 import org.ost.crm.dao.auth.UsersRolesMapper;
+import org.ost.crm.dao.department.DepartmentDao;
 import org.ost.crm.dao.report.VisitReportDao;
 import org.ost.crm.dao.web.user.UserDao;
 import org.ost.crm.model.visit.dto.VisitReportDetailDto;
@@ -36,6 +37,7 @@ import org.ost.crm.model.visit.dto.VisitSupportDto;
 import org.ost.crm.services.visit.VisitService;
 import org.ost.entity.auth.Role;
 import org.ost.entity.contacts.dto.VisitContactsDto;
+import org.ost.entity.org.department.Departments;
 import org.ost.entity.user.Users;
 import org.ost.entity.user.UsersRole;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +57,9 @@ public class VisitReportService {
 	private UserDao userDao;
 	@Autowired
 	UsersRolesMapper userRoleMapper;
+
+	@Autowired
+	private DepartmentDao departmentDao;
 
 	/**
 	 * 
@@ -145,7 +150,7 @@ public class VisitReportService {
 	@Transactional(readOnly = true)
 	public ByteArrayOutputStream export(Integer userId, String schemaID, String hasBus, String managerOwnerName,
 			String contactType, String startDate, String endDate, Integer curPage, Integer perPageSum)
-			throws Exception {
+					throws Exception {
 		if (null != userId) {
 			// check role
 			Users currentUser = this.userDao.selectByPrimaryKey(userId);
@@ -283,10 +288,14 @@ public class VisitReportService {
 		start = DateUtil.setDayMinTime(start);
 		end = DateUtil.setDayMaxTime(end);
 
+		Departments departments = new Departments();
+		departments.setDeptId(departmentId);
+		List<Departments> depts = departmentDao.selectByDept(departments);
+
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("startTime", start);
 		params.put("endTime", end);
-		params.put("departmentId", departmentId);
+		params.put("depts", depts);
 		List<VisitReportDetailDto> reportDetailDtos = reportDao.selectByDepartmentAndTime(params);
 
 		HSSFWorkbook workbook = new HSSFWorkbook();

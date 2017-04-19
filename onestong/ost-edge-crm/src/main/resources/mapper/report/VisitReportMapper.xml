@@ -231,7 +231,12 @@
 
 		where
 		ve.isDelete = 0 and (veu.role = 0
-		and veu.organizeID = #{departmentId})
+		and veu.organizeID in
+		 <foreach collection="depts" item="dept" open="(" close=")"
+			separator=",">
+			#{dept.deptId,jdbcType=INTEGER}
+		</foreach>
+		)
 
 		and ve.createTime between
 		#{startTime,jdbcType=TIMESTAMP} and
