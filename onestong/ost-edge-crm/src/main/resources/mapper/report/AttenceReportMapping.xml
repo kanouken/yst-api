@@ -23,9 +23,7 @@
 		<if test="end != null">
 		<![CDATA[ and attence_events.`signout_time` <= #{end,jdbcType=TIMESTAMP}]]>
 		</if>
-		<if test="departmentName !=null and departmentName !=''">
-			and users.`department_name`=#{departmentName}
-		</if>
+		
 		and users.`domain_id`='1'
 		ORDER BY attence_events.`signed_time`
 		,users.`realname` DESC

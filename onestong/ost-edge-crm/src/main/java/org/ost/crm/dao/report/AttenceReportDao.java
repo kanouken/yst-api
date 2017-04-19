@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 public interface AttenceReportDao {
 
 	//考勤
-	List<Map<String, Object>> selectAttenceByList(@Param("departmentName") String departmentName,
+	List<Map<String, Object>> selectAttenceByList(@Param("deptId") Integer deptId,
 			@Param("start") Date start,@Param("end") Date end,RowBounds rowBounds);
 	
 	//出差

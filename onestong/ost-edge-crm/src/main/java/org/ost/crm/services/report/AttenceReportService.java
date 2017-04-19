@@ -12,7 +12,9 @@ import org.apache.ibatis.session.RowBounds;
 import org.common.tools.date.DateUtil;
 import org.common.tools.db.Page;
 import org.common.tools.excel.ExcelUtil;
+import org.ost.crm.dao.department.DepartmentDao;
 import org.ost.crm.dao.report.AttenceReportDao;
+import org.ost.entity.org.department.Departments;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,9 @@ public class AttenceReportService {
 
 	@Autowired
 	private AttenceReportDao attenceReportDao;
+	
+	@Autowired
+	private DepartmentDao departmentDao;
 
 	/**
 	 * 考勤
@@ -35,7 +40,7 @@ public class AttenceReportService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly = true)
-	public ByteArrayOutputStream attenceExport(String departmentName, String signedTime, String signoutTime, Integer curPage,
+	public ByteArrayOutputStream attenceExport(Integer deptId, String signedTime, String signoutTime, Integer curPage,
 			Integer perPageSum) throws Exception {
 		//日期
 		Date start = null, end = null;
@@ -53,7 +58,10 @@ public class AttenceReportService {
 		RowBounds rowBounds = new RowBounds(page.getNextPage(), page.getPerPageSum());
 
 		List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
-		result = attenceReportDao.selectAttenceByList(departmentName, start, end, rowBounds);
+		Departments departments=new Departments();
+		departments.setDeptId(deptId);
+		List<Departments> depts = departmentDao.selectByDept(departments);
+		result = attenceReportDao.selectAttenceByList(depts.get(0).getDeptId(), start, end, rowBounds);
 
 		// 定义表头
 		// 表头每列有2个字段
