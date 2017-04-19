@@ -8,8 +8,6 @@
 	<select id="selectCollectionALLTypePaged" parameterType="map"
 		resultType="java.util.HashMap">
 		select * from event_collection where
-
-
 		<if test="userScope != null">
 			user_id in (
 			<foreach collection="userScope" item="item" index="index"
@@ -20,44 +18,6 @@
 			)
 		</if>
 		union all
-		<!-- task -->
-		SELECT
-		t.user_id AS user_id,
-		t.taskId AS id,
-		t.creator AS creator,
-		t.create_time AS create_time,
-		t.update_time AS update_time,
-		t.title AS
-		title,
-		t.task_desc AS content,
-		NULL AS signed_address,
-		t.publish_address
-		AS signout_address,
-		NULL AS signed_time,
-		NULL AS lated_for_time,
-		NULL AS
-		signout_time,
-		NULL AS le_for_time,
-		t.state AS state,
-		4 AS type,
-		t.like_count AS like_count,
-		t.comment_count AS comment_count,
-		null as
-		pic,
-		t.longitude AS signed_longitude,
-		t.latitude AS signed_latitude,
-		NULL AS signout_longitude,
-		NULL AS signout_latitude
-		FROM
-		task t,
-		user_task ut
-		WHERE
-		t.taskId = ut.task_id
-		AND ut.user_id =
-		#{userId,jdbcType=INTEGER}
-
-		union all
-
 		<!-- aproval -->
 		select
 		t.user_id AS user_id,
@@ -67,134 +27,138 @@
 		t.update_time AS update_time,
 		t.leave_type AS title,
 		t.content AS content,
-		t.approval_tip AS signed_address,
+		t.approval_tip AS
+		signed_address,
 		null AS signout_address,
 		NULL AS signed_time,
-		NULL AS lated_for_time,
+		NULL AS
+		lated_for_time,
 		NULL AS signout_time,
 		NULL AS le_for_time,
-		t.state AS state,
+		t.state AS
+		state,
 		6 AS type,
 		null AS like_count,
 		null AS comment_count,
 		null as pic,
 		null AS signed_longitude,
 		null AS signed_latitude,
-		NULL AS signout_longitude,
+		NULL AS
+		signout_longitude,
 		NULL AS signout_latitude
 
-		from approval_events t left join approval_users au on t.ae_id =
+		from approval_events t left
+		join approval_users au on t.ae_id =
 		au.approval_event_id
-		where au.user_id = #{userId,jdbcType=INTEGER}
+		where
+		au.user_id = #{userId,jdbcType=INTEGER}
 
-		union all 
+		union all
 		<!-- visit supporter -->
 		SELECT
-			`veu`.`userID` AS `user_id` ,
-			`ve`.`id` AS `id` ,
-			`ve`.`createBy` AS `creator` ,
-			`ve`.`createTIme` AS `create_time` ,
-			`ve`.`updateTime` AS `update_time` ,
-			`ve`.`customerName` AS `title` ,
-			NULL AS `content` ,
-			`ae`.`signInAddress` AS `signed_address` ,
-			`ae`.`signOutAddress` AS `signout_address` ,
-			`ae`.`signInTime` AS `signed_time` ,
-			NULL AS `lated_for_time` ,
-			`ae`.`signOutTime` AS `signout_time` ,
-			NULL AS `le_for_time` ,
-			`ve`.`approvalStatus` AS `state` ,
-			2.1 AS `type` ,
-			`ae`.`state` AS `like_count` ,
-			NULL AS `comment_count` ,
-			null as pic,
-			`ae`.`signInLng` AS `signed_longitude` ,
-			`ae`.`signInLat` AS `signed_latitude` ,
-			`ae`.`signOutLng` AS `signout_longitude` ,
-			`ae`.`signOutLat` AS `signout_latitude`
+		`veu`.`userID` AS `user_id` ,
+		`ve`.`id` AS `id` ,
+		`ve`.`createBy` AS `creator` ,
+		`ve`.`createTIme` AS `create_time` ,
+		`ve`.`updateTime` AS `update_time` ,
+		`ve`.`customerName` AS `title` ,
+		NULL AS `content` ,
+		`ae`.`signInAddress` AS `signed_address` ,
+		`ae`.`signOutAddress` AS `signout_address` ,
+		`ae`.`signInTime` AS `signed_time` ,
+		NULL AS `lated_for_time` ,
+		`ae`.`signOutTime` AS `signout_time` ,
+		NULL AS `le_for_time` ,
+		`ve`.`approvalStatus` AS `state` ,
+		2.1 AS `type` ,
+		`ae`.`state` AS `like_count` ,
+		NULL AS `comment_count` ,
+		null as pic,
+		`ae`.`signInLng` AS `signed_longitude` ,
+		`ae`.`signInLat` AS `signed_latitude` ,
+		`ae`.`signOutLng` AS `signout_longitude` ,
+		`ae`.`signOutLat` AS `signout_latitude`
 		FROM
-			(
-				(
-					`tbl_visit_event` `ve`
-					LEFT JOIN `tbl_visit_event_user` `veu` ON(
-						(`ve`.`id` = `veu`.`visitEventID`)
-					)
-				)
-				LEFT JOIN `tbl_attence_events` `ae` ON(
-					(
-						`veu`.`attenceEventID` = `ae`.`id`
-					)
-				)
-			)
+		(
+		(
+		`tbl_visit_event` `ve`
+		LEFT JOIN `tbl_visit_event_user` `veu` ON(
+		(`ve`.`id` = `veu`.`visitEventID`)
+		)
+		)
+		LEFT JOIN `tbl_attence_events` `ae` ON(
+		(
+		`veu`.`attenceEventID` = `ae`.`id`
+		)
+		)
+		)
 		WHERE
-			(
-				(`veu`.`role` = 1)
-				AND(`ve`.`approvalStatus` = 1)
-				
-				and veu.userID = #{userId}
-			)
-			
-			
-			UNION ALL
-			SELECT
-				`veau`.`userID` AS `user_id` ,
-				`ve`.`id` AS `id` ,
-				`ve`.`createBy` AS `creator` ,
-				`ve`.`createTIme` AS `create_time` ,
-				`ve`.`updateTime` AS `update_time` ,
-				`ve`.`customerName` AS `title` ,
-				`veu`.`visitDetail` AS `content` ,
-				`ae`.`signInAddress` AS `signed_address` ,
-				`ae`.`signOutAddress` AS `signout_address` ,
-				`ae`.`signInTime` AS `signed_time` ,
-				NULL AS `lated_for_time` ,
-				`ae`.`signOutTime` AS `signout_time` ,
-				NULL AS `le_for_time` ,
-				`veau`.`approvalStatus` AS `state` ,
-				(
-					CASE
-					WHEN(`veau`.`role` = 0) THEN
-						2.3
-					ELSE
-						2.2
-					END
-				) AS `type` ,
-				NULL AS `like_count` ,
-				NULL AS `comment_count` ,
-				null as pic,
-				`ae`.`signInLng` AS `signed_longitude` ,
-				`ae`.`signInLat` AS `signed_latitude` ,
-				`ae`.`signOutLng` AS `signout_longitude` ,
-				`ae`.`signOutLat` AS `signout_latitude`
-			FROM
-				(
-					(
-						(
-							`tbl_visit_event` `ve`
-							LEFT JOIN `tbl_visit_event_user` `veu` ON(
-								(`ve`.`id` = `veu`.`visitEventID`)
-							)
-						)
-						LEFT JOIN `tbl_attence_events` `ae` ON(
-							(
-								`veu`.`attenceEventID` = `ae`.`id`
-							)
-						)
-					)
-					LEFT JOIN `tbl_visit_event_approval_user` `veau` ON(
-						(
-							`ve`.`id` = `veau`.`visitEventID`
-						)
-					)
-				)
-			WHERE
-				(`veu`.`role` = 0)
-				
-				and veau.userID = #{userId}
-			
-		order by update_time desc
+		(
+		(`veu`.`role` = 1)
+		AND(`ve`.`approvalStatus` = 1)
+
+		and veu.userID = #{userId}
+		)
 
 
+		UNION ALL
+		SELECT
+		`veau`.`userID` AS `user_id` ,
+		`ve`.`id` AS `id` ,
+		`ve`.`createBy` AS `creator` ,
+		`ve`.`createTIme` AS `create_time` ,
+		`ve`.`updateTime` AS `update_time` ,
+		`ve`.`customerName` AS `title` ,
+		`veu`.`visitDetail` AS `content` ,
+		`ae`.`signInAddress` AS `signed_address` ,
+		`ae`.`signOutAddress` AS `signout_address` ,
+		`ae`.`signInTime` AS `signed_time` ,
+		NULL AS `lated_for_time` ,
+		`ae`.`signOutTime` AS `signout_time` ,
+		NULL AS `le_for_time` ,
+		`veau`.`approvalStatus` AS `state` ,
+		(
+		CASE
+		WHEN(`veau`.`role` = 0) THEN
+		2.3
+		ELSE
+		2.2
+		END
+		) AS `type` ,
+		NULL AS `like_count` ,
+		NULL AS `comment_count` ,
+		null as pic,
+		`ae`.`signInLng` AS `signed_longitude` ,
+		`ae`.`signInLat` AS `signed_latitude` ,
+		`ae`.`signOutLng` AS `signout_longitude` ,
+		`ae`.`signOutLat` AS `signout_latitude`
+		FROM
+		(
+		(
+		(
+		`tbl_visit_event` `ve`
+		LEFT JOIN `tbl_visit_event_user` `veu` ON(
+		(`ve`.`id` = `veu`.`visitEventID`)
+		)
+		)
+		LEFT JOIN `tbl_attence_events` `ae` ON(
+		(
+		`veu`.`attenceEventID` = `ae`.`id`
+		)
+		)
+		)
+		LEFT JOIN `tbl_visit_event_approval_user` `veau` ON(
+		(
+		`ve`.`id` = `veau`.`visitEventID`
+		)
+		)
+		)
+		WHERE
+		(`veu`.`role` = 0)
+
+		and veau.userID = #{userId}
+	 <![CDATA[ order by (CASE  WHEN type =2.3 and state = 0   THEN 10  WHEN (type=2 or type = 2.0 or type = 2.1 ) and state <>3  THEN 20 WHEN (type = 6 or type = 6.0) and state =0  THEN 30   ELSE 40 END) 
+	 ASC,update_time desc  ]]>
 	</select>
 
 
