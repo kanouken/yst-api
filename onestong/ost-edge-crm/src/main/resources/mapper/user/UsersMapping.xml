@@ -45,6 +45,17 @@
 		</foreach>
 		and valid = 0
 	</select>
+	
+	
+	<select id="selectByDeptIds" resultType="org.ost.entity.user.Users">
+		select user_id userId,realname , c_id cId from users where dept_id in
+		<foreach item="dept" collection="departments" open="(" separator=","
+			close=")">
+			#{dept.deptId}
+		</foreach>
+		and valid = 0
+	</select>
+	
 
 	<select id="selectByID" resultType="org.ost.crm.model.web.user.UserDto">
 		select

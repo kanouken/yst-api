@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.common.tools.OperateResult;
+import org.common.tools.db.Page;
 import org.ost.crm.controller.base.Action;
 import org.ost.crm.model.visit.dto.CreateVisitDto;
 import org.ost.crm.model.visit.dto.UpdateVisitDto;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -170,4 +172,16 @@ public class VisitController extends Action {
 			@PathVariable(value = "id") Integer id) {
 		return new OperateResult<VisitAttenceDto>(visitAttenceService.queryAttence(currentUser, id));
 	}
+
+	@ApiOperation(value = "查询我的外访记录", notes = "", code = 200, produces = "application/json")
+	@GetMapping(value = "visitEvents")
+	public OperateResult<List<Map<String, Object>>> queryVisits(@RequestAttribute(value = LOGIN_USER) Users currentUser,
+			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
+			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum) {
+		Page page = new Page();
+		page.setCurPage(curPage);
+		page.setPerPageSum(perPageSum);
+		return new OperateResult<List<Map<String, Object>>>(visitService.queryMyVisit(currentUser, page));
+	}
+
 }

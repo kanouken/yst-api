@@ -1,6 +1,7 @@
 package org.ost.crm.services.visit;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -12,8 +13,10 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.session.RowBounds;
 import org.common.tools.OperateResult;
+import org.common.tools.date.DateUtil;
 import org.common.tools.db.Page;
 import org.common.tools.exception.ApiException;
 import org.ost.crm.client.ContactsServiceClient;
@@ -34,6 +37,7 @@ import org.ost.crm.model.visit.dto.UpdateVisitDto;
 import org.ost.crm.model.visit.dto.VisitDetailDto;
 import org.ost.crm.model.visit.dto.VisitListDto;
 import org.ost.crm.model.visit.mapper.VisitEntityMapper;
+import org.ost.crm.services.auth.AuthorityService;
 import org.ost.crm.services.auth.UsersRole;
 import org.ost.crm.services.base.BaseService;
 import org.ost.crm.services.web.user.UserService;
@@ -53,6 +57,7 @@ import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 @SuppressWarnings("unchecked")
 @Service
 public class VisitService extends BaseService {
@@ -519,6 +524,26 @@ public class VisitService extends BaseService {
 		page.setTotalRecords(totalRecords);
 		return OperateResult.renderPage(page, visitListDtos);
 
+	}
+
+	@Transactional(readOnly = true)
+	public List<Map<String, Object>> queryMyVisit(Users currentUser, Page page) {
+		List<Users> users = this.userService.findUserScopes(currentUser);
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userScope", users);
+		params.put("userId", currentUser.getUserId());
+		Date  start = null,end = null;
+		Calendar c  = Calendar.getInstance();
+		c.setTime(new Date());
+		end  = c.getTime();
+		end = DateUtil.setDayMaxTime(end);
+		c.add(Calendar.DAY_OF_WEEK,-7);
+		start = c.getTime();
+		start = DateUtil.setDayMinTime(start);
+		params.put("startTime",start);
+		params.put("endTime",end);
+		RowBounds rBounds = new RowBounds(page.getNextPage(), page.getPerPageSum());
+		return this.visitDao.selectMyVisit(params, rBounds);
 	}
 
 }

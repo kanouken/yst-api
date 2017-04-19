@@ -30,4 +30,6 @@ public interface VisitDao extends Mapper<Visit> {
 
 	Integer selectCountByCustomer(@Param("customer") Customer customer, @Param("params") Map<String, Object> params);
 
+	List<Map<String,Object>> selectMyVisit(Map<String,Object> params, RowBounds rBounds);
+	
 }
