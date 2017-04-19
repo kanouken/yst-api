@@ -160,6 +160,7 @@
 		
 		) t
 	<if test="eventType != null">
+		where
 		<choose>
 			<when test="eventType ==2">
 			 	FLOOR(type) = #{eventType}
