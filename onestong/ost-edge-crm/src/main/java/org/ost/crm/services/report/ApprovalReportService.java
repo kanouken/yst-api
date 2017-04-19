@@ -70,7 +70,7 @@ public class ApprovalReportService {
 		Departments departments=new Departments();
 		departments.setDeptId(deptId);
 		List<Departments> depts = departmentDao.selectByDept(departments);
-			List<ApprovalReportDto> _listBusinessTrip = attenceReportDao.selectbusinessTripByList(depts.get(0).getDeptId(),
+		List<ApprovalReportDto> _listBusinessTrip = attenceReportDao.selectbusinessTripByList(depts.get(0).getDeptId(),
 					start, end, rowBounds);
 			for (ApprovalReportDto businessTripARDto : _listBusinessTrip) {
 				List<String> rowData = new ArrayList<String>();
@@ -85,7 +85,6 @@ public class ApprovalReportService {
 				rowData.add(businessTripARDto.getCreateTime());
 				businessTripData.add(rowData);
 			}
-
 			// 请假
 			String[] leave = { "部门名称", "姓名", "请假开始时间", "请假结束时间", "请假类型", "请假原因", "审批人", "审批结果", "创建时间" };
 			List<List<String>> leaveData = new ArrayList<List<String>>();

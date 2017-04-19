@@ -23,7 +23,7 @@ public class ApprovalReportController extends Action {
 	@ApiOperation(value = "请假_出差", notes = "请假_出差")
 	@GetMapping(value = "export")
 	public void approvalExport(
-			@RequestParam(value = "deptId", required = false) Integer deptId,
+			@RequestParam(value = "deptId") Integer deptId,
 			@RequestParam(value = "signedTime", required = false) String signedTime,
 			@RequestParam(value = "signoutTime", required = false) String signoutTime, 
 			HttpServletRequest request,

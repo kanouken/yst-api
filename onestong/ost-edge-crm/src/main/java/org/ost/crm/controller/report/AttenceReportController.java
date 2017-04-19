@@ -23,7 +23,7 @@ public class AttenceReportController extends Action{
 	@ApiOperation(value = "考勤", notes = "考勤")
 	@GetMapping(value = "export")
 	public void attenceExport(
-			@RequestParam(value = "deptId", required = false) Integer deptId,
+			@RequestParam(value = "deptId") Integer deptId,
 			@RequestParam(value = "signedTime", required = false) String signedTime,
 			@RequestParam(value = "signoutTime", required = false) String signoutTime,
 			HttpServletRequest request,
