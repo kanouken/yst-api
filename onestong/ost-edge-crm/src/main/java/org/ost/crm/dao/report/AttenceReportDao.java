@@ -17,10 +17,10 @@ public interface AttenceReportDao {
 			@Param("start") Date start,@Param("end") Date end,RowBounds rowBounds);
 	
 	//出差
-	List<ApprovalReportDto> selectbusinessTripByList(@Param("departmentName") String departmentName,
+	List<ApprovalReportDto> selectbusinessTripByList(@Param("deptId") Integer deptId,
 			@Param("start") Date start,@Param("end") Date end,RowBounds rowBounds);
 	
 	//请假
-	List<ApprovalReportDto> selectLeaveByList(@Param("departmentName") String departmentName,
+	List<ApprovalReportDto> selectLeaveByList(@Param("deptId") Integer deptId,
 			@Param("start") Date start,@Param("end") Date end,RowBounds rowBounds);
 }

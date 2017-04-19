@@ -70,14 +70,12 @@
 		on approval_users.`approval_event_id`=approval_events.`ae_id`
 		where
 		1=1
-		<if test="departmentName !=null and departmentName !=''">
-			and users.`department_name`=#{departmentName}
-		</if>
+		
 		<if test="start !=null">
-			and approval_events.`start_time` >=#{start}
+			and approval_events.`create_time` >=#{start}
 		</if>
 		<if test="end != null">
-		<![CDATA[ and approval_events.`end_time` <= #{end,jdbcType=TIMESTAMP}]]>
+		<![CDATA[ and approval_events.`create_time` <= #{end,jdbcType=TIMESTAMP}]]>
 		</if>
 	</sql>
 
