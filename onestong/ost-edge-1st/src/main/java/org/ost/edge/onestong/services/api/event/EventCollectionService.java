@@ -47,9 +47,9 @@ public class EventCollectionService extends BaseService {
 	 * @return
 	 */
 	@Transactional(readOnly = true)
-	public List<Map<String, Object>> pullEventsAllTypePaged(Integer userId, List<User> users,RowBounds rb){
+	public List<Map<String, Object>> pullEventsAllTypePaged(Integer userId, List<User> users,RowBounds rb,Integer eventType){
 		
-		return this.collectionMapper.selectCollectionALLTypePaged(userId,users, rb);
+		return this.collectionMapper.selectCollectionALLTypePaged(userId,users,eventType, rb);
 		
 	}
 	/**

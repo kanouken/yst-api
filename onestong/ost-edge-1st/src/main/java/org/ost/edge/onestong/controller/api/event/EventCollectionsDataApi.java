@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -179,7 +180,7 @@ public class EventCollectionsDataApi extends Action {
 			page.setPerPageSum(perPageSum);
 			RowBounds rb = new RowBounds(page.getNextPage(), page.getPerPageSum());
 			List<Map<String, Object>> collections = collectionService.pullEventsAllTypePaged(user.getUserId(),
-					usersService.findUserScopes(user, perms), rb);
+					usersService.findUserScopes(user, perms), rb,null);
 			for (Map<String, Object> map : collections) {
 
 				if (Byte.valueOf(map.get("type").toString().trim()) == Constants.EVENT_VISIT) {
@@ -224,10 +225,9 @@ public class EventCollectionsDataApi extends Action {
 	}
 
 	/**
-	 * 所有类型事件
-	 * 外访事件分为 外访、外访审批
-	 * 外访 2  外访支持 2.1  外访审批观察 2.2 外访审批审批 2.3
-	 * like_count 》》》 考勤状态 
+	 * 所有类型事件 外访事件分为 外访、外访审批 外访 2 外访支持 2.1 外访审批观察 2.2 外访审批审批 2.3 like_count 》》》
+	 * 考勤状态
+	 * 
 	 * @param user
 	 * @param curPage
 	 * @param perPageSum
@@ -237,7 +237,9 @@ public class EventCollectionsDataApi extends Action {
 	@GetMapping(value = "")
 	public List<Map<String, Object>> pull(@RequestAttribute(value = LOGIN_USER) User user,
 			@RequestHeader(value = PAGE_CURRENT, defaultValue = PAGE_CURRENT_DEFAULT) Integer curPage,
-			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum) {
+			@RequestHeader(value = PAGE_PER_SIZE, defaultValue = PAGE_PER_SIZE_DEFAULT) Integer perPageSum,
+			@RequestParam(value = "type",required = false) Integer type
+			) {
 		Role role = this.authorityService.findRoleByUser(user);
 		List<Map<String, Object>> perms = this.authorityService.findPermsByRoleAndType(role, Constants.MOUDLE_APP);
 		Page page = new Page();
@@ -245,7 +247,7 @@ public class EventCollectionsDataApi extends Action {
 		page.setPerPageSum(perPageSum);
 		RowBounds rb = new RowBounds(page.getNextPage(), page.getPerPageSum());
 		List<Map<String, Object>> collections = collectionService.pullEventsAllTypePaged(user.getUserId(),
-				usersService.findUserScopes(user, perms), rb);
+				usersService.findUserScopes(user, perms), rb,type);
 		return collections;
 	}
 

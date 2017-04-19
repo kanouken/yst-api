@@ -31,7 +31,7 @@ public interface EventCollectionMapper {
 	 * 所有类型
 	 * @return
 	 */
-	List<Map<String, Object>> selectCollectionALLTypePaged(@Param("userId") Integer userId, @Param("userScope") List<User> userScope,RowBounds rb);
+	List<Map<String, Object>> selectCollectionALLTypePaged(@Param("userId") Integer userId, @Param("userScope") List<User> userScope,@Param("eventType") Integer eventType, RowBounds rb);
 	
 	
 	
