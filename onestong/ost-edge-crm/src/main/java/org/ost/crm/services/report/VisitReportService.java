@@ -354,7 +354,7 @@ public class VisitReportService {
 			body.createCell(7)
 					.setCellValue(createDto.getAttence() != null ? createDto.getAttence().getSignOutTimeStr() : null);
 			body.createCell(8)
-					.setCellValue(createDto.getAttence() != null ? createDto.getAttence().getSignOutTimeStr() : null);
+					.setCellValue(createDto.getAttence() != null ? createDto.getAttence().getSignOutAddress() : null);
 
 			// 支持者
 
