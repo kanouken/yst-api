@@ -59,24 +59,30 @@
 		SELECT
 		`veu`.`userID` AS `user_id` ,
 		`ve`.`id` AS `id` ,
-		`ve`.`createBy` AS `creator` ,
+		`ve`.`createBy`
+		AS `creator` ,
 		`ve`.`createTIme` AS `create_time` ,
-		`ve`.`updateTime` AS `update_time` ,
+		`ve`.`updateTime` AS
+		`update_time` ,
 		`ve`.`customerName` AS `title` ,
 		NULL AS `content` ,
 		`ae`.`signInAddress` AS `signed_address` ,
-		`ae`.`signOutAddress` AS `signout_address` ,
+		`ae`.`signOutAddress` AS
+		`signout_address` ,
 		`ae`.`signInTime` AS `signed_time` ,
-		NULL AS `lated_for_time` ,
+		NULL AS
+		`lated_for_time` ,
 		`ae`.`signOutTime` AS `signout_time` ,
-		NULL AS `le_for_time` ,
+		NULL AS
+		`le_for_time` ,
 		`ve`.`approvalStatus` AS `state` ,
 		2.1 AS `type` ,
 		`ae`.`state` AS `like_count` ,
 		NULL AS `comment_count` ,
 		null as pic,
 		`ae`.`signInLng` AS `signed_longitude` ,
-		`ae`.`signInLat` AS `signed_latitude` ,
+		`ae`.`signInLat` AS
+		`signed_latitude` ,
 		`ae`.`signOutLng` AS `signout_longitude` ,
 		`ae`.`signOutLat` AS `signout_latitude`
 		FROM
@@ -84,7 +90,8 @@
 		(
 		`tbl_visit_event` `ve`
 		LEFT JOIN `tbl_visit_event_user` `veu` ON(
-		(`ve`.`id` = `veu`.`visitEventID`)
+		(`ve`.`id` =
+		`veu`.`visitEventID`)
 		)
 		)
 		LEFT JOIN `tbl_attence_events` `ae` ON(
@@ -111,7 +118,8 @@
 		`ve`.`updateTime` AS `update_time` ,
 		`ve`.`customerName` AS `title` ,
 		`veu`.`visitDetail` AS `content` ,
-		`ae`.`signInAddress` AS `signed_address` ,
+		`ae`.`signInAddress` AS
+		`signed_address` ,
 		`ae`.`signOutAddress` AS `signout_address` ,
 		`ae`.`signInTime` AS `signed_time` ,
 		NULL AS `lated_for_time` ,
@@ -127,11 +135,13 @@
 		END
 		) AS `type` ,
 		NULL AS `like_count` ,
-		NULL AS `comment_count` ,
+		NULL AS
+		`comment_count` ,
 		null as pic,
 		`ae`.`signInLng` AS `signed_longitude` ,
 		`ae`.`signInLat` AS `signed_latitude` ,
-		`ae`.`signOutLng` AS `signout_longitude` ,
+		`ae`.`signOutLng` AS
+		`signout_longitude` ,
 		`ae`.`signOutLat` AS `signout_latitude`
 		FROM
 		(
@@ -142,35 +152,42 @@
 		(`ve`.`id` = `veu`.`visitEventID`)
 		)
 		)
-		LEFT JOIN `tbl_attence_events` `ae` ON(
+		LEFT JOIN `tbl_attence_events`
+		`ae` ON(
 		(
 		`veu`.`attenceEventID` = `ae`.`id`
 		)
 		)
 		)
-		LEFT JOIN `tbl_visit_event_approval_user` `veau` ON(
+		LEFT JOIN
+		`tbl_visit_event_approval_user` `veau` ON(
 		(
-		`ve`.`id` = `veau`.`visitEventID`
+		`ve`.`id` =
+		`veau`.`visitEventID`
 		)
 		)
 		)
 		WHERE
 		(`veu`.`role` = 0)
-		and veau.userID = #{userId}
-		
+		and veau.userID =
+		#{userId}
+
 		) t
-	<if test="eventType != null">
-		where
-		<choose>
-			<when test="eventType ==2">
-			 	FLOOR(type) = #{eventType}
-			</when>
-			<otherwise>
-				type = #{eventType}
-			</otherwise>
-		</choose>
-	</if>
-	 <![CDATA[ order by (CASE  WHEN type =2.3 and state = 0   THEN 10  WHEN (type=2 or type = 2.0 or type = 2.1 ) and state <>3  THEN 20 WHEN (type = 6 or type = 6.0) and state =0  THEN 30   ELSE 40 END) 
+		<if test="eventType != null">
+			where
+			<choose>
+				<when test="eventType ==2">
+					FLOOR(type) = #{eventType}
+				</when>
+				<otherwise>
+					type = #{eventType}
+				</otherwise>
+			</choose>
+		</if>
+	<![CDATA[ 
+	 order by (CASE  WHEN  (type =2.3 and state = 0 ) or (
+type = 6 and user_id = #{userId} and state = 0 
+)    THEN 10  WHEN (type=2 or type = 2.1 ) and like_count <>3  THEN 20    ELSE 30 END) 
 	 ASC,update_time desc  ]]>
 	</select>
 
