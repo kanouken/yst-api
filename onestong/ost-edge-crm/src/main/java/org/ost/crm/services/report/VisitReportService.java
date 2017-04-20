@@ -286,7 +286,7 @@ public class VisitReportService {
 		start = DateUtils.parseDate(startTime, "yyyy-MM-dd");
 		end = DateUtils.parseDate(endTime, "yyyy-MM-dd");
 		start = DateUtil.setDayMinTime(start);
-		end = DateUtil.setDayMaxTime(end);
+		end = DateUtil.setDayMinTime(end);
 
 		Departments departments = new Departments();
 		departments.setDeptId(departmentId);

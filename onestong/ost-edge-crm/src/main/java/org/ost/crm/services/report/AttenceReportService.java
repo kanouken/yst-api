@@ -48,7 +48,7 @@ public class AttenceReportService {
 			start = DateUtil.setDayMinTime(DateUtils.parseDate(signedTime, "yyyy-MM-dd"));
 		}
 		if (StringUtils.isNotEmpty(signoutTime)) {
-			end = DateUtil.setDayMaxTime(DateUtils.parseDate(signoutTime, "yyyy-MM-dd"));
+			end = DateUtil.setDayMinTime(DateUtils.parseDate(signoutTime, "yyyy-MM-dd"));
 		}
 
 		//分页
