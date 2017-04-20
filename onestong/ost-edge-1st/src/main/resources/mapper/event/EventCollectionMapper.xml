@@ -86,7 +86,7 @@
 		`signed_latitude` ,
 		`ae`.`signOutLng` AS `signout_longitude` ,
 		`ae`.`signOutLat` AS `signout_latitude`,
-		<![CDATA[case when ae.state <> 3 then 2 else 10 end sort ]]>
+		<![CDATA[case when ae.state <> 3  or ae.state is null  then 2 else 10 end sort ]]>
 		
 		FROM
 		(
