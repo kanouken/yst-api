@@ -311,7 +311,7 @@
 
 		) t
 		where
-	FLOOR(type) = #{eventType}
+	FLOOR(type) = 2
 	and create_time between #{startTime,jdbcType=TIMESTAMP}
 	and #{endTime,jdbcType=TIMESTAMP}
 	order by sort asc,update_time desc 
